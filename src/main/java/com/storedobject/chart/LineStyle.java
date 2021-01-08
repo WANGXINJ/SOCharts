@@ -42,6 +42,7 @@ public class LineStyle implements ComponentProperty {
 		 */
 		DOTTED;
 
+		@Override
 		public String toString() {
 			return super.toString().toLowerCase();
 		}

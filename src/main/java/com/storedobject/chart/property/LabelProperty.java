@@ -24,7 +24,7 @@ import com.storedobject.chart.PieChart;
  *
  * @author xj
  */
-public abstract class LabelProperty extends BaseComponentProperty {
+public class LabelProperty extends BaseComponentProperty {
 
 	private Integer fontSize;
 
@@ -46,6 +46,6 @@ public abstract class LabelProperty extends BaseComponentProperty {
 	protected void addProperties() {
 		super.addProperties();
 
-		addProperty("fontSize", fontSize);
+		property("fontSize", fontSize);
 	}
 }

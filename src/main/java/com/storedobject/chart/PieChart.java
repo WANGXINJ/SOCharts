@@ -92,6 +92,9 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 
 	@Override
 	public LabelProperty getLabelProperty() {
+		if (labelProperty == null) {
+			labelProperty = new LabelProperty();
+		}
 		return labelProperty;
 	}
 

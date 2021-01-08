@@ -1,7 +1,5 @@
 package com.storedobject.chart.property;
 
-import java.util.Optional;
-
 import com.storedobject.chart.Color;
 import com.storedobject.chart.LineStyle;
 import com.storedobject.chart.PieChart;
@@ -56,8 +54,8 @@ public class ItemStyleProperty extends BaseComponentProperty {
 	protected void addProperties() {
 		super.addProperties();
 
-		addProperty("borderColor", borderColor);
-		addProperty("borderWidth", borderWidth);
- 		addProperty("borderType", borderType);
+		property("borderColor", borderColor);
+		property("borderWidth", borderWidth);
+		property("borderType", borderType);
 	}
 }

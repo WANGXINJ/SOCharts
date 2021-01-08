@@ -9,7 +9,7 @@ public class InnerLabelProperty extends LabelProperty {
 	protected void addProperties() {
 		super.addProperties();
 
-		addProperty("position", "inner");
+		property("position", "inner");
 	}
 
 	@Override

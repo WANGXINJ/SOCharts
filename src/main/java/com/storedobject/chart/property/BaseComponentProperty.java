@@ -3,10 +3,7 @@ package com.storedobject.chart.property;
 import static com.storedobject.chart.util.ComponentPropertyUtil.beginNode;
 import static com.storedobject.chart.util.ComponentPropertyUtil.endNode;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,9 +15,10 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 
 	private static final String PREFIX_PROPERTY_JSON = "-json";
 	private static final String PREFIX_COMPONENT_PROPERTY = "+property";
-	
+
 	final String name;
 	final Map<String, Object> properties = new LinkedHashMap<>();
+	final Map<String, Object> customProperties = new LinkedHashMap<>();
 
 	public BaseComponentProperty(String name) {
 		this.name = name;
@@ -28,7 +26,7 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 
 	@Override
 	public void encodeJSON(StringBuilder sb) {
-		addProperties();
+		buildProperties();
 		if (isEmpty())
 			return;
 
@@ -37,20 +35,43 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 		endNode(sb);
 	}
 
-	protected void addProperties() {
+	final protected void buildProperties() {
 		properties.clear();
+		addProperties();
+		properties.putAll(customProperties);
 	}
 
-	protected void addProperty(String property, Object value) {
-		properties.put(property, value);
+	protected void addProperties() {
+		// FI
 	}
 
-	protected void addProperty(ComponentProperty componentProperty) {
+	public void clear() {
+		properties.clear();
+		customProperties.clear();
+	}
+
+	final public void addProperty(String property, Object value) {
+		customProperties.put(property, value);
+	}
+
+	final public void addProperty(ComponentProperty componentProperty) {
 		addProperty(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
 	}
 
-	protected void addProperty(String propertyJson) {
+	final public void addProperty(String propertyJson) {
 		addProperty(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+	}
+
+	final protected void property(String property, Object value) {
+		properties.put(property, value);
+	}
+
+	final protected void property(ComponentProperty componentProperty) {
+		property(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+	}
+
+	final protected void property(String propertyJson) {
+		property(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
 	}
 
 	private void encodeProperties(StringBuilder sb) {

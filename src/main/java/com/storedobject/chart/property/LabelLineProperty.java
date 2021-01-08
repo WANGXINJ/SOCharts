@@ -46,6 +46,6 @@ public class LabelLineProperty extends BaseComponentProperty {
 	protected void addProperties() {
 		super.addProperties();
 
-		addProperty("show", show);
+		property("show", show);
 	}
 }

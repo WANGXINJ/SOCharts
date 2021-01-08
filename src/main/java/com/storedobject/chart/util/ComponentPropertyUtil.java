@@ -4,6 +4,10 @@ import static com.storedobject.chart.ComponentPart.escape;
 
 import com.storedobject.chart.ComponentProperty;
 
+import elemental.json.Json;
+import elemental.json.JsonObject;
+import elemental.json.impl.JsonUtil;
+
 public class ComponentPropertyUtil {
 
 	public static StringBuilder propertyName(String property, StringBuilder sb) {
@@ -19,6 +23,9 @@ public class ComponentPropertyUtil {
 	}
 
 	public static StringBuilder encode(String propertyJson, StringBuilder sb) {
+		JsonObject json = Json.parse("{" + propertyJson + "}");
+		propertyJson = JsonUtil.stringify(json);
+		propertyJson = propertyJson.substring(1, propertyJson.length() - 1);
 		return sb.append(propertyJson).append(",");
 	}
 
