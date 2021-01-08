@@ -16,6 +16,7 @@
 
 package com.storedobject.chart;
 
+import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.helper.ID;
 
 import java.util.Objects;

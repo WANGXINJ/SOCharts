@@ -28,55 +28,55 @@ public class Size {
 
 	private int size;
 
-	Size() {
+	public Size() {
 		this(Integer.MIN_VALUE);
 	}
 
-	Size(int size) {
+	public Size(int size) {
 		this.size = size;
 	}
 
-	int get() {
+	public int get() {
 		return size;
 	}
 
-	void set(Size size) {
+	public void set(Size size) {
 		this.size = size.size;
 	}
 
-	void set(int size) {
+	public void set(int size) {
 		this.size = size;
 	}
 
-	void left() {
+	public void left() {
 		size = -101;
 	}
 
-	void center() {
+	public void center() {
 		size = -102;
 	}
 
-	void right() {
+	public void right() {
 		size = -103;
 	}
 
-	void top() {
+	public void top() {
 		size = -111;
 	}
 
-	void middle() {
+	public void middle() {
 		size = -112;
 	}
 
-	void bottom() {
+	public void bottom() {
 		size = -113;
 	}
 
-	boolean isNull() {
+	public boolean isNull() {
 		return size == Integer.MIN_VALUE;
 	}
 
-	int plus(int add) {
+	public int plus(int add) {
 		if (size == Integer.MIN_VALUE) {
 			return add;
 		}
@@ -93,7 +93,7 @@ public class Size {
 		return size;
 	}
 
-	String encode() {
+	public String encode() {
 		if (size == Integer.MIN_VALUE) {
 			return null;
 		}
@@ -117,7 +117,7 @@ public class Size {
 		return "" + size;
 	}
 
-	static String code(int size) {
+	public static String code(int size) {
 		return new Size(size).encode();
 	}
 

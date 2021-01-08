@@ -18,6 +18,9 @@ package com.storedobject.chart;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.storedobject.chart.property.HasPolarProperty;
+import com.storedobject.chart.property.PolarProperty;
+
 /**
  * Radar coordinate is used by {@link RadarChart}. Its each leg (axis) can be
  * labelled (indicators) by {@link CategoryData}.

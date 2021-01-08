@@ -14,28 +14,38 @@
  *
  */
 
-package com.storedobject.chart;
+package com.storedobject.chart.property;
+
+import com.storedobject.chart.PieChart;
 
 /**
- * Interface to denote that a {@link ComponentPart} has {@link PolarProperty}.
+ * Represents label property. Certain charts supports this property (Example:
+ * {@link PieChart}.
  *
- * @author Syam
+ * @author xj
  */
-public interface HasPolarProperty {
+public abstract class LabelProperty extends BaseComponentProperty {
 
-	/**
-	 * Get the polar property. (If <code>true</code> is passed as the parameter, a
-	 * new polar property will be created if not already exists).
-	 *
-	 * @param create Whether to create it or not.
-	 * @return Polar property.
-	 */
-	PolarProperty getPolarProperty(boolean create);
+	private Integer fontSize;
 
-	/**
-	 * Set the polar property.
-	 *
-	 * @param polarProperty Polar property to set. It could be <code>null</code>.
-	 */
-	void setPolarProperty(PolarProperty polarProperty);
+	public LabelProperty() {
+		super("label");
+	}
+
+	public Integer getFontSize() {
+		return fontSize;
+	}
+
+	public LabelProperty setFontSize(Integer fontSize) {
+		this.fontSize = fontSize;
+
+		return this;
+	}
+
+	@Override
+	protected void addProperties() {
+		super.addProperties();
+
+		addProperty("fontSize", fontSize);
+	}
 }

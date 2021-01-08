@@ -179,12 +179,13 @@ public interface ComponentPart extends ComponentProperty {
 	 * @return Encoded string.
 	 */
 	static String escape(Object any) {
+		if (any instanceof Number || any instanceof Boolean) {
+			return any.toString();
+		}
+
 		String string = any == null ? "" : any.toString();
 		if (string == null) {
 			string = "";
-		}
-		if (any instanceof Number || any instanceof Boolean) {
-			return any.toString();
 		}
 		if (string.startsWith("\"") && string.endsWith("\"")) {
 			return string; // Special case - already encoded.

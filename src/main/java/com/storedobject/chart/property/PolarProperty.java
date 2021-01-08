@@ -14,7 +14,13 @@
  *
  */
 
-package com.storedobject.chart;
+package com.storedobject.chart.property;
+
+import com.storedobject.chart.ComponentProperty;
+import com.storedobject.chart.PieChart;
+import com.storedobject.chart.PolarCoordinate;
+import com.storedobject.chart.RadarCoordinate;
+import com.storedobject.chart.Size;
 
 /**
  * Polar property is visible in {@link PieChart}, {@link PolarCoordinate},

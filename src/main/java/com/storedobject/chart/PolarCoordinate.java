@@ -16,6 +16,9 @@
 
 package com.storedobject.chart;
 
+import com.storedobject.chart.property.HasPolarProperty;
+import com.storedobject.chart.property.PolarProperty;
+
 /**
  * Representation of polar coordinate system with an angle axis and a radius
  * axis.

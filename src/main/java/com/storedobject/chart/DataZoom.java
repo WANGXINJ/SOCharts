@@ -16,6 +16,8 @@
 
 package com.storedobject.chart;
 
+import com.storedobject.chart.property.HasPolarProperty;
+
 /**
  * Represents "data zoom" component. Data zoom components allow the end-users to
  * zoom in and to zoom out charts using mouse and/or touch devices. This

@@ -16,14 +16,23 @@
 
 package com.storedobject.chart;
 
+import com.storedobject.chart.property.HasItemStyleProperty;
+import com.storedobject.chart.property.HasLabelProperty;
+import com.storedobject.chart.property.HasPolarProperty;
+import com.storedobject.chart.property.ItemStyleProperty;
+import com.storedobject.chart.property.LabelProperty;
+import com.storedobject.chart.property.PolarProperty;
+
 /**
  * Pie chart. (Future versions will provide more chart-specific methods).
  *
  * @author Syam
  */
-public class PieChart extends SelfPositioningChart implements HasPolarProperty {
+public class PieChart extends SelfPositioningChart implements HasPolarProperty, HasLabelProperty, HasItemStyleProperty {
 
 	private PolarProperty polarProperty;
+	private LabelProperty labelProperty;
+	private ItemStyleProperty itemStyleProperty;
 
 	/**
 	 * Constructor.
@@ -64,6 +73,8 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty {
 	public void encodeJSON(StringBuilder sb) {
 		super.encodeJSON(sb);
 		ComponentPart.encodeProperty(sb, polarProperty);
+		ComponentPart.encodeProperty(sb, labelProperty);
+		ComponentPart.encodeProperty(sb, itemStyleProperty);
 	}
 
 	@Override
@@ -77,6 +88,29 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty {
 	@Override
 	public final void setPolarProperty(PolarProperty polarProperty) {
 		this.polarProperty = polarProperty;
+	}
+
+	@Override
+	public LabelProperty getLabelProperty() {
+		return labelProperty;
+	}
+
+	@Override
+	public void setLabelProperty(LabelProperty labelProperty) {
+		this.labelProperty = labelProperty;
+	}
+
+	@Override
+	public ItemStyleProperty getItemStyleProperty() {
+		if (itemStyleProperty == null) {
+			itemStyleProperty = new ItemStyleProperty();
+		}
+		return itemStyleProperty;
+	}
+
+	@Override
+	public void setItemStyleProperty(ItemStyleProperty itemStyleProperty) {
+		this.itemStyleProperty = itemStyleProperty;
 	}
 
 	/**

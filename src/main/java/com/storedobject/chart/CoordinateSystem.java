@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.storedobject.chart.property.HasPolarProperty;
+
 /**
  * Abstract coordinate system. Most {@link Chart}s are plotted on a coordinate
  * system with the exception of charts such as {@link PieChart},

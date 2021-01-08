@@ -40,7 +40,11 @@ public class LineStyle implements ComponentProperty {
 		/**
 		 * Dotted.
 		 */
-		DOTTED
+		DOTTED;
+
+		public String toString() {
+			return super.toString().toLowerCase();
+		}
 	}
 
 	private Color color;
@@ -75,7 +79,7 @@ public class LineStyle implements ComponentProperty {
 		}
 		ComponentPart.addComma(sb);
 		if (value instanceof Type) {
-			value = value.toString().toLowerCase();
+			value = ((Type) value).toString();
 		}
 		ComponentPart.encode(sb, name, value);
 	}
