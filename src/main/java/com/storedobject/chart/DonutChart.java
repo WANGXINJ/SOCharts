@@ -17,28 +17,27 @@
 package com.storedobject.chart;
 
 /**
- * Donut chart.
- * (Future versions will provide more chart-specific methods).
+ * Donut chart. (Future versions will provide more chart-specific methods).
  *
  * @author Syam
  */
 public class DonutChart extends PieChart {
 
-    /**
-     * Constructor.
-     */
-    public DonutChart() {
-        setHoleRadius(Size.percentage(60));
-    }
+	/**
+	 * Constructor.
+	 */
+	public DonutChart() {
+		setHoleRadius(Size.percentage(60));
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param itemNames Item names of the slices.
-     * @param values Values of the slices.
-     */
-    public DonutChart(AbstractDataProvider<?> itemNames, DataProvider values) {
-        super(itemNames, values);
-        setHoleRadius(Size.percentage(60));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param itemNames Item names of the slices.
+	 * @param values    Values of the slices.
+	 */
+	public DonutChart(AbstractDataProvider<?> itemNames, DataProvider values) {
+		super(itemNames, values);
+		setHoleRadius(Size.percentage(60));
+	}
 }

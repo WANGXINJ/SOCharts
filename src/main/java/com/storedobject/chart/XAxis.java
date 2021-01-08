@@ -23,30 +23,30 @@ package com.storedobject.chart;
  */
 public class XAxis extends XYAxis {
 
-    /**
-     * Constructor.
-     *
-     * @param dataType Data type.
-     */
-    public XAxis(DataType dataType) {
-        super(dataType);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param dataType Data type.
+	 */
+	public XAxis(DataType dataType) {
+		super(dataType);
+	}
 
-    @Override
-    ComponentPart wrap(CoordinateSystem coordinateSystem) {
-        AxisWrapper w = wrappers.get(coordinateSystem);
-        return w == null ? new XAxisWrapper(this, coordinateSystem) : w;
-    }
+	@Override
+	ComponentPart wrap(CoordinateSystem coordinateSystem) {
+		AxisWrapper w = wrappers.get(coordinateSystem);
+		return w == null ? new XAxisWrapper(this, coordinateSystem) : w;
+	}
 
-    @Override
-    String positionString() {
-        return "top";
-    }
+	@Override
+	String positionString() {
+		return "top";
+	}
 
-    static class XAxisWrapper extends AxisWrapper {
+	static class XAxisWrapper extends AxisWrapper {
 
-        XAxisWrapper(Axis axis, CoordinateSystem coordinateSystem) {
-            super(axis, coordinateSystem);
-        }
-    }
+		XAxisWrapper(Axis axis, CoordinateSystem coordinateSystem) {
+			super(axis, coordinateSystem);
+		}
+	}
 }

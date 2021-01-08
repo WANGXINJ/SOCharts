@@ -23,20 +23,21 @@ package com.storedobject.chart;
  */
 public enum Key {
 
-    /**
-     * Shift key.
-     */
-    SHIFT,
-    /**
-     * Ctrl key.
-     */
-    CTRL,
-    /**
-     * Alt key.
-     */
-    ALT;
+	/**
+	 * Shift key.
+	 */
+	SHIFT,
+	/**
+	 * Ctrl key.
+	 */
+	CTRL,
+	/**
+	 * Alt key.
+	 */
+	ALT;
 
-    public String toString() {
-        return "\"" + super.toString().toLowerCase() + "\"";
-    }
+	@Override
+	public String toString() {
+		return "\"" + super.toString().toLowerCase() + "\"";
+	}
 }

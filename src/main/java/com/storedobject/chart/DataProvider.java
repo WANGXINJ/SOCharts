@@ -23,8 +23,8 @@ package com.storedobject.chart;
  */
 public interface DataProvider extends AbstractDataProvider<Number> {
 
-    @Override
-    default DataType getDataType() {
-        return DataType.NUMBER;
-    }
+	@Override
+	default DataType getDataType() {
+		return DataType.NUMBER;
+	}
 }

@@ -17,21 +17,22 @@
 package com.storedobject.chart;
 
 /**
- * A list-based data provider for category data.
- * Category data is typically non-numeric kind of (string) data that can be used in many charts like
- * in the X-axis of a {@link BarChart}. It is also used when data/item labels are required, for example:
- * {@link PieChart}.
+ * A list-based data provider for category data. Category data is typically
+ * non-numeric kind of (string) data that can be used in many charts like in the
+ * X-axis of a {@link BarChart}. It is also used when data/item labels are
+ * required, for example: {@link PieChart}.
  *
  * @author Syam
  */
 public class CategoryData extends AbstractData<String> implements CategoryDataProvider {
+	private static final long serialVersionUID = 4485661425610237328L;
 
-    /**
-     * Constructor.
-     *
-     * @param data Initial data to add
-     */
-    public CategoryData(String... data) {
-        super(String.class, data);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param data Initial data to add
+	 */
+	public CategoryData(String... data) {
+		super(String.class, data);
+	}
 }

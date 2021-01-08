@@ -22,8 +22,10 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * Represents a matrix of data. {@link Data} can be added as rows to the matrix. This class provides methods to
- * access rows and columns of the matrix as {@link DataProvider}s.
+ * Represents a matrix of data. {@link Data} can be added as rows to the matrix.
+ * This class provides methods to access rows and columns of the matrix as
+ * {@link DataProvider}s.
+ * 
  * <pre>
  *     -- Fruit Production in Million Tons --
  *     Fruits     | Apple | Orange | Grapes |
@@ -48,461 +50,465 @@ import java.util.stream.Stream;
  */
 public class DataMatrix {
 
-    private final List<Data> dataList = new ArrayList<>();
-    private final List<DataProvider> rowData = new ArrayList<>();
-    private final List<DataProvider> columnData = new ArrayList<>();
-    private String name, columnName, rowName;
-    private CategoryData columnNames, rowNames;
-    private CategoryDataProvider columnNameGenerator, rowNameGenerator;
+	private final List<Data> dataList = new ArrayList<>();
+	private final List<DataProvider> rowData = new ArrayList<>();
+	private final List<DataProvider> columnData = new ArrayList<>();
+	private String name, columnName, rowName;
+	private CategoryData columnNames, rowNames;
+	private CategoryDataProvider columnNameGenerator, rowNameGenerator;
 
-    /**
-     * Constructor.
-     *
-     * @param data Data rows to add.
-     */
-    public DataMatrix(Data... data) {
-        this(null, data);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param data Data rows to add.
+	 */
+	public DataMatrix(Data... data) {
+		this(null, data);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param name Name of the data set.
-     * @param data Data rows to add.
-     */
-    public DataMatrix(String name, Data... data) {
-        setName(name);
-        addRow(data);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param name Name of the data set.
+	 * @param data Data rows to add.
+	 */
+	public DataMatrix(String name, Data... data) {
+		setName(name);
+		addRow(data);
+	}
 
-    /**
-     * Add rows of data.
-     *
-     * @param data Data to add.
-     */
-    public void addRow(Data... data) {
-        if(data != null) {
-            for(Data d: data) {
-                if(d != null) {
-                    dataList.add(d);
-                }
-            }
-        }
-    }
+	/**
+	 * Add rows of data.
+	 *
+	 * @param data Data to add.
+	 */
+	public void addRow(Data... data) {
+		if (data != null) {
+			for (Data d : data) {
+				if (d != null) {
+					dataList.add(d);
+				}
+			}
+		}
+	}
 
-    /**
-     * Add a row of data.
-     *
-     * @param data Data to add.
-     */
-    public void addRow(Number... data) {
-        if(data != null && data.length > 0) {
-            dataList.add(new Data(data));
-        }
-    }
+	/**
+	 * Add a row of data.
+	 *
+	 * @param data Data to add.
+	 */
+	public void addRow(Number... data) {
+		if (data != null && data.length > 0) {
+			dataList.add(new Data(data));
+		}
+	}
 
-    /**
-     * Remove data rows.
-     *
-     * @param data Data to remove.
-     */
-    public void removeRow(Data... data) {
-        if(data != null) {
-            for(Data d: data) {
-                if(d != null) {
-                    dataList.remove(d);
-                }
-            }
-        }
-    }
+	/**
+	 * Remove data rows.
+	 *
+	 * @param data Data to remove.
+	 */
+	public void removeRow(Data... data) {
+		if (data != null) {
+			for (Data d : data) {
+				if (d != null) {
+					dataList.remove(d);
+				}
+			}
+		}
+	}
 
-    /**
-     * Remove data at the given index.
-     *
-     * @param rowIndex Row index.
-     */
-    public void removeRow(int rowIndex) {
-        if(rowIndex >= 0 && rowIndex <= dataList.size()) {
-            dataList.remove(rowIndex);
-        }
-    }
+	/**
+	 * Remove data at the given index.
+	 *
+	 * @param rowIndex Row index.
+	 */
+	public void removeRow(int rowIndex) {
+		if (rowIndex >= 0 && rowIndex <= dataList.size()) {
+			dataList.remove(rowIndex);
+		}
+	}
 
-    /**
-     * Get the row count.
-     *
-     * @return Row count.
-     */
-    public int getRowCount() {
-        return dataList.size();
-    }
+	/**
+	 * Get the row count.
+	 *
+	 * @return Row count.
+	 */
+	public int getRowCount() {
+		return dataList.size();
+	}
 
-    /**
-     * Get the column count.
-     *
-     * @return Column count.
-     */
-    public int getColumnCount() {
-        if(dataList.isEmpty()) {
-            return 0;
-        }
-        int c = Integer.MAX_VALUE;
-        for(Data d: dataList) {
-            c = Math.min(d.size(), c);
-        }
-        return c;
-    }
+	/**
+	 * Get the column count.
+	 *
+	 * @return Column count.
+	 */
+	public int getColumnCount() {
+		if (dataList.isEmpty()) {
+			return 0;
+		}
+		int c = Integer.MAX_VALUE;
+		for (Data d : dataList) {
+			c = Math.min(d.size(), c);
+		}
+		return c;
+	}
 
-    /**
-     * Set column names.
-     * @param columnNames Column names.
-     */
-    public void setColumnNames(String... columnNames) {
-        this.columnNames = new CategoryData(columnNames);
-    }
+	/**
+	 * Set column names.
+	 * 
+	 * @param columnNames Column names.
+	 */
+	public void setColumnNames(String... columnNames) {
+		this.columnNames = new CategoryData(columnNames);
+	}
 
-    /**
-     * Set column names.
-     * @param columnNames Column names.
-     */
-    public void setColumnNames(CategoryData columnNames) {
-        this.columnNames = columnNames;
-    }
+	/**
+	 * Set column names.
+	 * 
+	 * @param columnNames Column names.
+	 */
+	public void setColumnNames(CategoryData columnNames) {
+		this.columnNames = columnNames;
+	}
 
-    /**
-     * Set row names.
-     * @param rowNames Row names.
-     */
-    public void setRowNames(String... rowNames) {
-        this.rowNames = new CategoryData(rowNames);
-    }
+	/**
+	 * Set row names.
+	 * 
+	 * @param rowNames Row names.
+	 */
+	public void setRowNames(String... rowNames) {
+		this.rowNames = new CategoryData(rowNames);
+	}
 
-    /**
-     * Set row names.
-     * @param rowNames Row names.
-     */
-    public void setRowNames(CategoryData rowNames) {
-        this.rowNames = rowNames;
-    }
+	/**
+	 * Set row names.
+	 * 
+	 * @param rowNames Row names.
+	 */
+	public void setRowNames(CategoryData rowNames) {
+		this.rowNames = rowNames;
+	}
 
-    /**
-     * Get column names as a category data provider.
-     *
-     * @return Column names as category data provider.
-     */
-    public CategoryDataProvider getColumnNames() {
-        if(columnNameGenerator == null) {
-            columnNameGenerator = new ColumnNames();
-        }
-        return columnNameGenerator;
-    }
+	/**
+	 * Get column names as a category data provider.
+	 *
+	 * @return Column names as category data provider.
+	 */
+	public CategoryDataProvider getColumnNames() {
+		if (columnNameGenerator == null) {
+			columnNameGenerator = new ColumnNames();
+		}
+		return columnNameGenerator;
+	}
 
-    /**
-     * Get row names as a category data provider.
-     *
-     * @return Row names as category data provider.
-     */
-    public CategoryDataProvider getRowNames() {
-        if(rowNameGenerator == null) {
-            rowNameGenerator = new RowNames();
-        }
-        return rowNameGenerator;
-    }
+	/**
+	 * Get row names as a category data provider.
+	 *
+	 * @return Row names as category data provider.
+	 */
+	public CategoryDataProvider getRowNames() {
+		if (rowNameGenerator == null) {
+			rowNameGenerator = new RowNames();
+		}
+		return rowNameGenerator;
+	}
 
-    /**
-     * Get a specific row as data provider.
-     *
-     * @param row Row index.
-     * @return Row as data provider.
-     */
-    public DataProvider getRow(int row) {
-        if(row >= 0 && row <= dataList.size()) {
-            if(row < rowData.size()) {
-                return rowData.get(row);
-            }
-            if(row >= dataList.size()) {
-                return null;
-            }
-            while(rowData.size() <= row) {
-                rowData.add(new RowData(rowData.size()));
-            }
-            return rowData.get(rowData.size() - 1);
-        }
-        return null;
-    }
+	/**
+	 * Get a specific row as data provider.
+	 *
+	 * @param row Row index.
+	 * @return Row as data provider.
+	 */
+	public DataProvider getRow(int row) {
+		if (row >= 0 && row <= dataList.size()) {
+			if (row < rowData.size()) {
+				return rowData.get(row);
+			}
+			if (row >= dataList.size()) {
+				return null;
+			}
+			while (rowData.size() <= row) {
+				rowData.add(new RowData(rowData.size()));
+			}
+			return rowData.get(rowData.size() - 1);
+		}
+		return null;
+	}
 
-    /**
-     * Get a specific column as data provider.
-     *
-     * @param column Column index.
-     * @return Column as data provider.
-     */
-    public DataProvider getColumn(int column) {
-        if(column < 0) {
-            return null;
-        }
-        if(column < columnData.size()) {
-            return columnData.get(column);
-        }
-        if(column >= getColumnCount()) {
-            return null;
-        }
-        while(columnData.size() <= column) {
-            columnData.add(new ColumnData(columnData.size()));
-        }
-        return columnData.get(columnData.size() - 1);
-    }
+	/**
+	 * Get a specific column as data provider.
+	 *
+	 * @param column Column index.
+	 * @return Column as data provider.
+	 */
+	public DataProvider getColumn(int column) {
+		if (column < 0) {
+			return null;
+		}
+		if (column < columnData.size()) {
+			return columnData.get(column);
+		}
+		if (column >= getColumnCount()) {
+			return null;
+		}
+		while (columnData.size() <= column) {
+			columnData.add(new ColumnData(columnData.size()));
+		}
+		return columnData.get(columnData.size() - 1);
+	}
 
-    /**
-     * Get the name of a particular row.
-     *
-     * @param rowIndex Row index.
-     * @return Name.
-     */
-    public String getRowName(int rowIndex) {
-        String name = null;
-        if(rowIndex >= 0) {
-            if(rowNames != null && rowNames.size() > rowIndex) {
-                name = rowNames.get(rowIndex);
-            } else if(dataList.size() > rowIndex) {
-                name = dataList.get(rowIndex).getName();
-            }
-        }
-        return name == null ? ("Row " + (rowIndex + 1)) : name;
-    }
+	/**
+	 * Get the name of a particular row.
+	 *
+	 * @param rowIndex Row index.
+	 * @return Name.
+	 */
+	public String getRowName(int rowIndex) {
+		String name = null;
+		if (rowIndex >= 0) {
+			if (rowNames != null && rowNames.size() > rowIndex) {
+				name = rowNames.get(rowIndex);
+			} else if (dataList.size() > rowIndex) {
+				name = dataList.get(rowIndex).getName();
+			}
+		}
+		return name == null ? ("Row " + (rowIndex + 1)) : name;
+	}
 
-    /**
-     * Get the name of a particular column.
-     *
-     * @param columnIndex Column index.
-     * @return Name.
-     */
-    public String getColumnName(int columnIndex) {
-        String name = null;
-        if(columnIndex >= 0) {
-            if (columnNames != null && columnNames.size() > columnIndex) {
-                name = columnNames.get(columnIndex);
-            }
-        }
-        return name == null ? ("Column " + (columnIndex + 1)) : name;
-    }
+	/**
+	 * Get the name of a particular column.
+	 *
+	 * @param columnIndex Column index.
+	 * @return Name.
+	 */
+	public String getColumnName(int columnIndex) {
+		String name = null;
+		if (columnIndex >= 0) {
+			if (columnNames != null && columnNames.size() > columnIndex) {
+				name = columnNames.get(columnIndex);
+			}
+		}
+		return name == null ? ("Column " + (columnIndex + 1)) : name;
+	}
 
-    /**
-     * Get the name of the column data.
-     *
-     * @return Name of the column data.
-     */
-    public String getColumnDataName() {
-        return columnName;
-    }
+	/**
+	 * Get the name of the column data.
+	 *
+	 * @return Name of the column data.
+	 */
+	public String getColumnDataName() {
+		return columnName;
+	}
 
-    /**
-     * Set the name of the column data.
-     *
-     * @param columnName Name of the column data.
-     */
-    public void setColumnDataName(String columnName) {
-        this.columnName = columnName;
-    }
+	/**
+	 * Set the name of the column data.
+	 *
+	 * @param columnName Name of the column data.
+	 */
+	public void setColumnDataName(String columnName) {
+		this.columnName = columnName;
+	}
 
-    /**
-     * Get the name of the row data.
-     *
-     * @return Name of the row data.
-     */
-    public String getRowDataName() {
-        return rowName;
-    }
+	/**
+	 * Get the name of the row data.
+	 *
+	 * @return Name of the row data.
+	 */
+	public String getRowDataName() {
+		return rowName;
+	}
 
-    /**
-     * Set the name of the row data.
-     *
-     * @param rowName Name of the row data.
-     */
-    public void setRowDataName(String rowName) {
-        this.rowName = rowName;
-    }
+	/**
+	 * Set the name of the row data.
+	 *
+	 * @param rowName Name of the row data.
+	 */
+	public void setRowDataName(String rowName) {
+		this.rowName = rowName;
+	}
 
-    /**
-     * Get name of the data set.
-     *
-     * @return Name.
-     */
-    public String getName() {
-        return name == null ? "Data" : name;
-    }
+	/**
+	 * Get name of the data set.
+	 *
+	 * @return Name.
+	 */
+	public String getName() {
+		return name == null ? "Data" : name;
+	}
 
-    /**
-     * Set name of the data set.
-     *
-     * @param name Name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Set name of the data set.
+	 *
+	 * @param name Name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    private abstract static class BaseData {
+	private abstract static class BaseData {
 
-        private int serial = -1;
+		private int serial = -1;
 
-        public long getId() {
-            return -1L;
-        }
+		public long getId() {
+			return -1L;
+		}
 
-        public final int getSerial() {
-            return serial;
-        }
+		public final int getSerial() {
+			return serial;
+		}
 
-        public final void setSerial(int serial) {
-            this.serial = serial;
-        }
-    }
+		public final void setSerial(int serial) {
+			this.serial = serial;
+		}
+	}
 
-    private class ColumnNames extends BaseData implements CategoryDataProvider {
+	private class ColumnNames extends BaseData implements CategoryDataProvider {
 
-        private ColumnNames() {
-        }
+		private ColumnNames() {
+		}
 
-        @Override
-        public Stream<String> stream() {
-            return Stream.generate(new ColumnNameGenerator()).limit(getColumnCount());
-        }
+		@Override
+		public Stream<String> stream() {
+			return Stream.generate(new ColumnNameGenerator()).limit(getColumnCount());
+		}
 
-        @Override
-        public String getName() {
-            String name = columnName;
-            if(name == null) {
-                if(columnNames != null) {
-                    name = columnNames.getName();
-                }
-            }
-            if(name == null) {
-                name = "Column Data";
-            }
-            return name;
-        }
+		@Override
+		public String getName() {
+			String name = columnName;
+			if (name == null) {
+				if (columnNames != null) {
+					name = columnNames.getName();
+				}
+			}
+			if (name == null) {
+				name = "Column Data";
+			}
+			return name;
+		}
 
-        @Override
-        public void validate() {
-        }
+		@Override
+		public void validate() {
+		}
 
-        private class ColumnNameGenerator implements Supplier<String> {
+		private class ColumnNameGenerator implements Supplier<String> {
 
-            private int index = 0;
+			private int index = 0;
 
-            @Override
-            public String get() {
-                return getColumnName(index++);
-            }
-        }
-    }
+			@Override
+			public String get() {
+				return getColumnName(index++);
+			}
+		}
+	}
 
-    private class RowNames extends BaseData implements CategoryDataProvider {
+	private class RowNames extends BaseData implements CategoryDataProvider {
 
-        private RowNames() {
-        }
+		private RowNames() {
+		}
 
-        @Override
-        public Stream<String> stream() {
-            return Stream.generate(new RowNameGenerator()).limit(getRowCount());
-        }
+		@Override
+		public Stream<String> stream() {
+			return Stream.generate(new RowNameGenerator()).limit(getRowCount());
+		}
 
-        @Override
-        public String getName() {
-            String name = rowName;
-            if(name == null) {
-                if(rowNames != null) {
-                    name = rowNames.getName();
-                }
-            }
-            if(name == null) {
-                name = "Row Data";
-            }
-            return name;
-        }
+		@Override
+		public String getName() {
+			String name = rowName;
+			if (name == null) {
+				if (rowNames != null) {
+					name = rowNames.getName();
+				}
+			}
+			if (name == null) {
+				name = "Row Data";
+			}
+			return name;
+		}
 
-        @Override
-        public void validate() {
-        }
+		@Override
+		public void validate() {
+		}
 
-        private class RowNameGenerator implements Supplier<String> {
+		private class RowNameGenerator implements Supplier<String> {
 
-            private int row = 0;
+			private int row = 0;
 
-            @Override
-            public String get() {
-                return getRowName(row++);
-            }
-        }
-    }
+			@Override
+			public String get() {
+				return getRowName(row++);
+			}
+		}
+	}
 
-    private class ColumnData extends BaseData implements DataProvider {
+	private class ColumnData extends BaseData implements DataProvider {
 
-        private final int index;
+		private final int index;
 
-        private ColumnData(int index) {
-            this.index = index;
-        }
+		private ColumnData(int index) {
+			this.index = index;
+		}
 
-        @Override
-        public String getName() {
-            return getColumnName(index);
-        }
+		@Override
+		public String getName() {
+			return getColumnName(index);
+		}
 
-        @Override
-        public Stream<Number> stream() {
-            return Stream.generate(new Generator()).limit(dataList.size());
-        }
+		@Override
+		public Stream<Number> stream() {
+			return Stream.generate(new Generator()).limit(dataList.size());
+		}
 
-        @Override
-        public void validate() throws ChartException {
-            if (index < 0) {
-                throw new ChartException("Index can't be negative");
-            }
-            for (Data data : dataList) {
-                if (index >= data.size()) {
-                    String m = data.getName();
-                    if (m == null) {
-                        m = "Data[" + dataList.indexOf(data) + "]";
-                    }
-                    throw new ChartException("No data at index " + index + " in " + m);
-                }
-            }
-        }
+		@Override
+		public void validate() throws ChartException {
+			if (index < 0) {
+				throw new ChartException("Index can't be negative");
+			}
+			for (Data data : dataList) {
+				if (index >= data.size()) {
+					String m = data.getName();
+					if (m == null) {
+						m = "Data[" + dataList.indexOf(data) + "]";
+					}
+					throw new ChartException("No data at index " + index + " in " + m);
+				}
+			}
+		}
 
-        private class Generator implements Supplier<Number> {
+		private class Generator implements Supplier<Number> {
 
-            private int row = 0;
+			private int row = 0;
 
-            @Override
-            public Number get() {
-                if(row >= dataList.size()) {
-                    return null;
-                }
-                return dataList.get(row++).get(index);
-            }
-        }
-    }
+			@Override
+			public Number get() {
+				if (row >= dataList.size()) {
+					return null;
+				}
+				return dataList.get(row++).get(index);
+			}
+		}
+	}
 
-    private class RowData extends BaseData implements DataProvider {
+	private class RowData extends BaseData implements DataProvider {
 
-        private final int row;
+		private final int row;
 
-        private RowData(int row) {
-            this.row = row;
-        }
+		private RowData(int row) {
+			this.row = row;
+		}
 
-        @Override
-        public Stream<Number> stream() {
-            return dataList.get(row).stream();
-        }
+		@Override
+		public Stream<Number> stream() {
+			return dataList.get(row).stream();
+		}
 
-        @Override
-        public String getName() {
-            return getRowName(row);
-        }
+		@Override
+		public String getName() {
+			return getRowName(row);
+		}
 
-        @Override
-        public void validate() {
-        }
-    }
+		@Override
+		public void validate() {
+		}
+	}
 }

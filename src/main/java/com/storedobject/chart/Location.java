@@ -23,48 +23,51 @@ package com.storedobject.chart;
  */
 public enum Location {
 
-    /**
-     * Start (On Left-to-Right systems, it is the left-end).
-     */
-    START,
-    /**
-     * Top.
-     */
-    TOP,
-    /**
-     * Middle.
-     */
-    MIDDLE,
-    /**
-     * Center.
-     */
-    CENTER,
-    /**
-     * Bottom.
-     */
-    BOTTOM,
-    /**
-     * Start (On Left-to-Right systems, it is the right-end).
-     */
-    END;
+	/**
+	 * Start (On Left-to-Right systems, it is the left-end).
+	 */
+	START,
+	/**
+	 * Top.
+	 */
+	TOP,
+	/**
+	 * Middle.
+	 */
+	MIDDLE,
+	/**
+	 * Center.
+	 */
+	CENTER,
+	/**
+	 * Bottom.
+	 */
+	BOTTOM,
+	/**
+	 * Start (On Left-to-Right systems, it is the right-end).
+	 */
+	END;
 
-    static Location h(Location location) {
-        if(location == null) {
-            return END;
-        }
-        switch (location) {
-            case START:
-            case TOP:
-                return START;
-            case MIDDLE:
-            case CENTER:
-                return CENTER;
-        }
-        return END;
-    }
+	static Location h(Location location) {
+		if (location == null) {
+			return END;
+		}
+		switch (location) {
+		case START:
+		case TOP:
+			return START;
 
-    @Override
-    public String toString() {
-        return "\"" + super.toString().toLowerCase() + "\"";
-    }
+		case MIDDLE:
+		case CENTER:
+			return CENTER;
+
+		default:
+			return END;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "\"" + super.toString().toLowerCase() + "\"";
+	}
 }

@@ -23,8 +23,8 @@ package com.storedobject.chart;
  */
 public abstract class AbstractColor implements ComponentProperty {
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        sb.append("\"color\":").append(this);
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		sb.append("\"color\":").append(this);
+	}
 }

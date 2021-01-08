@@ -17,31 +17,32 @@
 package com.storedobject.chart;
 
 /**
- * Represents an abstract {@link ComponentPart} with some common base properties.
+ * Represents an abstract {@link ComponentPart} with some common base
+ * properties.
  *
  * @author Syam
  */
 public abstract class VisiblePart extends AbstractPart {
 
-    boolean show = true;
+	boolean show = true;
 
-    /**
-     * Show this part.
-     */
-    public void show() {
-        show = true;
-    }
+	/**
+	 * Show this part.
+	 */
+	public void show() {
+		show = true;
+	}
 
-    /**
-     * Hide this part.
-     */
-    public void hide() {
-        show = false;
-    }
+	/**
+	 * Hide this part.
+	 */
+	public void hide() {
+		show = false;
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        sb.append("\"show\":").append(show).append(',');
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		sb.append("\"show\":").append(show).append(',');
+	}
 }

@@ -17,76 +17,78 @@
 package com.storedobject.chart;
 
 /**
- * Representation of rectangular (cartesian) coordinate system with X and Y axes. There could be one or more
- * X and Y axes.
+ * Representation of rectangular (cartesian) coordinate system with X and Y
+ * axes. There could be one or more X and Y axes.
  *
  * @author Syam
  */
 public class RectangularCoordinate extends CoordinateSystem {
 
-    private Border border;
-    private boolean sizeIncludeLabels = false;
+	private Border border;
+	private boolean sizeIncludeLabels = false;
 
-    /**
-     * Constructor.
-     *
-     * @param axes Axes of the coordinate
-     */
-    public RectangularCoordinate(XYAxis... axes) {
-        addAxis(axes);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param axes Axes of the coordinate
+	 */
+	public RectangularCoordinate(XYAxis... axes) {
+		addAxis(axes);
+	}
 
-    @Override
-    public void validate() throws ChartException {
-        if(noAxis(XAxis.class)) {
-            throw new ChartException("X Axis not set");
-        }
-        if(noAxis(YAxis.class)) {
-            throw new ChartException("Y Axis not set");
-        }
-        super.validate();
-    }
+	@Override
+	public void validate() throws ChartException {
+		if (noAxis(XAxis.class)) {
+			throw new ChartException("X Axis not set");
+		}
+		if (noAxis(YAxis.class)) {
+			throw new ChartException("Y Axis not set");
+		}
+		super.validate();
+	}
 
-    /**
-     * Get the border.
-     * @param create Whether to create if not exists or not.
-     *
-     * @return Border.
-     */
-    public final Border getBorder(boolean create) {
-        if(border == null && create) {
-            border = new Border();
-        }
-        return border;
-    }
+	/**
+	 * Get the border.
+	 * 
+	 * @param create Whether to create if not exists or not.
+	 *
+	 * @return Border.
+	 */
+	public final Border getBorder(boolean create) {
+		if (border == null && create) {
+			border = new Border();
+		}
+		return border;
+	}
 
-    /**
-     * Set the border.
-     *
-     * @param border Border.
-     */
-    public void setBorder(Border border) {
-        this.border = border;
-    }
+	/**
+	 * Set the border.
+	 *
+	 * @param border Border.
+	 */
+	public void setBorder(Border border) {
+		this.border = border;
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        ComponentPart.encodeProperty(sb, border);
-        if(sizeIncludeLabels) {
-            sb.append(",\"containLabel\":true");
-        }
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		ComponentPart.encodeProperty(sb, border);
+		if (sizeIncludeLabels) {
+			sb.append(",\"containLabel\":true");
+		}
+	}
 
-    /**
-     * Set the size in such a way that the size of the coordinate system includes labels too.
-     */
-    public void sizeIncludesLabels() {
-        sizeIncludeLabels = true;
-    }
+	/**
+	 * Set the size in such a way that the size of the coordinate system includes
+	 * labels too.
+	 */
+	public void sizeIncludesLabels() {
+		sizeIncludeLabels = true;
+	}
 
-    @Override
-    String systemName() {
-        return "cartesian2d";
-    }
+	@Override
+	String systemName() {
+		return "cartesian2d";
+	}
 }

@@ -17,27 +17,28 @@
 package com.storedobject.chart;
 
 /**
- * Some charts can not encode chart data in a centralized way because its data require some special encoding. This
- * is the base class for such charts.
+ * Some charts can not encode chart data in a centralized way because its data
+ * require some special encoding. This is the base class for such charts.
  *
  * @author Syam
  */
 public class AbstractDataChart extends AbstractChart {
 
-    boolean skippingData = false;
+	boolean skippingData = false;
 
-    /**
-     * Create a chart of a given type and data.
-     *
-     * @param type type of the chart.
-     * @param data Data to be used (multiples of them for charts that use multi-axis coordinate systems).
-     */
-    public AbstractDataChart(ChartType type, AbstractDataProvider<?>... data) {
-        super(type, data);
-    }
+	/**
+	 * Create a chart of a given type and data.
+	 *
+	 * @param type type of the chart.
+	 * @param data Data to be used (multiples of them for charts that use multi-axis
+	 *             coordinate systems).
+	 */
+	public AbstractDataChart(ChartType type, AbstractDataProvider<?>... data) {
+		super(type, data);
+	}
 
-    @Override
-    public final void skippingData(boolean skipping) {
-        this.skippingData = skipping;
-    }
+	@Override
+	public final void skippingData(boolean skipping) {
+		this.skippingData = skipping;
+	}
 }

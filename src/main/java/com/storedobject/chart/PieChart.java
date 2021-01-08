@@ -17,75 +17,75 @@
 package com.storedobject.chart;
 
 /**
- * Pie chart.
- * (Future versions will provide more chart-specific methods).
+ * Pie chart. (Future versions will provide more chart-specific methods).
  *
  * @author Syam
  */
 public class PieChart extends SelfPositioningChart implements HasPolarProperty {
 
-    private PolarProperty polarProperty;
+	private PolarProperty polarProperty;
 
-    /**
-     * Constructor.
-     */
-    public PieChart() {
-        this(null, null);
-    }
+	/**
+	 * Constructor.
+	 */
+	public PieChart() {
+		this(null, null);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param itemNames Item names of the slices.
-     * @param values Values of the slices.
-     */
-    public PieChart(AbstractDataProvider<?> itemNames, DataProvider values) {
-        super(ChartType.Pie, itemNames, values);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param itemNames Item names of the slices.
+	 * @param values    Values of the slices.
+	 */
+	public PieChart(AbstractDataProvider<?> itemNames, DataProvider values) {
+		super(ChartType.Pie, itemNames, values);
+	}
 
-    /**
-     * Set names of the slices.
-     *
-     * @param itemNames Item names of the slices.
-     */
-    public void setItemNames(AbstractDataProvider<?> itemNames) {
-        setData(itemNames, 0);
-    }
+	/**
+	 * Set names of the slices.
+	 *
+	 * @param itemNames Item names of the slices.
+	 */
+	public void setItemNames(AbstractDataProvider<?> itemNames) {
+		setData(itemNames, 0);
+	}
 
-    /**
-     * Set data for the slices.
-     *
-     * @param data Data.
-     */
-    public void setData(DataProvider data) {
-        setData(data, 1);
-    }
+	/**
+	 * Set data for the slices.
+	 *
+	 * @param data Data.
+	 */
+	public void setData(DataProvider data) {
+		setData(data, 1);
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        ComponentPart.encodeProperty(sb, polarProperty);
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		ComponentPart.encodeProperty(sb, polarProperty);
+	}
 
-    @Override
-    public final PolarProperty getPolarProperty(boolean create) {
-        if(polarProperty == null && create) {
-            polarProperty = new PolarProperty();
-        }
-        return polarProperty;
-    }
+	@Override
+	public final PolarProperty getPolarProperty(boolean create) {
+		if (polarProperty == null && create) {
+			polarProperty = new PolarProperty();
+		}
+		return polarProperty;
+	}
 
-    @Override
-    public final void setPolarProperty(PolarProperty polarProperty) {
-        this.polarProperty = polarProperty;
-    }
+	@Override
+	public final void setPolarProperty(PolarProperty polarProperty) {
+		this.polarProperty = polarProperty;
+	}
 
-    /**
-     * Set the hole radius (when used as a donut chart). (Basically, it is setting the inner radius of the polar).
-     *
-     * @param size Hole radius.
-     */
-    public void setHoleRadius(Size size) {
-        getPolarProperty(true).setInnerRadius(size);
-    }
+	/**
+	 * Set the hole radius (when used as a donut chart). (Basically, it is setting
+	 * the inner radius of the polar).
+	 *
+	 * @param size Hole radius.
+	 */
+	public void setHoleRadius(Size size) {
+		getPolarProperty(true).setInnerRadius(size);
+	}
 }

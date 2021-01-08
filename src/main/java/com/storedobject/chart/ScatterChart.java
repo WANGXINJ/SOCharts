@@ -17,27 +17,26 @@
 package com.storedobject.chart;
 
 /**
- * Scatter chart.
- * (Future versions will provide more chart-specific methods).
+ * Scatter chart. (Future versions will provide more chart-specific methods).
  *
  * @author Syam
  */
 public class ScatterChart extends XYChart {
 
-    /**
-     * Constructor. (Data can be set later).
-     */
-    public ScatterChart() {
-        this(null, null);
-    }
+	/**
+	 * Constructor. (Data can be set later).
+	 */
+	public ScatterChart() {
+		this(null, null);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param xData Data for X axis.
-     * @param yData Data for Y axis.
-     */
-    public ScatterChart(AbstractDataProvider<?> xData, DataProvider yData) {
-        super(ChartType.Scatter, xData, yData);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param xData Data for X axis.
+	 * @param yData Data for Y axis.
+	 */
+	public ScatterChart(AbstractDataProvider<?> xData, DataProvider yData) {
+		super(ChartType.Scatter, xData, yData);
+	}
 }

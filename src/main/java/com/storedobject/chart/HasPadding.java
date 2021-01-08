@@ -23,19 +23,20 @@ package com.storedobject.chart;
  */
 public interface HasPadding {
 
-    /**
-     * Get the padding of this on the chart display area. (If <code>true</code> is passed as the parameter,
-     * a new padding will be created if not already exists).
-     *
-     * @param create Whether to create it or not.
-     * @return Padding.
-     */
-    Padding getPadding(boolean create);
+	/**
+	 * Get the padding of this on the chart display area. (If <code>true</code> is
+	 * passed as the parameter, a new padding will be created if not already
+	 * exists).
+	 *
+	 * @param create Whether to create it or not.
+	 * @return Padding.
+	 */
+	Padding getPadding(boolean create);
 
-    /**
-     * Set the padding of this.
-     *
-     * @param padding Padding to set.
-     */
-    void setPadding(Padding padding);
+	/**
+	 * Set the padding of this.
+	 *
+	 * @param padding Padding to set.
+	 */
+	void setPadding(Padding padding);
 }

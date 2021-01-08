@@ -23,48 +23,48 @@ package com.storedobject.chart;
  */
 public class FontWeight {
 
-    /**
-     * Normal font-weight.
-     */
-    public static final FontWeight NORMAL = new FontWeight(0);
-    /**
-     * Bold font-weight.
-     */
-    public static final FontWeight BOLD = new FontWeight(-1);
-    /**
-     * Bolder font-weight.
-     */
-    public static final FontWeight BOLDER = new FontWeight(-2);
-    /**
-     * Lighter font-weight.
-     */
-    public static final FontWeight LIGHTER = new FontWeight(-3);
+	/**
+	 * Normal font-weight.
+	 */
+	public static final FontWeight NORMAL = new FontWeight(0);
+	/**
+	 * Bold font-weight.
+	 */
+	public static final FontWeight BOLD = new FontWeight(-1);
+	/**
+	 * Bolder font-weight.
+	 */
+	public static final FontWeight BOLDER = new FontWeight(-2);
+	/**
+	 * Lighter font-weight.
+	 */
+	public static final FontWeight LIGHTER = new FontWeight(-3);
 
-    private final int weight;
+	private final int weight;
 
-    /**
-     * Constructor.
-     *
-     * @param weight Weight (typically 1, 2, 3 etc.)
-     */
-    public FontWeight(int weight) {
-        this.weight = weight;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param weight Weight (typically 1, 2, 3 etc.)
+	 */
+	public FontWeight(int weight) {
+		this.weight = weight;
+	}
 
-    @Override
-    public String toString() {
-        if(weight <= 0) {
-            switch (weight) {
-                case -3:
-                    return "\"lighter\"";
-                case -2:
-                    return "\"bolder\"";
-                case -1:
-                    return "\"bold\"";
-                default:
-                    return "\"normal\"";
-            }
-        }
-        return "" + (weight * 100);
-    }
+	@Override
+	public String toString() {
+		if (weight <= 0) {
+			switch (weight) {
+			case -3:
+				return "\"lighter\"";
+			case -2:
+				return "\"bolder\"";
+			case -1:
+				return "\"bold\"";
+			default:
+				return "\"normal\"";
+			}
+		}
+		return "" + (weight * 100);
+	}
 }

@@ -25,36 +25,36 @@ import java.util.stream.Stream;
  */
 public interface TreeDataProvider extends ComponentPart {
 
-    /**
-     * Get data value.
-     *
-     * @return Value.
-     */
-    Number getValue();
+	/**
+	 * Get data value.
+	 *
+	 * @return Value.
+	 */
+	Number getValue();
 
-    /**
-     * Get the child nodes.
-     *
-     * @return Child nodes as a stream.
-     */
-    Stream<? extends TreeDataProvider> getChildren();
+	/**
+	 * Get the child nodes.
+	 *
+	 * @return Child nodes as a stream.
+	 */
+	Stream<? extends TreeDataProvider> getChildren();
 
-    @Override
-    default void encodeJSON(StringBuilder sb) {
-        String name = getName();
-        if(name == null) {
-            name = "Name?";
-        }
-        sb.append("{\"name\":").append(ComponentPart.escape(name)).append(",\"value\":").append(getValue());
-        Stream<? extends TreeDataProvider> children = getChildren();
-        if(children != null) {
-            AbstractDataProvider.append(sb, children, ",\"children\":[", "]", false,
-                    (buffer, v) -> ((TreeDataProvider)v).encodeJSON(sb));
-        }
-        sb.append('}');
-    }
+	@Override
+	default void encodeJSON(StringBuilder sb) {
+		String name = getName();
+		if (name == null) {
+			name = "Name?";
+		}
+		sb.append("{\"name\":").append(ComponentPart.escape(name)).append(",\"value\":").append(getValue());
+		Stream<? extends TreeDataProvider> children = getChildren();
+		if (children != null) {
+			AbstractDataProvider.append(sb, children, ",\"children\":[", "]", false,
+					(buffer, v) -> ((TreeDataProvider) v).encodeJSON(sb));
+		}
+		sb.append('}');
+	}
 
-    @Override
-    default void validate() {
-    }
+	@Override
+	default void validate() {
+	}
 }

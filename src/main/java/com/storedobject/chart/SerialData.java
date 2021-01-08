@@ -18,6 +18,8 @@ package com.storedobject.chart;
 
 import java.util.stream.Stream;
 
+import com.storedobject.helper.StreamJava9;
+
 /**
  * Implementation of serially increasing/decreasing numbers as data.
  *
@@ -25,43 +27,43 @@ import java.util.stream.Stream;
  */
 public class SerialData implements AbstractDataProvider<Integer> {
 
-    private final int start, end, step;
+	private final int start, end, step;
 
-    /**
-     * Constructor.
-     *
-     * @param start Starting value.
-     * @param end Ending value.
-     */
-    public SerialData(int start, int end) {
-        this(start, end, 1);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param start Starting value.
+	 * @param end   Ending value.
+	 */
+	public SerialData(int start, int end) {
+		this(start, end, 1);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param start Starting value.
-     * @param end Ending value.
-     * @param step Step value.
-     */
-    public SerialData(int start, int end, int step) {
-        this.step = step == 0 ? 1 : step;
-        if(this.step > 0) {
-            this.start = Math.min(start, end);
-            this.end = Math.max(start, end);
-        } else {
-            this.start = Math.max(start, end);
-            this.end = Math.min(start, end);
-        }
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param start Starting value.
+	 * @param end   Ending value.
+	 * @param step  Step value.
+	 */
+	public SerialData(int start, int end, int step) {
+		this.step = step == 0 ? 1 : step;
+		if (this.step > 0) {
+			this.start = Math.min(start, end);
+			this.end = Math.max(start, end);
+		} else {
+			this.start = Math.max(start, end);
+			this.end = Math.min(start, end);
+		}
+	}
 
-    @Override
-    public Stream<Integer> stream() {
-        return Stream.iterate(start, i -> (step > 1 ? i <= end : i >= end), i -> i + step);
-    }
+	@Override
+	public Stream<Integer> stream() {
+		return StreamJava9.iterate(start, i -> (step > 1 ? i <= end : i >= end), i -> i + step);
+	}
 
-    @Override
-    public DataType getDataType() {
-        return DataType.NUMBER;
-    }
+	@Override
+	public DataType getDataType() {
+		return DataType.NUMBER;
+	}
 }

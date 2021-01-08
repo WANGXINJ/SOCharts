@@ -17,30 +17,31 @@
 package com.storedobject.chart;
 
 /**
- * Represents a common base for {@link ComponentProperty} with visibility as a property.
+ * Represents a common base for {@link ComponentProperty} with visibility as a
+ * property.
  *
  * @author Syam
  */
 public abstract class VisibleProperty implements ComponentProperty {
 
-    boolean show = true;
+	boolean show = true;
 
-    /**
-     * Show this part.
-     */
-    public void show() {
-        show = true;
-    }
+	/**
+	 * Show this part.
+	 */
+	public void show() {
+		show = true;
+	}
 
-    /**
-     * Hide this part.
-     */
-    public void hide() {
-        show = false;
-    }
+	/**
+	 * Hide this part.
+	 */
+	public void hide() {
+		show = false;
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        sb.append("\"show\":").append(show);
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		sb.append("\"show\":").append(show);
+	}
 }

@@ -23,25 +23,25 @@ package com.storedobject.chart;
  */
 public class RadiusAxis extends Axis {
 
-    /**
-     * Constructor.
-     *
-     * @param dataType Data type.
-     */
-    public RadiusAxis(DataType dataType) {
-        super(dataType);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param dataType Data type.
+	 */
+	public RadiusAxis(DataType dataType) {
+		super(dataType);
+	}
 
-    @Override
-    ComponentPart wrap(CoordinateSystem coordinateSystem) {
-        AxisWrapper w = wrappers.get(coordinateSystem);
-        return w == null ? new RadiusAxisWrapper(this, coordinateSystem) : w;
-    }
+	@Override
+	ComponentPart wrap(CoordinateSystem coordinateSystem) {
+		AxisWrapper w = wrappers.get(coordinateSystem);
+		return w == null ? new RadiusAxisWrapper(this, coordinateSystem) : w;
+	}
 
-    static class RadiusAxisWrapper extends AxisWrapper {
+	static class RadiusAxisWrapper extends AxisWrapper {
 
-        RadiusAxisWrapper(Axis axis, CoordinateSystem coordinateSystem) {
-            super(axis, coordinateSystem);
-        }
-    }
+		RadiusAxisWrapper(Axis axis, CoordinateSystem coordinateSystem) {
+			super(axis, coordinateSystem);
+		}
+	}
 }

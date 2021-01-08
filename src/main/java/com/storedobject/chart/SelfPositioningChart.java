@@ -24,28 +24,29 @@ package com.storedobject.chart;
  */
 public abstract class SelfPositioningChart extends AbstractChart implements HasPosition {
 
-    private Position position;
+	private Position position;
 
-    /**
-     * Create a chart of a given type and data.
-     *
-     * @param type type of the chart.
-     * @param data Data to be used (multiples of them for charts that use multi-axis coordinate systems).
-     */
-    public SelfPositioningChart(ChartType type, AbstractDataProvider<?>... data) {
-        super(type, data);
-    }
+	/**
+	 * Create a chart of a given type and data.
+	 *
+	 * @param type type of the chart.
+	 * @param data Data to be used (multiples of them for charts that use multi-axis
+	 *             coordinate systems).
+	 */
+	public SelfPositioningChart(ChartType type, AbstractDataProvider<?>... data) {
+		super(type, data);
+	}
 
-    @Override
-    public final Position getPosition(boolean create) {
-        if(position == null && create) {
-            position = new Position();
-        }
-        return position;
-    }
+	@Override
+	public final Position getPosition(boolean create) {
+		if (position == null && create) {
+			position = new Position();
+		}
+		return position;
+	}
 
-    @Override
-    public final void setPosition(Position position) {
-        this.position = position;
-    }
+	@Override
+	public final void setPosition(Position position) {
+		this.position = position;
+	}
 }

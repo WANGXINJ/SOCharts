@@ -29,82 +29,83 @@ import java.util.stream.Stream;
  */
 public class TreeData implements TreeDataProvider {
 
-    private final long id = ID.newID();
-    private final String name;
-    private final Number value;
-    private List<TreeData> children;
+	private final long id = ID.newID();
+	private final String name;
+	private final Number value;
+	private List<TreeData> children;
 
-    /**
-     * Constructor.
-     *
-     * @param name Name.
-     * @param value Value.
-     */
-    public TreeData(String name, Number value) {
-        this.name = name;
-        this.value = value;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param name  Name.
+	 * @param value Value.
+	 */
+	public TreeData(String name, Number value) {
+		this.name = name;
+		this.value = value;
+	}
 
-    @Override
-    public final String getName() {
-        return name;
-    }
+	@Override
+	public final String getName() {
+		return name;
+	}
 
-    @Override
-    public final Number getValue() {
-        return value;
-    }
+	@Override
+	public final Number getValue() {
+		return value;
+	}
 
-    @Override
-    public Stream<? extends TreeDataProvider> getChildren() {
-        return children == null ? null : children.stream();
-    }
+	@Override
+	public Stream<? extends TreeDataProvider> getChildren() {
+		return children == null ? null : children.stream();
+	}
 
-    @Override
-    public final long getId() {
-        return id;
-    }
+	@Override
+	public final long getId() {
+		return id;
+	}
 
-    /**
-     * Add children.
-     *
-     * @param treeData Data to add to children.
-     */
-    public void add(TreeData... treeData) {
-        if(treeData != null) {
-            for(TreeData td: treeData) {
-                if(td != null) {
-                    if (children == null) {
-                        children = new ArrayList<>();
-                    }
-                    children.add(td);
-                }
-            }
-        }
-    }
+	/**
+	 * Add children.
+	 *
+	 * @param treeData Data to add to children.
+	 */
+	public void add(TreeData... treeData) {
+		if (treeData != null) {
+			for (TreeData td : treeData) {
+				if (td != null) {
+					if (children == null) {
+						children = new ArrayList<>();
+					}
+					children.add(td);
+				}
+			}
+		}
+	}
 
-    /**
-     * Remove children.
-     *
-     * @param treeData Data to be removed from children.
-     */
-    public void remove(TreeData... treeData) {
-        if(treeData != null && children != null) {
-            for(TreeData td: treeData) {
-                if(td != null) {
-                    children.remove(td);
-                }
-            }
-        }
-    }
+	/**
+	 * Remove children.
+	 *
+	 * @param treeData Data to be removed from children.
+	 */
+	public void remove(TreeData... treeData) {
+		if (treeData != null && children != null) {
+			for (TreeData td : treeData) {
+				if (td != null) {
+					children.remove(td);
+				}
+			}
+		}
+	}
 
-    /**
-     * Get the data at the given index.
-     *
-     * @param index Index.
-     * @return Data at the given index. Returns <code>null</code> for out of bound indices.
-     */
-    public TreeData get(int index) {
-        return children != null && index >= 0 && index < children.size() ? children.get(index) : null;
-    }
+	/**
+	 * Get the data at the given index.
+	 *
+	 * @param index Index.
+	 * @return Data at the given index. Returns <code>null</code> for out of bound
+	 *         indices.
+	 */
+	public TreeData get(int index) {
+		return children != null && index >= 0 && index < children.size() ? children.get(index) : null;
+	}
 }

@@ -24,20 +24,20 @@ package com.storedobject.chart;
  */
 public class EffectScatterChart extends XYChart {
 
-    /**
-     * Constructor. (Data can be set later).
-     */
-    public EffectScatterChart() {
-        this(null, null);
-    }
+	/**
+	 * Constructor. (Data can be set later).
+	 */
+	public EffectScatterChart() {
+		this(null, null);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param xData Data for X axis.
-     * @param yData Data for Y axis.
-     */
-    public EffectScatterChart(AbstractDataProvider<?> xData, DataProvider yData) {
-        super(ChartType.EffectScatter, xData, yData);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param xData Data for X axis.
+	 * @param yData Data for Y axis.
+	 */
+	public EffectScatterChart(AbstractDataProvider<?> xData, DataProvider yData) {
+		super(ChartType.EffectScatter, xData, yData);
+	}
 }

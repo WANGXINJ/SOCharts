@@ -17,65 +17,66 @@
 package com.storedobject.chart;
 
 /**
- * Represents the symbol type used to draw a point on the chart. (Example usage is in {@link LineChart}).
+ * Represents the symbol type used to draw a point on the chart. (Example usage
+ * is in {@link LineChart}).
  *
  * @author Syam
  */
 public enum PointSymbolType {
 
-    /**
-     * Circle.
-     */
-    CIRCLE,
-    /**
-     * Rectangle.
-     */
-    RECTANGLE("rect"),
-    /**
-     * Rounded rectangle.
-     */
-    ROUND_RECTANGLE("roundRect"),
-    /**
-     * Triangle.
-     */
-    TRIANGLE,
-    /**
-     * Diamond.
-     */
-    DIAMOND,
-    /**
-     * Pin.
-     */
-    PIN,
-    /**
-     * Arrow.
-     */
-    ARROW,
-    /**
-     * None.
-     */
-    NONE;
+	/**
+	 * Circle.
+	 */
+	CIRCLE,
+	/**
+	 * Rectangle.
+	 */
+	RECTANGLE("rect"),
+	/**
+	 * Rounded rectangle.
+	 */
+	ROUND_RECTANGLE("roundRect"),
+	/**
+	 * Triangle.
+	 */
+	TRIANGLE,
+	/**
+	 * Diamond.
+	 */
+	DIAMOND,
+	/**
+	 * Pin.
+	 */
+	PIN,
+	/**
+	 * Arrow.
+	 */
+	ARROW,
+	/**
+	 * None.
+	 */
+	NONE;
 
-    private final String value;
+	private final String value;
 
-    /**
-     * Constructor.
-     */
-    PointSymbolType() {
-        this(null);
-    }
+	/**
+	 * Constructor.
+	 */
+	PointSymbolType() {
+		this(null);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param value Value representation.
-     */
-    PointSymbolType(String value) {
-        this.value = value;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param value Value representation.
+	 */
+	PointSymbolType(String value) {
+		this.value = value;
+	}
 
-    @Override
-    public String toString() {
-        return "\"" + (value == null ? super.toString().toLowerCase() : value) + "\"";
-    }
+	@Override
+	public String toString() {
+		return "\"" + (value == null ? super.toString().toLowerCase() : value) + "\"";
+	}
 }

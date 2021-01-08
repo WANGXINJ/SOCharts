@@ -25,8 +25,8 @@ import java.time.LocalDateTime;
  */
 public interface TimeDataProvider extends AbstractDataProvider<LocalDateTime> {
 
-    @Override
-    default DataType getDataType() {
-        return DataType.TIME;
-    }
+	@Override
+	default DataType getDataType() {
+		return DataType.TIME;
+	}
 }

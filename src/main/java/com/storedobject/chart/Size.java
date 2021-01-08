@@ -19,152 +19,155 @@ package com.storedobject.chart;
 import java.util.Objects;
 
 /**
- * Representation of "size" value. It can represent size in pixels {@link #pixels(int)} or size in percentage
- * {@link #percentage(int)}.
+ * Representation of "size" value. It can represent size in pixels
+ * {@link #pixels(int)} or size in percentage {@link #percentage(int)}.
  *
  * @author Syam
  */
 public class Size {
 
-    private int size;
+	private int size;
 
-    Size() {
-        this(Integer.MIN_VALUE);
-    }
+	Size() {
+		this(Integer.MIN_VALUE);
+	}
 
-    Size(int size) {
-        this.size = size;
-    }
+	Size(int size) {
+		this.size = size;
+	}
 
-    int get() {
-        return size;
-    }
+	int get() {
+		return size;
+	}
 
-    void set(Size size) {
-        this.size = size.size;
-    }
+	void set(Size size) {
+		this.size = size.size;
+	}
 
-    void set(int size) {
-        this.size = size;
-    }
+	void set(int size) {
+		this.size = size;
+	}
 
-    void left() {
-        size = -101;
-    }
+	void left() {
+		size = -101;
+	}
 
-    void center() {
-        size = -102;
-    }
+	void center() {
+		size = -102;
+	}
 
-    void right() {
-        size = -103;
-    }
+	void right() {
+		size = -103;
+	}
 
-    void top() {
-        size = -111;
-    }
+	void top() {
+		size = -111;
+	}
 
-    void middle() {
-        size = -112;
-    }
+	void middle() {
+		size = -112;
+	}
 
-    void bottom() {
-        size = -113;
-    }
+	void bottom() {
+		size = -113;
+	}
 
-    boolean isNull() {
-        return size == Integer.MIN_VALUE;
-    }
+	boolean isNull() {
+		return size == Integer.MIN_VALUE;
+	}
 
-    int plus(int add) {
-        if(size == Integer.MIN_VALUE) {
-            return add;
-        }
-        if(size >= 0) {
-            return size + add;
-        }
-        if(size >= -100) {
-            add += -size;
-            if(add > 100) {
-                add = 100;
-            }
-            return -add;
-        }
-        return size;
-    }
+	int plus(int add) {
+		if (size == Integer.MIN_VALUE) {
+			return add;
+		}
+		if (size >= 0) {
+			return size + add;
+		}
+		if (size >= -100) {
+			add += -size;
+			if (add > 100) {
+				add = 100;
+			}
+			return -add;
+		}
+		return size;
+	}
 
-    String encode() {
-        if(size == Integer.MIN_VALUE) {
-            return null;
-        }
-        switch (size) {
-            case -101:
-                return "\"left\"";
-            case -102:
-                return "\"center\"";
-            case -103:
-                return "\"right\"";
-            case -111:
-                return "\"top\"";
-            case -112:
-                return "\"middle\"";
-            case -113:
-                return "\"bottom\"";
-        }
-        if(size < 0) {
-            return "\"" + (-size) + "%\"";
-        }
-        return "" + size;
-    }
+	String encode() {
+		if (size == Integer.MIN_VALUE) {
+			return null;
+		}
+		switch (size) {
+		case -101:
+			return "\"left\"";
+		case -102:
+			return "\"center\"";
+		case -103:
+			return "\"right\"";
+		case -111:
+			return "\"top\"";
+		case -112:
+			return "\"middle\"";
+		case -113:
+			return "\"bottom\"";
+		}
+		if (size < 0) {
+			return "\"" + (-size) + "%\"";
+		}
+		return "" + size;
+	}
 
-    static String code(int size) {
-        return new Size(size).encode();
-    }
+	static String code(int size) {
+		return new Size(size).encode();
+	}
 
-    /**
-     * Create a "size" value in pixels.
-     *
-     * @param pixels Number of pixels representing this size.
-     * @return Size created.
-     */
-    public static Size pixels(int pixels) {
-        return new Size(Math.max(0, pixels));
-    }
+	/**
+	 * Create a "size" value in pixels.
+	 *
+	 * @param pixels Number of pixels representing this size.
+	 * @return Size created.
+	 */
+	public static Size pixels(int pixels) {
+		return new Size(Math.max(0, pixels));
+	}
 
-    /**
-     * Create a "size" value as a percentage.
-     *
-     * @param percentage Size as a percentage.
-     * @return Size created.
-     */
-    public static Size percentage(int percentage) {
-        return new Size(-Math.min(100, percentage));
-    }
+	/**
+	 * Create a "size" value as a percentage.
+	 *
+	 * @param percentage Size as a percentage.
+	 * @return Size created.
+	 */
+	public static Size percentage(int percentage) {
+		return new Size(-Math.min(100, percentage));
+	}
 
-    /**
-     * Create a "null" size. This is useful when we want to reset some already existing "size" value.
-     *
-     * @return Size create as "null" value.
-     */
-    public static Size none() {
-        return new Size(Integer.MIN_VALUE);
-    }
+	/**
+	 * Create a "null" size. This is useful when we want to reset some already
+	 * existing "size" value.
+	 *
+	 * @return Size create as "null" value.
+	 */
+	public static Size none() {
+		return new Size(Integer.MIN_VALUE);
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Size size1 = (Size) o;
-        return size == size1.size;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Size size1 = (Size) o;
+		return size == size1.size;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(size);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(size);
+	}
 
-    @Override
-    public String toString() {
-        return encode();
-    }
+	@Override
+	public String toString() {
+		return encode();
+	}
 }

@@ -22,13 +22,14 @@ package com.storedobject.chart;
  * @author Syam
  */
 public class ChartException extends Exception {
+	private static final long serialVersionUID = -2548003052571005462L;
 
-    /**
-     * Constructor.
-     *
-     * @param message Error message.
-     */
-    public ChartException(String message) {
-        super(message);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param message Error message.
+	 */
+	public ChartException(String message) {
+		super(message);
+	}
 }

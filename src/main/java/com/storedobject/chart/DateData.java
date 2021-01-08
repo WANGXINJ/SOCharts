@@ -24,13 +24,14 @@ import java.time.LocalDate;
  * @author Syam
  */
 public class DateData extends AbstractData<LocalDate> implements DateDataProvider {
+	private static final long serialVersionUID = 6800354153666556364L;
 
-    /**
-     * Constructor.
-     *
-     * @param data Initial data to add
-     */
-    public DateData(LocalDate... data) {
-        super(LocalDate.class, data);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param data Initial data to add
+	 */
+	public DateData(LocalDate... data) {
+		super(LocalDate.class, data);
+	}
 }

@@ -23,86 +23,86 @@ package com.storedobject.chart;
  */
 public class Alignment implements ComponentProperty {
 
-    private String prefix, justify, align;
+	private String prefix, justify, align;
 
-    /**
-     * Constructor.
-     */
-    public Alignment() {
-    }
+	/**
+	 * Constructor.
+	 */
+	public Alignment() {
+	}
 
-    /**
-     * Justify left.
-     */
-    public void justifyLeft() {
-        this.justify = "left";
-    }
+	/**
+	 * Justify left.
+	 */
+	public void justifyLeft() {
+		this.justify = "left";
+	}
 
-    /**
-     * Justify right.
-     */
-    public void justifyRight() {
-        this.justify = "right";
-    }
+	/**
+	 * Justify right.
+	 */
+	public void justifyRight() {
+		this.justify = "right";
+	}
 
-    /**
-     * Justify center.
-     */
-    public void justifyCenter() {
-        this.justify = "center";
-    }
+	/**
+	 * Justify center.
+	 */
+	public void justifyCenter() {
+		this.justify = "center";
+	}
 
-    /**
-     * Align top.
-     */
-    public void alignTop() {
-        align = "top";
-    }
+	/**
+	 * Align top.
+	 */
+	public void alignTop() {
+		align = "top";
+	}
 
-    /**
-     * Align center/middle.
-     */
-    public void alignCenter() {
-        align = "middle";
-    }
+	/**
+	 * Align center/middle.
+	 */
+	public void alignCenter() {
+		align = "middle";
+	}
 
-    /**
-     * Align bottom.
-     */
-    public void alignBottom() {
-        align = "bottom";
-    }
+	/**
+	 * Align bottom.
+	 */
+	public void alignBottom() {
+		align = "bottom";
+	}
 
-    /**
-     * Align and justify at the center.
-     */
-    public void center() {
-        justifyCenter();
-        alignCenter();
-    }
+	/**
+	 * Align and justify at the center.
+	 */
+	public void center() {
+		justifyCenter();
+		alignCenter();
+	}
 
-    void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
+	void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
 
-    private String p(String any) {
-        if(prefix == null) {
-            return any;
-        }
-        return prefix + any.substring(0, 1).toUpperCase() + any.substring(1);
-    }
+	private String p(String any) {
+		if (prefix == null) {
+			return any;
+		}
+		return prefix + any.substring(0, 1).toUpperCase() + any.substring(1);
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        if(justify != null) {
-            ComponentPart.encode(sb, p("align"), justify);
-        }
-        if(align != null) {
-            if(justify != null) {
-                sb.append(',');
-            }
-            ComponentPart.encode(sb, p("verticalAlign"), align);
-        }
-        prefix = null;
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		if (justify != null) {
+			ComponentPart.encode(sb, p("align"), justify);
+		}
+		if (align != null) {
+			if (justify != null) {
+				sb.append(',');
+			}
+			ComponentPart.encode(sb, p("verticalAlign"), align);
+		}
+		prefix = null;
+	}
 }

@@ -23,69 +23,71 @@ package com.storedobject.chart;
  */
 public abstract class XYAxis extends Axis {
 
-    private boolean opposite = false;
-    private int offset = 0;
+	private boolean opposite = false;
+	private int offset = 0;
 
-    /**
-     * Constructor.
-     *
-     * @param dataType Data type.
-     */
-    public XYAxis(DataType dataType) {
-        super(dataType);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param dataType Data type.
+	 */
+	public XYAxis(DataType dataType) {
+		super(dataType);
+	}
 
-    abstract String positionString();
+	abstract String positionString();
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        if(isOpposite()) {
-            sb.append(',');
-            ComponentPart.encode(sb, "position", positionString());
-        }
-        int offset = getOffset();
-        if(offset > 0) {
-            sb.append(',');
-            ComponentPart.encode(sb, "offset", offset);
-        }
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		if (isOpposite()) {
+			sb.append(',');
+			ComponentPart.encode(sb, "position", positionString());
+		}
+		int offset = getOffset();
+		if (offset > 0) {
+			sb.append(',');
+			ComponentPart.encode(sb, "offset", offset);
+		}
+	}
 
-    /**
-     * Is this displayed on the opposite side (For example, an X axis is normally displayed at the bottom but
-     * we can also display it at the top).
-     *
-     * @return True or false.
-     */
-    public boolean isOpposite() {
-        return opposite;
-    }
+	/**
+	 * Is this displayed on the opposite side (For example, an X axis is normally
+	 * displayed at the bottom but we can also display it at the top).
+	 *
+	 * @return True or false.
+	 */
+	public boolean isOpposite() {
+		return opposite;
+	}
 
-    /**
-     * Set the attribute to make it displayed on the opposite side.
-     *
-     * @param opposite True or false.
-     */
-    public void setOpposite(boolean opposite) {
-        this.opposite = opposite;
-    }
+	/**
+	 * Set the attribute to make it displayed on the opposite side.
+	 *
+	 * @param opposite True or false.
+	 */
+	public void setOpposite(boolean opposite) {
+		this.opposite = opposite;
+	}
 
-    /**
-     * Get the offset of the axis. Normally, the offset is zero and if non-zero, the display will be shifted from
-     * the normal position by that many pixels. This is useful if more than one axis are displayed together.
-     *
-     * @return Offset value.
-     */
-    public int getOffset() {
-        return offset;
-    }
+	/**
+	 * Get the offset of the axis. Normally, the offset is zero and if non-zero, the
+	 * display will be shifted from the normal position by that many pixels. This is
+	 * useful if more than one axis are displayed together.
+	 *
+	 * @return Offset value.
+	 */
+	public int getOffset() {
+		return offset;
+	}
 
-    /**
-     * Set an offset value so that the axis will be displayed at an offset from the normal position.
-     *
-     * @param offset Offset value in pixels.
-     */
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
+	/**
+	 * Set an offset value so that the axis will be displayed at an offset from the
+	 * normal position.
+	 *
+	 * @param offset Offset value in pixels.
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
 }

@@ -23,98 +23,98 @@ package com.storedobject.chart;
  */
 public class TreeChart extends AbstractDataChart implements HasPosition {
 
-    private TreeDataProvider data;
-    private Position position;
-    private Orientation orientation;
+	private TreeDataProvider data;
+	private Position position;
+	private Orientation orientation;
 
-    /**
-     * Create a tree chart. Data can be set later.
-     */
-    public TreeChart() {
-        this(null);
-    }
+	/**
+	 * Create a tree chart. Data can be set later.
+	 */
+	public TreeChart() {
+		this(null);
+	}
 
-    /**
-     * Create a tree chart of the set of data.
-     *
-     * @param data Data to be used.
-     */
-    public TreeChart(TreeDataProvider data) {
-        super(ChartType.Tree);
-        getOrientation(true).radial();
-    }
+	/**
+	 * Create a tree chart of the set of data.
+	 *
+	 * @param data Data to be used.
+	 */
+	public TreeChart(TreeDataProvider data) {
+		super(ChartType.Tree);
+		getOrientation(true).radial();
+	}
 
-    /**
-     * Get the the data associated with this chart.
-     *
-     * @return Data provider.
-     */
-    public TreeDataProvider getTreeData() {
-        return data;
-    }
+	/**
+	 * Get the the data associated with this chart.
+	 *
+	 * @return Data provider.
+	 */
+	public TreeDataProvider getTreeData() {
+		return data;
+	}
 
-    /**
-     * Set data to the chart.
-     *
-     * @param data Data provider to set.
-     */
-    public void setTreeData(TreeDataProvider data) {
-        this.data = data;
-    }
+	/**
+	 * Set data to the chart.
+	 *
+	 * @param data Data provider to set.
+	 */
+	public void setTreeData(TreeDataProvider data) {
+		this.data = data;
+	}
 
-    @Override
-    public void validate() throws ChartException {
-        super.validate();
-        if(data == null) {
-            throw new ChartException("No data provided for " + className());
-        }
-    }
+	@Override
+	public void validate() throws ChartException {
+		super.validate();
+		if (data == null) {
+			throw new ChartException("No data provided for " + className());
+		}
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        if(!skippingData) {
-            sb.append(",\"data\":[");
-            data.encodeJSON(sb);
-            sb.append(']');
-        }
-        ComponentPart.addComma(sb);
-        ComponentPart.encode(sb, "expandAndCollapse", true);
-        ComponentPart.encodeProperty(sb, orientation);
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		if (!skippingData) {
+			sb.append(",\"data\":[");
+			data.encodeJSON(sb);
+			sb.append(']');
+		}
+		ComponentPart.addComma(sb);
+		ComponentPart.encode(sb, "expandAndCollapse", true);
+		ComponentPart.encodeProperty(sb, orientation);
+	}
 
-    @Override
-    public final Position getPosition(boolean create) {
-        if(position == null && create) {
-            position = new Position();
-        }
-        return position;
-    }
+	@Override
+	public final Position getPosition(boolean create) {
+		if (position == null && create) {
+			position = new Position();
+		}
+		return position;
+	}
 
-    @Override
-    public final void setPosition(Position position) {
-        this.position = position;
-    }
+	@Override
+	public final void setPosition(Position position) {
+		this.position = position;
+	}
 
-    /**
-     * Get orientation.
-     *
-     * @param create If passed <code>true</code>, a new orientation is created.
-     * @return Orientation.
-     */
-    public final Orientation getOrientation(boolean create) {
-        if(orientation == null && create) {
-            orientation = new Orientation();
-        }
-        return orientation;
-    }
+	/**
+	 * Get orientation.
+	 *
+	 * @param create If passed <code>true</code>, a new orientation is created.
+	 * @return Orientation.
+	 */
+	public final Orientation getOrientation(boolean create) {
+		if (orientation == null && create) {
+			orientation = new Orientation();
+		}
+		return orientation;
+	}
 
-    /**
-     * Set orientation.
-     *
-     * @param orientation Orientation to set.
-     */
-    public final void setOrientation(Orientation orientation) {
-        this.orientation = orientation;
-    }
+	/**
+	 * Set orientation.
+	 *
+	 * @param orientation Orientation to set.
+	 */
+	public final void setOrientation(Orientation orientation) {
+		this.orientation = orientation;
+	}
 }

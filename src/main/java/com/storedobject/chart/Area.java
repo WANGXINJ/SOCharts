@@ -17,47 +17,48 @@
 package com.storedobject.chart;
 
 /**
- * Represents an area (mostly a rectangular block). Mainly used as a building block for constructing grids-like things.
+ * Represents an area (mostly a rectangular block). Mainly used as a building
+ * block for constructing grids-like things.
  *
  * @author Syam
  */
 public class Area extends VisibleProperty {
 
-    private AreaStyle style;
+	private AreaStyle style;
 
-    /**
-     * Constructor.
-     */
-    public Area() {
-    }
+	/**
+	 * Constructor.
+	 */
+	public Area() {
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        if(style != null) {
-            ComponentPart.addComma(sb);
-            sb.append("\"areaStyle\":{");
-            ComponentPart.encodeProperty(sb, style);
-            sb.append('}');
-        }
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		if (style != null) {
+			ComponentPart.addComma(sb);
+			sb.append("\"areaStyle\":{");
+			ComponentPart.encodeProperty(sb, style);
+			sb.append('}');
+		}
+	}
 
-    /**
-     * Get the style.
-     *
-     * @param create Whether to create if not exists or not.
-     * @return Style.
-     */
-    public AreaStyle getStyle(boolean create) {
-        return style;
-    }
+	/**
+	 * Get the style.
+	 *
+	 * @param create Whether to create if not exists or not.
+	 * @return Style.
+	 */
+	public AreaStyle getStyle(boolean create) {
+		return style;
+	}
 
-    /**
-     * Set the style.
-     *
-     * @param style Style to set.
-     */
-    public void setStyle(AreaStyle style) {
-        this.style = style;
-    }
+	/**
+	 * Set the style.
+	 *
+	 * @param style Style to set.
+	 */
+	public void setStyle(AreaStyle style) {
+		this.style = style;
+	}
 }

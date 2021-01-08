@@ -23,19 +23,19 @@ package com.storedobject.chart;
  */
 public interface HasPolarProperty {
 
-    /**
-     * Get the polar property. (If <code>true</code> is passed as the parameter, a new polar
-     * property will be created if not already exists).
-     *
-     * @param create Whether to create it or not.
-     * @return Polar property.
-     */
-    PolarProperty getPolarProperty(boolean create);
+	/**
+	 * Get the polar property. (If <code>true</code> is passed as the parameter, a
+	 * new polar property will be created if not already exists).
+	 *
+	 * @param create Whether to create it or not.
+	 * @return Polar property.
+	 */
+	PolarProperty getPolarProperty(boolean create);
 
-    /**
-     * Set the polar property.
-     *
-     * @param polarProperty Polar property to set. It could be <code>null</code>.
-     */
-    void setPolarProperty(PolarProperty polarProperty);
+	/**
+	 * Set the polar property.
+	 *
+	 * @param polarProperty Polar property to set. It could be <code>null</code>.
+	 */
+	void setPolarProperty(PolarProperty polarProperty);
 }

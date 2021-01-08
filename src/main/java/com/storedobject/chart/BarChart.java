@@ -17,27 +17,26 @@
 package com.storedobject.chart;
 
 /**
- * Bar chart.
- * (Future versions will provide more chart-specific methods).
+ * Bar chart. (Future versions will provide more chart-specific methods).
  *
  * @author Syam
  */
 public class BarChart extends XYChart {
 
-    /**
-     * Constructor. (Data can be set later).
-     */
-    public BarChart() {
-        this(null, null);
-    }
+	/**
+	 * Constructor. (Data can be set later).
+	 */
+	public BarChart() {
+		this(null, null);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param xData Data for X axis.
-     * @param yData Data for Y axis.
-     */
-    public BarChart(AbstractDataProvider<?> xData, DataProvider yData) {
-        super(ChartType.Bar, xData, yData);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param xData Data for X axis.
+	 * @param yData Data for Y axis.
+	 */
+	public BarChart(AbstractDataProvider<?> xData, DataProvider yData) {
+		super(ChartType.Bar, xData, yData);
+	}
 }

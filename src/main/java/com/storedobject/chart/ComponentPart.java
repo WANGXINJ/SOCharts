@@ -25,170 +25,176 @@ import com.storedobject.helper.ID;
  */
 public interface ComponentPart extends ComponentProperty {
 
-    /**
-     * Each part should have a unique Id. (It can be a final variable and can be set by
-     * calling {@link ID#newID()}.
-     *
-     * @return Unique Id.
-     */
-    long getId();
+	/**
+	 * Each part should have a unique Id. (It can be a final variable and can be set
+	 * by calling {@link ID#newID()}.
+	 *
+	 * @return Unique Id.
+	 */
+	long getId();
 
-    /**
-     * Set a serial number (Serial number used internal purposes only).
-     *
-     * @param serial Serial number to set.
-     */
-    default void setSerial(int serial) {
-    }
+	/**
+	 * Set a serial number (Serial number used internal purposes only).
+	 *
+	 * @param serial Serial number to set.
+	 */
+	default void setSerial(int serial) {
+	}
 
-    /**
-     * Get the current serial number (Serial number used internal purposes only).
-     *
-     * @return Current serial number.
-     */
-    default int getSerial() {
-        return -1;
-    }
+	/**
+	 * Get the current serial number (Serial number used internal purposes only).
+	 *
+	 * @return Current serial number.
+	 */
+	default int getSerial() {
+		return -1;
+	}
 
-    /**
-     * Helper method: Encode a (name, value) pair.
-     *
-     * @param sb Encoded JSON string to be appended to this.
-     * @param name Name to be encoded.
-     * @param value Value to be encoded.
-     */
-    static void encode(StringBuilder sb, String name, Object value) {
-        encode(sb, name, value, false);
-    }
+	/**
+	 * Helper method: Encode a (name, value) pair.
+	 *
+	 * @param sb    Encoded JSON string to be appended to this.
+	 * @param name  Name to be encoded.
+	 * @param value Value to be encoded.
+	 */
+	static void encode(StringBuilder sb, String name, Object value) {
+		encode(sb, name, value, false);
+	}
 
-    /**
-     * Helper method: Encode a (name, value) pair.
-     *
-     * @param sb Encoded JSON string to be appended to this.
-     * @param name Name to be encoded.
-     * @param value Value to be encoded.
-     * @param startingComma Whether to start with a comma or not.
-     */
-    static void encode(StringBuilder sb, String name, Object value, boolean startingComma) {
-        if(startingComma) {
-            addComma(sb);
-        }
-        sb.append('"').append(name).append("\":").append(escape(value));
-    }
+	/**
+	 * Helper method: Encode a (name, value) pair.
+	 *
+	 * @param sb            Encoded JSON string to be appended to this.
+	 * @param name          Name to be encoded.
+	 * @param value         Value to be encoded.
+	 * @param startingComma Whether to start with a comma or not.
+	 */
+	static void encode(StringBuilder sb, String name, Object value, boolean startingComma) {
+		if (startingComma) {
+			addComma(sb);
+		}
+		sb.append('"').append(name).append("\":").append(escape(value));
+	}
 
-    /**
-     * Helper method: Encode a {@link ComponentProperty}.
-     *
-     * @param sb Encoded JSON string to be appended to this.
-     * @param componentProperty Component property (could be <code>null</code>).
-     */
-    static void encodeProperty(StringBuilder sb, ComponentProperty componentProperty) {
-        if(componentProperty != null) {
-            addComma(sb);
-            componentProperty.encodeJSON(sb);
-        }
-    }
+	/**
+	 * Helper method: Encode a {@link ComponentProperty}.
+	 *
+	 * @param sb                Encoded JSON string to be appended to this.
+	 * @param componentProperty Component property (could be <code>null</code>).
+	 */
+	static void encodeProperty(StringBuilder sb, ComponentProperty componentProperty) {
+		if (componentProperty != null) {
+			addComma(sb);
+			componentProperty.encodeJSON(sb);
+		}
+	}
 
-    /**
-     * Helper method: Add a comma if required.
-     *
-     * @param sb Add a comma to this.
-     */
-    static void addComma(StringBuilder sb) {
-        int len = sb.length();
-        if(len == 0) {
-            return;
-        }
-        char c;
-        while(len > 0) {
-            --len;
-            c = sb.charAt(len);
-            if(c == ' ' || c == '\n') {
-                continue;
-            }
-            if(c == '{' || c == '[' || c == ',') {
-                break;
-            }
-            sb.append(',');
-            break;
-        }
-    }
+	/**
+	 * Helper method: Add a comma if required.
+	 *
+	 * @param sb Add a comma to this.
+	 */
+	static void addComma(StringBuilder sb) {
+		int len = sb.length();
+		if (len == 0) {
+			return;
+		}
+		char c;
+		while (len > 0) {
+			--len;
+			c = sb.charAt(len);
+			if (c == ' ' || c == '\n') {
+				continue;
+			}
+			if (c == '{' || c == '[' || c == ',') {
+				break;
+			}
+			sb.append(',');
+			break;
+		}
+	}
 
-    /**
-     * Helper method: Replace trailing commas with spaces.
-     *
-     * @param sb Replace trailing commas in this.
-     */
-    static void removeComma(StringBuilder sb) {
-        int len = sb.length() - 1;
-        while (len >= 0 && sb.charAt(len) == ',') {
-            sb.setCharAt(len, ' ');
-            --len;
-        }
-    }
+	/**
+	 * Helper method: Replace trailing commas with spaces.
+	 *
+	 * @param sb Replace trailing commas in this.
+	 */
+	static void removeComma(StringBuilder sb) {
+		int len = sb.length() - 1;
+		while (len >= 0 && sb.charAt(len) == ',') {
+			sb.setCharAt(len, ' ');
+			--len;
+		}
+	}
 
-    /**
-     * This method is invoked by {@link SOChart} to check if the component or part is valid or not.
-     *
-     * @throws ChartException Raises exception if the component or part is not valid.
-     */
-    void validate() throws ChartException;
+	/**
+	 * This method is invoked by {@link SOChart} to check if the component or part
+	 * is valid or not.
+	 *
+	 * @throws ChartException Raises exception if the component or part is not
+	 *                        valid.
+	 */
+	void validate() throws ChartException;
 
-    /**
-     * Helper method to return the class name of the component/part in a more human-friendly way.
-     *
-     * @return Name of the class that can be used for showing a message to the end users.
-     */
-    default String className() {
-        String name = getName();
-        return className(getClass()) + (name == null ? "" : (" (" + name + ")"));
-    }
+	/**
+	 * Helper method to return the class name of the component/part in a more
+	 * human-friendly way.
+	 *
+	 * @return Name of the class that can be used for showing a message to the end
+	 *         users.
+	 */
+	default String className() {
+		String name = getName();
+		return className(getClass()) + (name == null ? "" : (" (" + name + ")"));
+	}
 
-    /**
-     * Get the name of this part.
-     *
-     * @return Name
-     */
-    default String getName() {
-        return null;
-    }
+	/**
+	 * Get the name of this part.
+	 *
+	 * @return Name
+	 */
+	default String getName() {
+		return null;
+	}
 
-    /**
-     * Helper method to return the class name of a given class in a more human-friendly way.
-     *
-     * @param anyClass Any class.
-     * @return Name of the class that can be used for showing a message to the end users.
-     */
-    static String className(Class<?> anyClass) {
-        String cName = anyClass.getName();
-        return Chart.name(cName.substring(cName.lastIndexOf('.') + 1)).replace('$', '/');
-    }
+	/**
+	 * Helper method to return the class name of a given class in a more
+	 * human-friendly way.
+	 *
+	 * @param anyClass Any class.
+	 * @return Name of the class that can be used for showing a message to the end
+	 *         users.
+	 */
+	static String className(Class<?> anyClass) {
+		String cName = anyClass.getName();
+		return Chart.name(cName.substring(cName.lastIndexOf('.') + 1)).replace('$', '/');
+	}
 
-    /**
-     * Helper method to escape invalid characters in JSON strings. Please note that this method returns a
-     * double-quoted string unless the parameter is a number.
-     * For example, escape("Hello") will return "Hello" not Hello.
-     *
-     * @param any Anything to encode.
-     * @return Encoded string.
-     */
-    static String escape(Object any) {
-        String string = any == null ? "" : any.toString();
-        if(string == null) {
-            string = "";
-        }
-        if(any instanceof Number || any instanceof Boolean) {
-            return any.toString();
-        }
-        if(string.startsWith("\"") && string.endsWith("\"")) {
-            return string; // Special case - already encoded.
-        }
-        if(string.contains("\"")) {
-            string = string.replace("\"", "\\\"");
-        }
-        if(string.contains("\n")) {
-            string = string.replace("\n", "\\n");
-        }
-        return '"' + string + '"';
-    }
+	/**
+	 * Helper method to escape invalid characters in JSON strings. Please note that
+	 * this method returns a double-quoted string unless the parameter is a number.
+	 * For example, escape("Hello") will return "Hello" not Hello.
+	 *
+	 * @param any Anything to encode.
+	 * @return Encoded string.
+	 */
+	static String escape(Object any) {
+		String string = any == null ? "" : any.toString();
+		if (string == null) {
+			string = "";
+		}
+		if (any instanceof Number || any instanceof Boolean) {
+			return any.toString();
+		}
+		if (string.startsWith("\"") && string.endsWith("\"")) {
+			return string; // Special case - already encoded.
+		}
+		if (string.contains("\"")) {
+			string = string.replace("\"", "\\\"");
+		}
+		if (string.contains("\n")) {
+			string = string.replace("\n", "\\n");
+		}
+		return '"' + string + '"';
+	}
 }

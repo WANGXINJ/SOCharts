@@ -17,100 +17,101 @@
 package com.storedobject.chart;
 
 /**
- * Chart type. Please note that there are certain types of charts that are derivative of the types mentioned here.
- * Examples: {@link DonutChart}, {@link NightingaleRoseChart}.
+ * Chart type. Please note that there are certain types of charts that are
+ * derivative of the types mentioned here. Examples: {@link DonutChart},
+ * {@link NightingaleRoseChart}.
  *
  * @author Syam
  */
 public enum ChartType {
 
-    /**
-     * Line.
-     */
-    Line,
-    /**
-     * Bar.
-     */
-    Bar,
-    /**
-     * Pie.
-     */
-    Pie(new String[] { "itemName", "value" }, false),
-    /**
-     * Scatter.
-     */
-    Scatter,
-    /**
-     * Effect-scatter.
-     */
-    EffectScatter,
-    /**
-     * Funnel.
-     */
-    Funnel(new String[] { "itemName", "value" }, false),
-    /**
-     * Radar.
-     */
-    Radar(new String[] {}),
-    /**
-     * Guage.
-     */
-    Gauge(new String[] {}, false),
-    /**
-     * Tree.
-     */
-    Tree(new String[] {}, false),
-    /**
-     * Tree-map.
-     */
-    Treemap(new String[] {}, false),
-    ;
+	/**
+	 * Line.
+	 */
+	Line,
+	/**
+	 * Bar.
+	 */
+	Bar,
+	/**
+	 * Pie.
+	 */
+	Pie(new String[] { "itemName", "value" }, false),
+	/**
+	 * Scatter.
+	 */
+	Scatter,
+	/**
+	 * Effect-scatter.
+	 */
+	EffectScatter,
+	/**
+	 * Funnel.
+	 */
+	Funnel(new String[] { "itemName", "value" }, false),
+	/**
+	 * Radar.
+	 */
+	Radar(new String[] {}),
+	/**
+	 * Guage.
+	 */
+	Gauge(new String[] {}, false),
+	/**
+	 * Tree.
+	 */
+	Tree(new String[] {}, false),
+	/**
+	 * Tree-map.
+	 */
+	Treemap(new String[] {}, false),;
 
-    private final String[] axes;
-    private final boolean coordinateSystem;
+	private final String[] axes;
+	private final boolean coordinateSystem;
 
-    /**
-     * Constructor for default XY type.
-     */
-    ChartType() {
-        this(new String[] { "x", "y"});
-    }
+	/**
+	 * Constructor for default XY type.
+	 */
+	ChartType() {
+		this(new String[] { "x", "y" });
+	}
 
-    /**
-     * Constructor with axes defined.
-     *
-     * @param axes Name of the axes.
-     */
-    ChartType(String[] axes) {
-        this(axes, true );
-    }
+	/**
+	 * Constructor with axes defined.
+	 *
+	 * @param axes Name of the axes.
+	 */
+	ChartType(String[] axes) {
+		this(axes, true);
+	}
 
-    /**
-     * Constructor with axes defined.
-     *
-     * @param axes Name of the axes.
-     * @param coordinateSystem Whether a coordinate system is required for this type or not.
-     */
-    ChartType(String[] axes, boolean coordinateSystem) {
-        this.axes = axes;
-        this.coordinateSystem = coordinateSystem;
-    }
+	/**
+	 * Constructor with axes defined.
+	 *
+	 * @param axes             Name of the axes.
+	 * @param coordinateSystem Whether a coordinate system is required for this type
+	 *                         or not.
+	 */
+	ChartType(String[] axes, boolean coordinateSystem) {
+		this.axes = axes;
+		this.coordinateSystem = coordinateSystem;
+	}
 
-    /**
-     * Get name of the axes.
-     *
-     * @return Name of axes.
-     */
-    public String[] getAxes() {
-        return axes;
-    }
+	/**
+	 * Get name of the axes.
+	 *
+	 * @return Name of axes.
+	 */
+	public String[] getAxes() {
+		return axes;
+	}
 
-    /**
-     * Check whether a coordinate system is required for this type or not.
-     *
-     * @return True or false.
-     */
-    public boolean requireCoordinateSystem() {
-        return coordinateSystem;
-    }
+	/**
+	 * Check whether a coordinate system is required for this type or not.
+	 *
+	 * @return True or false.
+	 */
+	public boolean requireCoordinateSystem() {
+		return coordinateSystem;
+	}
 }

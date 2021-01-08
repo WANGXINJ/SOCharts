@@ -17,14 +17,14 @@
 package com.storedobject.chart;
 
 /**
- * Tooltip to display.
- * Basic support only. Future versions will provide more detailed features.
+ * Tooltip to display. Basic support only. Future versions will provide more
+ * detailed features.
  *
  * @author Syam
  */
 public class Tooltip extends VisiblePart implements Component {
 
-    @Override
-    public void validate() {
-    }
+	@Override
+	public void validate() {
+	}
 }

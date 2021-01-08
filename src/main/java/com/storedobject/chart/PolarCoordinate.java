@@ -17,60 +17,61 @@
 package com.storedobject.chart;
 
 /**
- * Representation of polar coordinate system with an angle axis and a radius axis.
+ * Representation of polar coordinate system with an angle axis and a radius
+ * axis.
  *
  * @author Syam
  */
 public class PolarCoordinate extends CoordinateSystem implements HasPolarProperty {
 
-    private PolarProperty polarProperty;
+	private PolarProperty polarProperty;
 
-    /**
-     * Constructor.
-     */
-    public PolarCoordinate() {
-    }
+	/**
+	 * Constructor.
+	 */
+	public PolarCoordinate() {
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param radiusAxis Radius axis.
-     * @param angleAxis Angle axis.
-     */
-    public PolarCoordinate(RadiusAxis radiusAxis, AngleAxis angleAxis) {
-        addAxis(radiusAxis, angleAxis);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param radiusAxis Radius axis.
+	 * @param angleAxis  Angle axis.
+	 */
+	public PolarCoordinate(RadiusAxis radiusAxis, AngleAxis angleAxis) {
+		addAxis(radiusAxis, angleAxis);
+	}
 
-    @Override
-    public void validate() throws ChartException {
-        if(noAxis(RadiusAxis.class)) {
-            throw new ChartException("Radius Axis is not set");
-        }
-        if(noAxis(AngleAxis.class)) {
-            throw new ChartException("Angle Axis is not set");
-        }
-    }
+	@Override
+	public void validate() throws ChartException {
+		if (noAxis(RadiusAxis.class)) {
+			throw new ChartException("Radius Axis is not set");
+		}
+		if (noAxis(AngleAxis.class)) {
+			throw new ChartException("Angle Axis is not set");
+		}
+	}
 
-    @Override
-    public final PolarProperty getPolarProperty(boolean create) {
-        if(polarProperty == null && create) {
-            polarProperty = new PolarProperty();
-        }
-        return polarProperty;
-    }
+	@Override
+	public final PolarProperty getPolarProperty(boolean create) {
+		if (polarProperty == null && create) {
+			polarProperty = new PolarProperty();
+		}
+		return polarProperty;
+	}
 
-    @Override
-    public final void setPolarProperty(PolarProperty polarProperty) {
-        this.polarProperty = polarProperty;
-    }
+	@Override
+	public final void setPolarProperty(PolarProperty polarProperty) {
+		this.polarProperty = polarProperty;
+	}
 
-    @Override
-    String systemName() {
-        return "polar";
-    }
+	@Override
+	String systemName() {
+		return "polar";
+	}
 
-    @Override
-    String[] axesData() {
-        return new String[] { "radius", "angle" };
-    }
+	@Override
+	String[] axesData() {
+		return new String[] { "radius", "angle" };
+	}
 }

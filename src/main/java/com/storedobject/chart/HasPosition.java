@@ -23,19 +23,20 @@ package com.storedobject.chart;
  */
 public interface HasPosition {
 
-    /**
-     * Get the position of this on the chart display area. (If <code>true</code> is passed as the parameter,
-     * a new position will be created if not already exists).
-     *
-     * @param create Whether to create it or not.
-     * @return Position.
-     */
-    Position getPosition(boolean create);
+	/**
+	 * Get the position of this on the chart display area. (If <code>true</code> is
+	 * passed as the parameter, a new position will be created if not already
+	 * exists).
+	 *
+	 * @param create Whether to create it or not.
+	 * @return Position.
+	 */
+	Position getPosition(boolean create);
 
-    /**
-     * Set the position of this.
-     *
-     * @param position Position to set.
-     */
-    void setPosition(Position position);
+	/**
+	 * Set the position of this.
+	 *
+	 * @param position Position to set.
+	 */
+	void setPosition(Position position);
 }

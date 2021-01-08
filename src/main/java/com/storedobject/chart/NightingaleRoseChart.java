@@ -17,47 +17,47 @@
 package com.storedobject.chart;
 
 /**
- * Nightingale Rose chart.
- * (Future versions will provide more chart-specific methods).
+ * Nightingale Rose chart. (Future versions will provide more chart-specific
+ * methods).
  *
  * @author Syam
  */
 public class NightingaleRoseChart extends DonutChart {
 
-    private boolean percentage = true;
+	private boolean percentage = true;
 
-    /**
-     * Constructor.
-     */
-    public NightingaleRoseChart() {
-        setHoleRadius(Size.percentage(10));
-    }
+	/**
+	 * Constructor.
+	 */
+	public NightingaleRoseChart() {
+		setHoleRadius(Size.percentage(10));
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param itemNames Item names of the slices.
-     * @param values Values of the slices.
-     */
-    public NightingaleRoseChart(AbstractDataProvider<?> itemNames, Data values) {
-        super(itemNames, values);
-        setHoleRadius(Size.percentage(10));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param itemNames Item names of the slices.
+	 * @param values    Values of the slices.
+	 */
+	public NightingaleRoseChart(AbstractDataProvider<?> itemNames, Data values) {
+		super(itemNames, values);
+		setHoleRadius(Size.percentage(10));
+	}
 
-    /**
-     * Hide the percentage representation. In this case, the angles of the slices
-     * will not represent the percentage values of the slices and values will be represented by the
-     * size of the radius of each slice.
-     */
-    public void hidePercentage() {
-        percentage = false;
-    }
+	/**
+	 * Hide the percentage representation. In this case, the angles of the slices
+	 * will not represent the percentage values of the slices and values will be
+	 * represented by the size of the radius of each slice.
+	 */
+	public void hidePercentage() {
+		percentage = false;
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        sb.append(",\"roseType\":\"");
-        sb.append(percentage ? "radius" : "area");
-        sb.append('"');
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		sb.append(",\"roseType\":\"");
+		sb.append(percentage ? "radius" : "area");
+		sb.append('"');
+	}
 }

@@ -23,41 +23,41 @@ package com.storedobject.chart;
  */
 public class Line extends VisibleProperty {
 
-    private LineStyle style;
+	private LineStyle style;
 
-    /**
-     * Constructor.
-     */
-    public Line() {
-    }
+	/**
+	 * Constructor.
+	 */
+	public Line() {
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        if(style != null) {
-            ComponentPart.addComma(sb);
-            sb.append("\"lineStyle\":{");
-            ComponentPart.encodeProperty(sb, style);
-            sb.append('}');
-        }
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		if (style != null) {
+			ComponentPart.addComma(sb);
+			sb.append("\"lineStyle\":{");
+			ComponentPart.encodeProperty(sb, style);
+			sb.append('}');
+		}
+	}
 
-    /**
-     * Get the style.
-     *
-     * @param create Whether to create if not exists or not.
-     * @return Style.
-     */
-    public LineStyle getStyle(boolean create) {
-        return style;
-    }
+	/**
+	 * Get the style.
+	 *
+	 * @param create Whether to create if not exists or not.
+	 * @return Style.
+	 */
+	public LineStyle getStyle(boolean create) {
+		return style;
+	}
 
-    /**
-     * Set the style.
-     *
-     * @param style Style to set.
-     */
-    public void setStyle(LineStyle style) {
-        this.style = style;
-    }
+	/**
+	 * Set the style.
+	 *
+	 * @param style Style to set.
+	 */
+	public void setStyle(LineStyle style) {
+		this.style = style;
+	}
 }

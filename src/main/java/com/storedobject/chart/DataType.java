@@ -26,52 +26,52 @@ import java.time.LocalDateTime;
  */
 public enum DataType {
 
-    /**
-     * Numeric values.
-     */
-    NUMBER("value", Number.class),
-    /**
-     * Category values.
-     */
-    CATEGORY("category", String.class),
-    /**
-     * Date values.
-     */
-    DATE("time", LocalDate.class),
-    /**
-     * Time values.
-     */
-    TIME("time", LocalDateTime.class),
-    /**
-     * Logarithmic values.
-     */
-    LOGARITHMIC("log", Number.class);
+	/**
+	 * Numeric values.
+	 */
+	NUMBER("value", Number.class),
+	/**
+	 * Category values.
+	 */
+	CATEGORY("category", String.class),
+	/**
+	 * Date values.
+	 */
+	DATE("time", LocalDate.class),
+	/**
+	 * Time values.
+	 */
+	TIME("time", LocalDateTime.class),
+	/**
+	 * Logarithmic values.
+	 */
+	LOGARITHMIC("log", Number.class);
 
-    private final String name;
-    private final Class<?> type;
+	private final String name;
+	private final Class<?> type;
 
-    /**
-     * Constructor (internally used).
-     *
-     * @param name Name.
-     * @param type Type.
-     */
-    DataType(String name, Class<?> type) {
-        this.name = name;
-        this.type = type;
-    }
+	/**
+	 * Constructor (internally used).
+	 *
+	 * @param name Name.
+	 * @param type Type.
+	 */
+	DataType(String name, Class<?> type) {
+		this.name = name;
+		this.type = type;
+	}
 
-    /**
-     * Get the type.
-     *
-     * @return Type.
-     */
-    public final Class<?> getType() {
-        return type;
-    }
+	/**
+	 * Get the type.
+	 *
+	 * @return Type.
+	 */
+	public final Class<?> getType() {
+		return type;
+	}
 
-    @Override
-    public String toString() {
-        return "\"" + name + "\"";
-    }
+	@Override
+	public String toString() {
+		return "\"" + name + "\"";
+	}
 }

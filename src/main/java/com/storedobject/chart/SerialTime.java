@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 
+import com.storedobject.helper.StreamJava9;
+
 /**
  * Implementation of serially increasing/decreasing time values as data.
  *
@@ -27,58 +29,59 @@ import java.util.stream.Stream;
  */
 public class SerialTime implements AbstractDataProvider<LocalDateTime> {
 
-    private final LocalDateTime start, end;
-    private final int step;
-    private final ChronoUnit stepUnit;
+	private final LocalDateTime start, end;
+	private final int step;
+	private final ChronoUnit stepUnit;
 
-    /**
-     * Constructor.
-     *
-     * @param start Starting value.
-     * @param end Ending value.
-     */
-    public SerialTime(LocalDateTime start, LocalDateTime end) {
-        this(start, end, 0, null);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param start Starting value.
+	 * @param end   Ending value.
+	 */
+	public SerialTime(LocalDateTime start, LocalDateTime end) {
+		this(start, end, 0, null);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param start Starting value.
-     * @param end Ending value.
-     * @param stepUnit Unit of the step.
-     */
-    public SerialTime(LocalDateTime start, LocalDateTime end, ChronoUnit stepUnit) {
-        this(start, end, 0, stepUnit);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param start    Starting value.
+	 * @param end      Ending value.
+	 * @param stepUnit Unit of the step.
+	 */
+	public SerialTime(LocalDateTime start, LocalDateTime end, ChronoUnit stepUnit) {
+		this(start, end, 0, stepUnit);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param start Starting value.
-     * @param end Ending value.
-     * @param step Step value.
-     * @param stepUnit Unit of the step.
-     */
-    public SerialTime(LocalDateTime start, LocalDateTime end, int step, ChronoUnit stepUnit) {
-        this.stepUnit = stepUnit == null ? ChronoUnit.MINUTES : stepUnit;
-        this.step = step == 0 ? (start.isBefore(end) ? 1 : -1) : step;
-        if(this.step > 0) {
-            this.start = start.isBefore(end) ? start : end;
-            this.end = end.isAfter(start) ? end : start;
-        } else {
-            this.start = start.isAfter(end) ? start : end;
-            this.end = end.isBefore(start) ? end : start;
-        }
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param start    Starting value.
+	 * @param end      Ending value.
+	 * @param step     Step value.
+	 * @param stepUnit Unit of the step.
+	 */
+	public SerialTime(LocalDateTime start, LocalDateTime end, int step, ChronoUnit stepUnit) {
+		this.stepUnit = stepUnit == null ? ChronoUnit.MINUTES : stepUnit;
+		this.step = step == 0 ? (start.isBefore(end) ? 1 : -1) : step;
+		if (this.step > 0) {
+			this.start = start.isBefore(end) ? start : end;
+			this.end = end.isAfter(start) ? end : start;
+		} else {
+			this.start = start.isAfter(end) ? start : end;
+			this.end = end.isBefore(start) ? end : start;
+		}
+	}
 
-    @Override
-    public Stream<LocalDateTime> stream() {
-        return Stream.iterate(start, t -> step > 0 ? !t.isAfter(end) : !t.isBefore(end), t -> start.plus(step, stepUnit));
-    }
+	@Override
+	public Stream<LocalDateTime> stream() {
+		return StreamJava9.iterate(start, t -> step > 0 ? !t.isAfter(end) : !t.isBefore(end),
+				t -> start.plus(step, stepUnit));
+	}
 
-    @Override
-    public DataType getDataType() {
-        return DataType.TIME;
-    }
+	@Override
+	public DataType getDataType() {
+		return DataType.TIME;
+	}
 }

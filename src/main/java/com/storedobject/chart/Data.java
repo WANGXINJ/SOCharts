@@ -22,13 +22,14 @@ package com.storedobject.chart;
  * @author Syam
  */
 public class Data extends AbstractData<Number> implements DataProvider {
+	private static final long serialVersionUID = 8498054049320509830L;
 
-    /**
-     * Constructor.
-     *
-     * @param data Initial data to add
-     */
-    public Data(Number... data) {
-        super(Number.class, data);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param data Initial data to add
+	 */
+	public Data(Number... data) {
+		super(Number.class, data);
+	}
 }

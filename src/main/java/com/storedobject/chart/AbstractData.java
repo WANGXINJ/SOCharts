@@ -22,98 +22,103 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * <p>Representation of data as a {@link java.util.List}. The type of data can be anything that can be used
- * for charting. In charting, we need to distinguish between "numeric", "date/time", "categories" and "logarithmic"
- * values types (See {@link DataType}).
+ * <p>
+ * Representation of data as a {@link java.util.List}. The type of data can be
+ * anything that can be used for charting. In charting, we need to distinguish
+ * between "numeric", "date/time", "categories" and "logarithmic" values types
+ * (See {@link DataType}).
  *
  * @param <T> Data type.
  * @author Syam
  */
 public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvider<T>, ComponentPart {
+	private static final long serialVersionUID = -934219272310169187L;
 
-    private int serial = -1;
-    private final DataType dataType;
-    private String name;
+	private int serial = -1;
+	private final DataType dataType;
+	private String name;
 
-    /**
-     * Constructor.
-     *
-     * @param dataClass Data class.
-     * @param data Initial data to add
-     */
-    @SafeVarargs
-    public AbstractData(Class<T> dataClass, T... data) {
-        this(dataType(dataClass), dataClass, data);
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param dataClass Data class.
+	 * @param data      Initial data to add
+	 */
+	@SafeVarargs
+	public AbstractData(Class<T> dataClass, T... data) {
+		this(dataType(dataClass), dataClass, data);
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param dataType Data type.
-     * @param dataClass Data class.
-     * @param data Initial data to add
-     */
-    @SafeVarargs
-    public AbstractData(DataType dataType, Class<T> dataClass, T... data) {
-        this.dataType = dataType;
-        if(data != null) {
-            addAll(Arrays.asList(data));
-        }
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param dataType  Data type.
+	 * @param dataClass Data class.
+	 * @param data      Initial data to add
+	 */
+	@SafeVarargs
+	public AbstractData(DataType dataType, Class<T> dataClass, T... data) {
+		this.dataType = dataType;
+		if (data != null) {
+			addAll(Arrays.asList(data));
+		}
+	}
 
-    private static DataType dataType(Class<?> dataClass) {
-        for(DataType dt: DataType.values()) {
-            if(dt.getType().isAssignableFrom(dataClass)) {
-                return dt;
-            }
-        }
-        return DataType.CATEGORY;
-    }
+	private static DataType dataType(Class<?> dataClass) {
+		for (DataType dt : DataType.values()) {
+			if (dt.getType().isAssignableFrom(dataClass)) {
+				return dt;
+			}
+		}
+		return DataType.CATEGORY;
+	}
 
-    /**
-     * Get the data type.
-     *
-     * @return Data type.
-     */
-    public final DataType getDataType() {
-        return dataType;
-    }
+	/**
+	 * Get the data type.
+	 *
+	 * @return Data type.
+	 */
+	@Override
+	public final DataType getDataType() {
+		return dataType;
+	}
 
-    @Override
-    public final int getSerial() {
-        return serial;
-    }
+	@Override
+	public final int getSerial() {
+		return serial;
+	}
 
-    @Override
-    public final void setSerial(int serial) {
-        this.serial = serial;
-    }
+	@Override
+	public final void setSerial(int serial) {
+		this.serial = serial;
+	}
 
-    /**
-     * Get the name of this data set.
-     *
-     * @return Name.
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Get the name of this data set.
+	 *
+	 * @return Name.
+	 */
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Set a name for this data set.
-     *
-     * @param name Name to set.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Set a name for this data set.
+	 *
+	 * @param name Name to set.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    @Override
-    public List<T> asList() {
-        return this;
-    }
+	@Override
+	public List<T> asList() {
+		return this;
+	}
 
-    @Override
-    public Stream<T> stream() {
-        return super.stream();
-    }
+	@Override
+	public Stream<T> stream() {
+		return super.stream();
+	}
 }

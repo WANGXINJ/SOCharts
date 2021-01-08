@@ -19,122 +19,122 @@ package com.storedobject.chart;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Radar coordinate is used by {@link RadarChart}. Its each leg (axis) can be labelled (indicators)
- * by {@link CategoryData}.
+ * Radar coordinate is used by {@link RadarChart}. Its each leg (axis) can be
+ * labelled (indicators) by {@link CategoryData}.
  *
  * @author Syam
  */
 public class RadarCoordinate extends CoordinateSystem implements HasPolarProperty {
 
-    private PolarProperty polarProperty;
-    private CategoryDataProvider axisIndicators;
-    private int startingAngle = 90;
-    private Color color;
+	private PolarProperty polarProperty;
+	private CategoryDataProvider axisIndicators;
+	private int startingAngle = 90;
+	private Color color;
 
-    /**
-     * Constructor. Axis indicators can be set later.
-     */
-    public RadarCoordinate() {
-        this(null);
-    }
+	/**
+	 * Constructor. Axis indicators can be set later.
+	 */
+	public RadarCoordinate() {
+		this(null);
+	}
 
-    /**
-     * Construct with the given set of axis indicators.
-     *
-     * @param axisIndicators Axis indicators to set.
-     */
-    public RadarCoordinate(CategoryDataProvider axisIndicators) {
-        this.axisIndicators = axisIndicators;
-    }
+	/**
+	 * Construct with the given set of axis indicators.
+	 *
+	 * @param axisIndicators Axis indicators to set.
+	 */
+	public RadarCoordinate(CategoryDataProvider axisIndicators) {
+		this.axisIndicators = axisIndicators;
+	}
 
-    /**
-     * Set axis indicators.
-     *
-     * @param axisIndicators Axis indicators to set.
-     */
-    public void setAxisIndicators(CategoryDataProvider axisIndicators) {
-        this.axisIndicators = axisIndicators;
-    }
+	/**
+	 * Set axis indicators.
+	 *
+	 * @param axisIndicators Axis indicators to set.
+	 */
+	public void setAxisIndicators(CategoryDataProvider axisIndicators) {
+		this.axisIndicators = axisIndicators;
+	}
 
-    /**
-     * Get the current axis indicators.
-     *
-     * @return Axis indicators.
-     */
-    public CategoryDataProvider getAxisIndicators() {
-        return axisIndicators;
-    }
+	/**
+	 * Get the current axis indicators.
+	 *
+	 * @return Axis indicators.
+	 */
+	public CategoryDataProvider getAxisIndicators() {
+		return axisIndicators;
+	}
 
-    @Override
-    public void validate() throws ChartException {
-        if(axisIndicators == null || axisIndicators.stream().findAny().isEmpty()) {
-            throw new ChartException("No axis-indicators for " + className());
-        }
-    }
+	@Override
+	public void validate() throws ChartException {
+		if (axisIndicators == null || !axisIndicators.stream().findAny().isPresent()) {
+			throw new ChartException("No axis-indicators for " + className());
+		}
+	}
 
-    @Override
-    public void encodeJSON(StringBuilder sb) {
-        super.encodeJSON(sb);
-        sb.append("\"indicator\":[");
-        final AtomicBoolean first = new AtomicBoolean(true);
-        axisIndicators.stream().forEach(category -> {
-            if(first.get()) {
-                first.set(false);
-            } else {
-                sb.append(',');
-            }
-            sb.append("{\"name\":").append(ComponentPart.escape(category)).append('}');
-        });
-        sb.append("],\"startAngle\":").append(startingAngle);
-        ComponentPart.encodeProperty(sb, color);
-    }
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+		sb.append("\"indicator\":[");
+		final AtomicBoolean first = new AtomicBoolean(true);
+		axisIndicators.stream().forEach(category -> {
+			if (first.get()) {
+				first.set(false);
+			} else {
+				sb.append(',');
+			}
+			sb.append("{\"name\":").append(ComponentPart.escape(category)).append('}');
+		});
+		sb.append("],\"startAngle\":").append(startingAngle);
+		ComponentPart.encodeProperty(sb, color);
+	}
 
-    @Override
-    public final PolarProperty getPolarProperty(boolean create) {
-        if(polarProperty == null && create) {
-            polarProperty = new PolarProperty();
-        }
-        return polarProperty;
-    }
+	@Override
+	public final PolarProperty getPolarProperty(boolean create) {
+		if (polarProperty == null && create) {
+			polarProperty = new PolarProperty();
+		}
+		return polarProperty;
+	}
 
-    @Override
-    public final void setPolarProperty(PolarProperty polarProperty) {
-        this.polarProperty = polarProperty;
-    }
+	@Override
+	public final void setPolarProperty(PolarProperty polarProperty) {
+		this.polarProperty = polarProperty;
+	}
 
-    /**
-     * Get the starting angle.
-     *
-     * @return Angle in degrees.
-     */
-    public int getStartingAngle() {
-        return startingAngle;
-    }
+	/**
+	 * Get the starting angle.
+	 *
+	 * @return Angle in degrees.
+	 */
+	public int getStartingAngle() {
+		return startingAngle;
+	}
 
-    /**
-     * Set the starting angle.
-     *
-     * @param startingAngle Angle in degrees.
-     */
-    public void setStartingAngle(int startingAngle) {
-        this.startingAngle = startingAngle;
-    }
+	/**
+	 * Set the starting angle.
+	 *
+	 * @param startingAngle Angle in degrees.
+	 */
+	public void setStartingAngle(int startingAngle) {
+		this.startingAngle = startingAngle;
+	}
 
-    /**
-     * Get the color of the indicator.
-     *
-     * @return Color.
-     */
-    public final Color getColor() {
-        return color;
-    }
+	/**
+	 * Get the color of the indicator.
+	 *
+	 * @return Color.
+	 */
+	public final Color getColor() {
+		return color;
+	}
 
-    /**
-     * Set color of the indicator.
-     *
-     * @param color Color.
-     */
-    public void setColor(Color color) {
-        this.color = color;
-    }
+	/**
+	 * Set color of the indicator.
+	 *
+	 * @param color Color.
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+	}
 }
