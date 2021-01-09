@@ -46,6 +46,6 @@ public class LabelProperty extends BaseComponentProperty {
 	protected void addProperties() {
 		super.addProperties();
 
-		property("fontSize", fontSize);
+		addProperty("fontSize", fontSize);
 	}
 }

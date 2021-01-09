@@ -54,8 +54,8 @@ public class ItemStyleProperty extends BaseComponentProperty {
 	protected void addProperties() {
 		super.addProperties();
 
-		property("borderColor", borderColor);
-		property("borderWidth", borderWidth);
-		property("borderType", borderType);
+		addProperty("borderColor", borderColor);
+		addProperty("borderWidth", borderWidth);
+		addProperty("borderType", borderType);
 	}
 }
