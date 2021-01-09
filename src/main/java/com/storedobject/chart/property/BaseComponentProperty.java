@@ -37,11 +37,11 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 
 	final protected void buildProperties() {
 		properties.clear();
-		addProperties();
+		initProperties();
 		properties.putAll(customProperties);
 	}
 
-	protected void addProperties() {
+	protected void initProperties() {
 		// FI
 	}
 
@@ -50,28 +50,28 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 		customProperties.clear();
 	}
 
-	final public void addCustomProperty(String property, Object value) {
+	final public void setProperty(String property, Object value) {
 		customProperties.put(property, value);
 	}
 
-	final public void addCustomProperty(ComponentProperty componentProperty) {
-		addCustomProperty(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+	final public void setProperty(ComponentProperty componentProperty) {
+		setProperty(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
 	}
 
-	final public void addCustomProperty(String propertyJson) {
-		addCustomProperty(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+	final public void setProperty(String propertyJson) {
+		setProperty(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
 	}
 
-	final protected void addProperty(String property, Object value) {
+	final protected void property(String property, Object value) {
 		properties.put(property, value);
 	}
 
-	final protected void addProperty(ComponentProperty componentProperty) {
-		addProperty(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+	final protected void property(ComponentProperty componentProperty) {
+		property(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
 	}
 
-	final protected void addProperty(String propertyJson) {
-		addProperty(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+	final protected void property(String propertyJson) {
+		property(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
 	}
 
 	private void encodeProperties(StringBuilder sb) {

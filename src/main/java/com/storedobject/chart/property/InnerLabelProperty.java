@@ -6,10 +6,10 @@ public class InnerLabelProperty extends LabelProperty {
 	}
 
 	@Override
-	protected void addProperties() {
-		super.addProperties();
+	protected void initProperties() {
+		super.initProperties();
 
-		addProperty("position", "inner");
+		property("position", "inner");
 	}
 
 	@Override
