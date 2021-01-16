@@ -16,10 +16,8 @@
 
 package com.storedobject.chart;
 
-import com.storedobject.chart.property.HasItemStyleProperty;
 import com.storedobject.chart.property.HasLabelProperty;
 import com.storedobject.chart.property.HasPolarProperty;
-import com.storedobject.chart.property.ItemStyleProperty;
 import com.storedobject.chart.property.LabelProperty;
 import com.storedobject.chart.property.PolarProperty;
 
@@ -28,11 +26,10 @@ import com.storedobject.chart.property.PolarProperty;
  *
  * @author Syam
  */
-public class PieChart extends SelfPositioningChart implements HasPolarProperty, HasLabelProperty, HasItemStyleProperty {
+public class PieChart extends SelfPositioningChart implements HasPolarProperty, HasLabelProperty {
 
 	private PolarProperty polarProperty;
 	private LabelProperty labelProperty;
-	private ItemStyleProperty itemStyleProperty;
 
 	/**
 	 * Constructor.
@@ -70,14 +67,6 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		ComponentPart.encodeProperty(sb, polarProperty);
-		ComponentPart.encodeProperty(sb, labelProperty);
-		ComponentPart.encodeProperty(sb, itemStyleProperty);
-	}
-
-	@Override
 	public final PolarProperty getPolarProperty(boolean create) {
 		if (polarProperty == null && create) {
 			polarProperty = new PolarProperty();
@@ -103,19 +92,6 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 		this.labelProperty = labelProperty;
 	}
 
-	@Override
-	public ItemStyleProperty getItemStyleProperty() {
-		if (itemStyleProperty == null) {
-			itemStyleProperty = new ItemStyleProperty();
-		}
-		return itemStyleProperty;
-	}
-
-	@Override
-	public void setItemStyleProperty(ItemStyleProperty itemStyleProperty) {
-		this.itemStyleProperty = itemStyleProperty;
-	}
-
 	/**
 	 * Set the hole radius (when used as a donut chart). (Basically, it is setting
 	 * the inner radius of the polar).
@@ -124,5 +100,13 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 	 */
 	public void setHoleRadius(Size size) {
 		getPolarProperty(true).setInnerRadius(size);
+	}
+
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+
+		ComponentPart.encodeProperty(sb, polarProperty);
+		ComponentPart.encodeProperty(sb, labelProperty);
 	}
 }

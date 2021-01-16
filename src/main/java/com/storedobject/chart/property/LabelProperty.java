@@ -48,4 +48,10 @@ public class LabelProperty extends BaseComponentProperty {
 
 		property("fontSize", fontSize);
 	}
+
+	public enum AlignTo {
+		none, //
+		labelLine, //
+		edge
+	}
 }

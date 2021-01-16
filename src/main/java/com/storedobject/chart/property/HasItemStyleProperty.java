@@ -31,7 +31,7 @@ public interface HasItemStyleProperty {
 	 *
 	 * @return ItemStyle property.
 	 */
-	ItemStyleProperty getItemStyleProperty();
+	ItemStyleProperty getItemStyle();
 
 	/**
 	 * Set the itemStyle property.
@@ -39,5 +39,5 @@ public interface HasItemStyleProperty {
 	 * @param itemStyleProperty ItemStyle property to set. It could be
 	 *                          <code>null</code>.
 	 */
-	void setItemStyleProperty(ItemStyleProperty itemStyleProperty);
+	void setItemStyle(ItemStyleProperty itemStyleProperty);
 }

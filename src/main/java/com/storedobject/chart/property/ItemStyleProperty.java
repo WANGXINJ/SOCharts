@@ -12,9 +12,18 @@ import com.storedobject.chart.PieChart;
  */
 public class ItemStyleProperty extends BaseComponentProperty {
 
+	private Color color;
 	private Color borderColor;
 	private Integer borderWidth;
 	private LineStyle.Type borderType;
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
 	public ItemStyleProperty() {
 		super("itemStyle");
@@ -54,6 +63,7 @@ public class ItemStyleProperty extends BaseComponentProperty {
 	protected void initProperties() {
 		super.initProperties();
 
+		property("color", color);
 		property("borderColor", borderColor);
 		property("borderWidth", borderWidth);
 		property("borderType", borderType);

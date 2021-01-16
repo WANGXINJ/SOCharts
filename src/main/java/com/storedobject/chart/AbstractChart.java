@@ -16,12 +16,17 @@
 
 package com.storedobject.chart;
 
+import com.storedobject.chart.property.HasItemStyleProperty;
+import com.storedobject.chart.property.ItemStyleProperty;
+
 /**
  * Abstract base class for creating specific sub-types of charts.
  *
  * @author Syam
  */
-public abstract class AbstractChart extends Chart {
+public abstract class AbstractChart extends Chart implements HasItemStyleProperty {
+
+	private ItemStyleProperty itemStyle;
 
 	/**
 	 * Create a chart of a given type and data.
@@ -53,6 +58,26 @@ public abstract class AbstractChart extends Chart {
 	 */
 	@Override
 	public final void setType(ChartType type) {
+	}
+
+	@Override
+	public ItemStyleProperty getItemStyle() {
+		if (itemStyle == null) {
+			itemStyle = new ItemStyleProperty();
+		}
+		return itemStyle;
+	}
+
+	@Override
+	public void setItemStyle(ItemStyleProperty itemStyle) {
+		this.itemStyle = itemStyle;
+	}
+
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		super.encodeJSON(sb);
+
+		ComponentPart.encodeProperty(sb, itemStyle);
 	}
 
 	@Override

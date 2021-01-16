@@ -404,6 +404,10 @@ public class SOChart extends AbstractJavaScriptComponent {
 		neverUpdated = false;
 	}
 
+	protected boolean isNeverUpdated() {
+		return neverUpdated;
+	}
+
 	/**
 	 * This method is invoked just before the JSON string that is being constructed
 	 * in the {@link #update()} method is sent to the client. The returned value by
@@ -426,6 +430,14 @@ public class SOChart extends AbstractJavaScriptComponent {
 	@Override
 	protected SOChartState getState() {
 		return (SOChartState) super.getState();
+	}
+
+	public void refresh() {
+		try {
+			clear();
+			update();
+		} catch (Exception e) {
+		}
 	}
 
 	static class ComponentEncoder {

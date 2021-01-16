@@ -3,22 +3,13 @@ package com.storedobject.chart.property;
 import static com.storedobject.chart.util.ComponentPropertyUtil.beginNode;
 import static com.storedobject.chart.util.ComponentPropertyUtil.endNode;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import com.storedobject.chart.ComponentProperty;
-import com.storedobject.chart.util.ComponentPropertyUtil;
-import com.storedobject.helper.ID;
 
 public abstract class BaseComponentProperty implements ComponentProperty {
 
-	private static final String PREFIX_PROPERTY_JSON = "-json";
-	private static final String PREFIX_COMPONENT_PROPERTY = "+property";
-
 	final String name;
-	final Map<String, Object> properties = new LinkedHashMap<>();
-	final Map<String, Object> customProperties = new LinkedHashMap<>();
+	final ComponentProperties properties = new ComponentProperties();
+	final ComponentProperties customProperties = new ComponentProperties();
 
 	public BaseComponentProperty(String name) {
 		this.name = name;
@@ -38,7 +29,7 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 	final protected void buildProperties() {
 		properties.clear();
 		initProperties();
-		properties.putAll(customProperties);
+		properties.setAll(customProperties);
 	}
 
 	protected void initProperties() {
@@ -51,43 +42,34 @@ public abstract class BaseComponentProperty implements ComponentProperty {
 	}
 
 	final public void setProperty(String property, Object value) {
-		customProperties.put(property, value);
+		customProperties.set(property, value);
 	}
 
 	final public void setProperty(ComponentProperty componentProperty) {
-		setProperty(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+		customProperties.set(componentProperty);
 	}
 
 	final public void setProperty(String propertyJson) {
-		setProperty(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+		customProperties.set(propertyJson);
 	}
 
 	final protected void property(String property, Object value) {
-		properties.put(property, value);
+		properties.set(property, value);
 	}
 
 	final protected void property(ComponentProperty componentProperty) {
-		property(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+		properties.set(componentProperty);
 	}
 
 	final protected void property(String propertyJson) {
-		property(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+		properties.set(propertyJson);
 	}
 
 	private void encodeProperties(StringBuilder sb) {
-		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			String key = entry.getKey();
-			if (key.startsWith(PREFIX_COMPONENT_PROPERTY)) {
-				ComponentPropertyUtil.encode(((ComponentProperty) entry.getValue()), sb);
-			} else if (key.startsWith(PREFIX_PROPERTY_JSON)) {
-				ComponentPropertyUtil.encode(((String) entry.getValue()), sb);
-			} else {
-				ComponentPropertyUtil.encode(entry.getKey(), entry.getValue(), sb);
-			}
-		}
+		properties.encode(sb);
 	}
 
 	protected boolean isEmpty() {
-		return properties.values().stream().allMatch(Objects::isNull);
+		return properties.isEmpty();
 	}
 }

@@ -18,6 +18,8 @@ package com.storedobject.chart;
 
 import java.util.*;
 
+import com.storedobject.chart.property.ComponentProperties;
+
 /**
  * <p>
  * Chart. Since this is a concrete class, this may be directly used for creating
@@ -52,6 +54,7 @@ public class Chart extends AbstractPart implements Component {
 	private Color[] colors;
 	private final Map<Class<? extends ComponentProperty>, ComponentProperty> propertyMap = new HashMap<>();
 	private final Map<Class<? extends ComponentProperty>, String> propertyNameMap = new HashMap<>();
+	private final ComponentProperties properties = new ComponentProperties();
 
 	/**
 	 * Create a {@link ChartType#Line} chart.
@@ -109,6 +112,7 @@ public class Chart extends AbstractPart implements Component {
 	@Override
 	public void encodeJSON(StringBuilder sb) {
 		super.encodeJSON(sb);
+
 		if (colors != null) {
 			sb.append("\"color\":[");
 			for (int i = 0; i < colors.length; i++) {
@@ -119,7 +123,9 @@ public class Chart extends AbstractPart implements Component {
 			}
 			sb.append("],");
 		}
+
 		ComponentPart.encode(sb, "type", type());
+
 		if (coordinateSystem != null) {
 			if (coordinateSystem.axes != axes) {
 				ComponentPart aw;
@@ -143,6 +149,7 @@ public class Chart extends AbstractPart implements Component {
 						}));
 			}
 		}
+
 		if (coordinateSystem != null) {
 			String name = coordinateSystem.systemName();
 			if (name != null) {
@@ -150,15 +157,20 @@ public class Chart extends AbstractPart implements Component {
 				ComponentPart.encode(sb, "coordinateSystem", name);
 			}
 		}
+
+		properties.encode(sb);
+
 		propertyMap.values().forEach(p -> {
 			ComponentPart.addComma(sb);
 			sb.append('\"').append(getPropertyName(p)).append("\":{");
 			ComponentPart.encodeProperty(sb, p);
 			sb.append("}");
 		});
+
 		if (this instanceof AbstractDataChart) {
 			return;
 		}
+
 		sb.append(",\"encode\":{");
 		String[] axes = null;
 		if (coordinateSystem != null) {
@@ -250,6 +262,10 @@ public class Chart extends AbstractPart implements Component {
 
 	void setProperty(ComponentProperty property) {
 		propertyMap.put(property.getClass(), property);
+	}
+
+	public void setProperty(String name, Object property) {
+		properties.set(name, property);
 	}
 
 	String axisName(int axis) {
