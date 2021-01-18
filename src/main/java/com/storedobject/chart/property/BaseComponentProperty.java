@@ -3,8 +3,6 @@ package com.storedobject.chart.property;
 import static com.storedobject.chart.util.ComponentPropertyUtil.beginNode;
 import static com.storedobject.chart.util.ComponentPropertyUtil.endNode;
 
-import com.storedobject.chart.ComponentProperty;
-
 public abstract class BaseComponentProperty implements ComponentProperty {
 
 	final String name;

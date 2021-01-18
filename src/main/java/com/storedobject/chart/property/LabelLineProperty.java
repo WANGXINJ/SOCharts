@@ -16,7 +16,7 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.PieChart;
+import com.storedobject.chart.component.PieChart;
 
 /**
  * Represents labelLine property. Certain charts supports this property

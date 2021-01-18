@@ -1,8 +1,6 @@
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.Color;
-import com.storedobject.chart.LineStyle;
-import com.storedobject.chart.PieChart;
+import com.storedobject.chart.component.PieChart;
 
 /**
  * Represents itemStyle property. Certain charts supports this property
@@ -17,16 +15,17 @@ public class ItemStyleProperty extends BaseComponentProperty {
 	private Integer borderWidth;
 	private LineStyle.Type borderType;
 
+	public ItemStyleProperty() {
+		super("itemStyle");
+	}
+
 	public Color getColor() {
 		return color;
 	}
 
-	public void setColor(Color color) {
+	public ItemStyleProperty setColor(Color color) {
 		this.color = color;
-	}
-
-	public ItemStyleProperty() {
-		super("itemStyle");
+		return this;
 	}
 
 	public Color getBorderColor() {
@@ -35,7 +34,6 @@ public class ItemStyleProperty extends BaseComponentProperty {
 
 	public ItemStyleProperty setBorderColor(Color borderColor) {
 		this.borderColor = borderColor;
-
 		return this;
 	}
 
@@ -45,7 +43,6 @@ public class ItemStyleProperty extends BaseComponentProperty {
 
 	public ItemStyleProperty setBorderWidth(Integer borderWidth) {
 		this.borderWidth = borderWidth;
-
 		return this;
 	}
 

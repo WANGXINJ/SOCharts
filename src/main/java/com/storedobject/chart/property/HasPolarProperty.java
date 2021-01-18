@@ -16,7 +16,7 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.ComponentPart;
+import com.storedobject.chart.component.ComponentPart;
 
 /**
  * Interface to denote that a {@link ComponentPart} has {@link PolarProperty}.

@@ -4,8 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.storedobject.chart.ComponentPart;
-import com.storedobject.chart.ComponentProperty;
+import com.storedobject.chart.component.ComponentPart;
 import com.storedobject.chart.util.ComponentPropertyUtil;
 import com.storedobject.helper.ID;
 
@@ -31,28 +30,30 @@ public class ComponentProperties {
 		}
 	}
 
-	final public void set(String property, Object value) {
+	final public ComponentProperties set(String property, Object value) {
 		properties.put(property, value);
+		return this;
 	}
 
-	final public void set(ComponentProperty componentProperty) {
-		set(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+	final public ComponentProperties set(ComponentProperty componentProperty) {
+		return set(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
 	}
 
-	final public void set(String propertyJson) {
-		set(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+	final public ComponentProperties set(String propertyJson) {
+		return set(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
 	}
 
-	public void setAll(ComponentProperties props) {
+	public ComponentProperties setAll(ComponentProperties props) {
 		properties.putAll(props.properties);
+		return this;
 	}
 
-	public void clear() {
+	public ComponentProperties clear() {
 		properties.clear();
+		return this;
 	}
 
 	public boolean isEmpty() {
 		return properties.values().stream().allMatch(Objects::isNull);
 	}
-
 }

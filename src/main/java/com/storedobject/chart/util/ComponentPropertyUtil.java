@@ -1,8 +1,8 @@
 package com.storedobject.chart.util;
 
-import static com.storedobject.chart.ComponentPart.escape;
+import static com.storedobject.chart.component.ComponentPart.escape;
 
-import com.storedobject.chart.ComponentProperty;
+import com.storedobject.chart.property.ComponentProperty;
 
 import elemental.json.Json;
 import elemental.json.JsonObject;
