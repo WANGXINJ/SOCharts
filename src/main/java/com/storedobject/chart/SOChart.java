@@ -54,13 +54,18 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
 import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 import elemental.json.impl.JsonUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -190,6 +195,10 @@ public class SOChart extends AbstractJavaScriptComponent {
 			defaultTextStyle = new DefaultTextStyle();
 		}
 		return defaultTextStyle.getTextStyle();
+	}
+
+	public Tooltip getTooltip() {
+		return tooltip;
 	}
 
 	/**
@@ -369,12 +378,51 @@ public class SOChart extends AbstractJavaScriptComponent {
 		prepareComponents(skipData);
 		setupParts(skipData);
 
-		String options = buildOption(skipData);
-		System.out.println(JsonUtil.stringify(Json.parse(options), 4));
-		getState().options = customizeJSON(JsonUtil.stringify(Json.parse(options), 0));
+		String options = customizeJSON(buildOption(skipData));
+		JsonObject jsonOption = buildOptionJson(options);
+		System.out.println(JsonUtil.stringify(jsonOption, 4));
+		getState().options = JsonUtil.stringify(jsonOption, 0);
 //		executeJS("updateChart", customizeJSON(sb.toString()));
 
 		closeUpdate();
+	}
+
+	protected JsonObject buildOptionJson(String options) {
+		JsonObject jsonOption = Json.parse(options);
+		Map<String, String> optionFunctions = buildOptionJson(jsonOption, "option", new HashMap<String, String>(),
+				null);
+		optionFunctions.forEach((functionKey, function) -> {
+			jsonOption.put(functionKey, function);
+		});
+
+		return jsonOption;
+	}
+
+	protected Map<String, String> buildOptionJson(JsonValue json, String functionName, Map<String, String> functions,
+			Consumer<String> updater) {
+		if (json instanceof JsonObject) {
+			JsonObject obj = (JsonObject) json;
+			for (String key : obj.keys()) {
+				buildOptionJson(obj.get(key), functionName + key.substring(0, 1).toUpperCase() + key.substring(1),
+						functions, value -> obj.put(key, value));
+			}
+		} else if (json instanceof JsonArray) {
+			JsonArray array = (JsonArray) json;
+			for (int i = 0; i < array.length(); i++) {
+				int index = i;
+				buildOptionJson(array.get(i), functionName + index, functions, value -> array.set(index, value));
+			}
+		} else {
+			String text = json.asString();
+			if (text.startsWith("function (") || text.startsWith("function(")) {
+				String function = "function " + functionName + text.substring(text.indexOf('('));
+				String functionKey = "@function@" + functionName;
+				functions.put(functionKey, function);
+				updater.accept(functionKey);
+			}
+		}
+
+		return functions;
 	}
 
 	protected void prepareComponents(boolean skipData) throws ChartException {

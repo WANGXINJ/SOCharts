@@ -32,7 +32,7 @@ window.com_storedobject_chart_SOChart = function() {
 			}
 		}
 		
-		if (state.options && state.options.length > 0) {
+		if (state.options) {
 			sochart.updateChart(state.options);
 		}
 		

@@ -86,10 +86,11 @@ public interface ComponentPart extends ComponentProperty {
 	 * @param componentProperty Component property (could be <code>null</code>).
 	 */
 	static void encodeProperty(StringBuilder sb, ComponentProperty componentProperty) {
-		if (componentProperty != null) {
-			addComma(sb);
-			componentProperty.encodeJSON(sb);
-		}
+		if (componentProperty == null)
+			return;
+
+		addComma(sb);
+		componentProperty.encodeJSON(sb);
 	}
 
 	/**

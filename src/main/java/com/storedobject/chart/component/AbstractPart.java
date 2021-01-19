@@ -17,6 +17,7 @@
 package com.storedobject.chart.component;
 
 import com.storedobject.chart.coordinate_system.HasPosition;
+import com.storedobject.chart.property.ComponentProperties;
 import com.storedobject.chart.property.HasPadding;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.helper.ID;
@@ -33,6 +34,7 @@ public abstract class AbstractPart implements ComponentPart {
 
 	private int serial;
 	private final long id = ID.newID();
+	private final ComponentProperties properties = new ComponentProperties();
 
 	/**
 	 * Get a unique Id for this part.
@@ -63,6 +65,8 @@ public abstract class AbstractPart implements ComponentPart {
 			ComponentPart.encodeProperty(sb, ((HasPolarProperty) this).getPolarProperty(false));
 		}
 		sb.append(',');
+
+		properties.encode(sb);
 	}
 
 	/**
@@ -83,6 +87,10 @@ public abstract class AbstractPart implements ComponentPart {
 	@Override
 	public final void setSerial(int serial) {
 		this.serial = serial;
+	}
+
+	public void setProperty(String name, Object property) {
+		properties.set(name, property);
 	}
 
 	@Override

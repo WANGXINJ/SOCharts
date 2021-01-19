@@ -26,7 +26,6 @@ import com.storedobject.chart.coordinate_system.CoordinateSystem;
 import com.storedobject.chart.coordinate_system.Position;
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.property.Color;
-import com.storedobject.chart.property.ComponentProperties;
 import com.storedobject.chart.property.ComponentProperty;
 import com.storedobject.chart.util.ChartException;
 
@@ -64,7 +63,6 @@ public class Chart extends AbstractPart implements Component {
 	private Color[] colors;
 	private final Map<Class<? extends ComponentProperty>, ComponentProperty> propertyMap = new HashMap<>();
 	private final Map<Class<? extends ComponentProperty>, String> propertyNameMap = new HashMap<>();
-	private final ComponentProperties properties = new ComponentProperties();
 
 	/**
 	 * Create a {@link ChartType#Line} chart.
@@ -169,8 +167,6 @@ public class Chart extends AbstractPart implements Component {
 				ComponentPart.encode(sb, "coordinateSystem", name);
 			}
 		}
-
-		properties.encode(sb);
 
 		propertyMap.values().forEach(property -> {
 			ComponentPart.addComma(sb);
@@ -284,10 +280,6 @@ public class Chart extends AbstractPart implements Component {
 
 	void setProperty(ComponentProperty property) {
 		propertyMap.put(property.getClass(), property);
-	}
-
-	public void setProperty(String name, Object property) {
-		properties.set(name, property);
 	}
 
 	String axisName(int axis) {
