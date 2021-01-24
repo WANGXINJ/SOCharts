@@ -19,19 +19,18 @@ package com.storedobject.chart.property;
 import com.storedobject.chart.component.ComponentPart;
 
 /**
- * Interface to denote that a {@link ComponentPart} has
- * {@link ItemStyleProperty}.
+ * Interface to denote that a {@link ComponentPart} has {@link ItemStyle}.
  *
  * @author Syam
  */
-public interface HasItemStyleProperty {
+public interface HasItemStyle {
 
 	/**
 	 * Get the itemStyle property.
 	 *
 	 * @return ItemStyle property.
 	 */
-	ItemStyleProperty getItemStyle();
+	ItemStyle getItemStyle();
 
 	/**
 	 * Set the itemStyle property.
@@ -39,5 +38,5 @@ public interface HasItemStyleProperty {
 	 * @param itemStyleProperty ItemStyle property to set. It could be
 	 *                          <code>null</code>.
 	 */
-	void setItemStyle(ItemStyleProperty itemStyleProperty);
+	void setItemStyle(ItemStyle itemStyle);
 }

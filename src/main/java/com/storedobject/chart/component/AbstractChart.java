@@ -17,8 +17,8 @@
 package com.storedobject.chart.component;
 
 import com.storedobject.chart.data.AbstractDataProvider;
-import com.storedobject.chart.property.HasItemStyleProperty;
-import com.storedobject.chart.property.ItemStyleProperty;
+import com.storedobject.chart.property.HasItemStyle;
+import com.storedobject.chart.property.ItemStyle;
 import com.storedobject.chart.util.ChartException;
 
 /**
@@ -26,9 +26,9 @@ import com.storedobject.chart.util.ChartException;
  *
  * @author Syam
  */
-public abstract class AbstractChart extends Chart implements HasItemStyleProperty {
+public abstract class AbstractChart extends Chart implements HasItemStyle {
 
-	private ItemStyleProperty itemStyle;
+	private ItemStyle itemStyle;
 
 	/**
 	 * Create a chart of a given type and data.
@@ -63,15 +63,15 @@ public abstract class AbstractChart extends Chart implements HasItemStylePropert
 	}
 
 	@Override
-	public ItemStyleProperty getItemStyle() {
+	public ItemStyle getItemStyle() {
 		if (itemStyle == null) {
-			itemStyle = new ItemStyleProperty();
+			itemStyle = new ItemStyle();
 		}
 		return itemStyle;
 	}
 
 	@Override
-	public void setItemStyle(ItemStyleProperty itemStyle) {
+	public void setItemStyle(ItemStyle itemStyle) {
 		this.itemStyle = itemStyle;
 	}
 

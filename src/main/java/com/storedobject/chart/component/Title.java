@@ -26,12 +26,15 @@ import com.storedobject.chart.property.TextStyle;
  *
  * @author Syam
  */
-public class Title extends VisiblePart implements Component, HasPosition {
+public class Title extends VisiblePart implements Component, HasPosition, SinglePart {
 
 	private String text, subtext;
 	private Position position;
 	private TextStyle textStyle, subtextStyle;
 	private int gap = -1;
+
+	public Title() {
+	}
 
 	/**
 	 * Create a title with a given text.
@@ -61,8 +64,12 @@ public class Title extends VisiblePart implements Component, HasPosition {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+	public void encodePart(StringBuilder sb) {
+		super.encodePart(sb);
+
+		if (text == null && subtext == null)
+			return;
+
 		TextStyle.OuterProperties outerProperties = new TextStyle.OuterProperties();
 		ComponentPart.encode(sb, "text", text);
 		String t = getSubtext();

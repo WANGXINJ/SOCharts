@@ -16,6 +16,8 @@
 
 package com.storedobject.chart.component;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
+
 import com.storedobject.chart.property.ComponentProperty;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.chart.property.PolarProperty;
@@ -216,7 +218,7 @@ public class GaugeChart extends AbstractDataChart implements HasPolarProperty {
 
 		@Override
 		public void encodeJSON(StringBuilder sb) {
-			sb.append("{\"value\":").append(value).append(",\"name\":").append(ComponentPart.escape(name)).append('}');
+			sb.append("{\"value\":").append(value).append(",\"name\":").append(escape(name)).append('}');
 		}
 
 		/**

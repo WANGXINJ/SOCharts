@@ -19,16 +19,16 @@ package com.storedobject.chart.component;
 import com.storedobject.chart.coordinate_system.Axis;
 import com.storedobject.chart.coordinate_system.CoordinateSystem;
 import com.storedobject.chart.data.DataType;
+import com.storedobject.chart.property.AbstractComponentProperty;
 import com.storedobject.chart.util.ChartException;
 import com.storedobject.helper.ID;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Objects;
+import java.util.function.BiFunction;
 
 /**
  * Represents abstract "data zoom" component. Data zoom components allow the
@@ -36,31 +36,30 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Syam
  */
-public abstract class AbstractDataZoom implements Component {
+public abstract class AbstractDataZoom extends AbstractComponentProperty implements Component {
 
 	private int serial;
 	private final long id = ID.newID();
-	private final String type;
 	private final List<Axis> axes = new ArrayList<>();
 	private final CoordinateSystem coordinateSystem;
-	private int filterMode = Integer.MAX_VALUE;
+	private boolean explicitAxisIndex;
+	private FilterMode filterMode;
 	private int start = Integer.MIN_VALUE, end = Integer.MAX_VALUE;
 	private Object startValue, endValue;
 	private int minSpan = Integer.MIN_VALUE, maxSpan = Integer.MAX_VALUE;
 	private Object minSpanValue, maxSpanValue;
-	private boolean zoomLock;
+	private Boolean zoomLock;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param type             Type.
 	 * @param coordinateSystem Coordinate system.
-	 * @param axis             Axis list.
+	 * @param axes             Axis list.
 	 */
-	AbstractDataZoom(String type, CoordinateSystem coordinateSystem, Axis... axis) {
-		this.type = type;
+	protected AbstractDataZoom(CoordinateSystem coordinateSystem, Axis... axes) {
 		this.coordinateSystem = coordinateSystem;
-		addAxis(axis);
+		addAxis(axes);
 	}
 
 	@Override
@@ -68,16 +67,26 @@ public abstract class AbstractDataZoom implements Component {
 		return id;
 	}
 
+	public abstract DataZoomType getType();
+
+	public boolean isType(DataZoomType type) {
+		return Objects.equals(getType(), type);
+	}
+
+	public boolean isForAxis(Axis axis) {
+		return axis != null ? axes.contains(axis) : axes.isEmpty();
+	}
+
 	/**
 	 * Add list of axes.
 	 *
-	 * @param axis Axis list.
+	 * @param axes Axis list.
 	 */
-	public void addAxis(Axis... axis) {
-		if (axis != null) {
-			for (Axis a : axis) {
-				if (a != null && !this.axes.contains(a)) {
-					this.axes.add(a);
+	public void addAxis(Axis... axes) {
+		if (axes != null) {
+			for (Axis axis : axes) {
+				if (axis != null && !this.axes.contains(axis)) {
+					this.axes.add(axis);
 				}
 			}
 		}
@@ -87,10 +96,6 @@ public abstract class AbstractDataZoom implements Component {
 	public void validate() throws ChartException {
 		if (coordinateSystem.getSerial() < 0) {
 			throw new ChartException("Coordinate system is not used");
-		}
-		if (axes.isEmpty()) {
-			axes.addAll(coordinateSystem.getAxes());
-			return;
 		}
 		for (Axis axis : this.axes) {
 			if (!coordinateSystem.containsAxis(axis)) {
@@ -104,87 +109,61 @@ public abstract class AbstractDataZoom implements Component {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		sb.append("\"id\":").append(id);
-		ComponentPart.encode(sb, "type", type, true);
-		Set<Class<?>> axisClasses = new HashSet<>();
-		axes.forEach(axis -> axisClasses.add(axis.getClass()));
-		axisClasses.forEach(axisClass -> {
-			AtomicBoolean first = new AtomicBoolean(true);
-			axes.stream().filter(axis -> axis.getClass() == axisClass).forEach(axis -> {
-				if (first.get()) {
-					first.set(false);
-					sb.append(",\"").append(axis.axisName()).append("Index\":[");
-				} else {
-					sb.append(',');
-				}
-				sb.append(axis.wrap(coordinateSystem).getSerial());
-			});
-			sb.append(']');
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("id", id);
+		property("type", getType());
+
+		List<Axis> axes = new ArrayList<>(this.axes);
+		if (axes.isEmpty() && explicitAxisIndex) {
+			axes.addAll(coordinateSystem.getAxes());
+		}
+		axes.stream().map(Axis::getClass).forEach(axisClass -> {
+			property(Axis.axisName(axisClass) + "Index", axes.stream().filter(axis -> axis.getClass() == axisClass)
+					.mapToInt(axis -> axis.wrap(coordinateSystem).getSerial()).toArray());
 		});
-		if (filterMode != Integer.MAX_VALUE) {
-			sb.append(",\"filterMode\":\"");
-			switch (filterMode) {
-			case 0:
-				sb.append("none");
-				break;
-			case 1:
-				sb.append("empty");
-				break;
-			case 2:
-				sb.append("weakFilter");
-				break;
-			case 3:
-				sb.append("filter");
-				filterMode = Integer.MAX_VALUE;
-				break;
-			}
-			sb.append("\"");
-		}
+
+		property("filterMode", filterMode);
+
 		if (start != Integer.MIN_VALUE || end != Integer.MAX_VALUE || startValue != null || endValue != null) {
-			sb.append(",\"rangeMode\":[\"");
-			sb.append(startValue != null ? "value" : "percent");
-			sb.append("\",\"");
-			sb.append(endValue != null ? "value" : "percent");
-			sb.append("\"]");
+			String[] rangeMode = new String[2];
+			rangeMode[0] = startValue != null ? "value" : "percent";
+			rangeMode[1] = endValue != null ? "value" : "percent";
+			property("rangeMode", rangeMode);
 		}
+
 		if (start != Integer.MIN_VALUE) {
-			sb.append(",\"start\":").append(start);
+			property("start", start);
 			if (start == 0) {
 				start = Integer.MIN_VALUE;
 			}
 		}
 		if (end != Integer.MAX_VALUE) {
-			sb.append(",\"end\":").append(end);
+			property("end", end);
 			if (end == 100) {
 				end = Integer.MAX_VALUE;
 			}
 		}
-		if (startValue != null) {
-			ComponentPart.encode(sb, "startValue", startValue, true);
-		}
-		if (endValue != null) {
-			ComponentPart.encode(sb, "endValue", endValue, true);
-		}
+		property("startValue", startValue);
+		property("endValue", endValue);
+
 		if (minSpan != Integer.MIN_VALUE) {
-			sb.append(",\"minSpan\":").append(minSpan);
+			property("minSpan", minSpan);
 			if (minSpan == 0) {
 				minSpan = Integer.MIN_VALUE;
 			}
 		}
 		if (maxSpan != Integer.MAX_VALUE) {
-			sb.append(",\"maxSpan\":").append(maxSpan);
+			property("maxSpan", maxSpan);
 			if (maxSpan == 100) {
 				maxSpan = Integer.MAX_VALUE;
 			}
 		}
-		if (minSpanValue != null) {
-			ComponentPart.encode(sb, "minValueSpan", minSpanValue, true);
-		}
-		if (maxSpanValue != null) {
-			ComponentPart.encode(sb, "maxValueSpan", maxSpanValue, true);
-		}
-		ComponentPart.encode(sb, "zoomLock", zoomLock, true);
+		property("minValueSpan", minSpanValue);
+		property("maxValueSpan", maxSpanValue);
+
+		property("zoomLock", zoomLock);
 	}
 
 	@Override
@@ -197,13 +176,28 @@ public abstract class AbstractDataZoom implements Component {
 		this.serial = serial;
 	}
 
+	public void explicitAxisIndex() {
+		explicitAxisIndex = true;
+	}
+
+	public void implicitAxisIndex() {
+		explicitAxisIndex = false;
+	}
+
 	/**
-	 * Get the filter mode. (See {@link #setFilterMode(int)}).
+	 * Get the filter mode. (See {@link #setFilterMode(FilterMode)}).
 	 *
 	 * @return Get the current filter mode.
 	 */
-	public final int getFilterMode() {
-		return filterMode == Integer.MAX_VALUE ? 3 : filterMode;
+	public final FilterMode getFilterMode() {
+		return filterMode != null ? filterMode : FilterMode.filter;
+	}
+
+	public void setFilterMode(FilterMode filterMode) {
+		if (this.filterMode == null && filterMode == FilterMode.filter)
+			return;
+
+		this.filterMode = filterMode;
 	}
 
 	/**
@@ -236,7 +230,7 @@ public abstract class AbstractDataZoom implements Component {
 	 * @param filterMode Filter mode.
 	 */
 	public void setFilterMode(int filterMode) {
-		this.filterMode = (filterMode >= 0 && filterMode <= 3) ? filterMode : Integer.MAX_VALUE;
+		setFilterMode(FilterMode.valueOf(filterMode));
 	}
 
 	/**
@@ -514,5 +508,40 @@ public abstract class AbstractDataZoom implements Component {
 	 */
 	public void setZoomLock(boolean zoomLock) {
 		this.zoomLock = zoomLock;
+	}
+
+	public static enum DataZoomType {
+		inside((coordinate, axes) -> new CoordinateSystemZoom(coordinate, axes)), //
+		slider((coordinate, axes) -> new DataZoom(coordinate, axes)) //
+		;
+
+		final private BiFunction<CoordinateSystem, Axis[], ? extends AbstractDataZoom> creater;
+
+		private DataZoomType(BiFunction<CoordinateSystem, Axis[], ? extends AbstractDataZoom> creater) {
+			this.creater = creater;
+		}
+
+		public <ZOOM extends AbstractDataZoom> ZOOM newDataZoom(CoordinateSystem coordinate, Axis... axes) {
+			@SuppressWarnings("unchecked")
+			ZOOM zoom = (ZOOM) creater.apply(coordinate, axes);
+			return zoom;
+		}
+	}
+
+	public static enum FilterMode {
+		none, //
+		empty, //
+		weakFilter, //
+		filter, //
+		;
+
+		public static FilterMode valueOf(int index) {
+			FilterMode[] modes = values();
+			if (index >= 0 && index < modes.length) {
+				return modes[index];
+			}
+
+			return filter;
+		}
 	}
 }

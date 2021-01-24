@@ -16,6 +16,8 @@
 
 package com.storedobject.chart.coordinate_system;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.storedobject.chart.component.ComponentPart;
@@ -82,8 +84,9 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+	public void encodePart(StringBuilder sb) {
+		super.encodePart(sb);
+
 		sb.append("\"indicator\":[");
 		final AtomicBoolean first = new AtomicBoolean(true);
 		axisIndicators.stream().forEach(category -> {
@@ -92,7 +95,7 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 			} else {
 				sb.append(',');
 			}
-			sb.append("{\"name\":").append(ComponentPart.escape(category)).append('}');
+			sb.append("{\"name\":").append(escape(category)).append('}');
 		});
 		sb.append("],\"startAngle\":").append(startingAngle);
 		ComponentPart.encodeProperty(sb, color);

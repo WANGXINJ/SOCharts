@@ -25,11 +25,14 @@ import com.storedobject.chart.property.Color;
 import com.storedobject.chart.property.LineStyle;
 import com.storedobject.chart.property.Location;
 import com.storedobject.chart.property.Shadow;
+import com.storedobject.chart.property.LineProperty;
 import com.storedobject.chart.property.TextStyle;
 import com.storedobject.chart.property.VisibleProperty;
 import com.storedobject.chart.util.ChartException;
 import com.storedobject.helper.ID;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -54,13 +57,21 @@ public abstract class Axis extends VisibleProperty {
 		 */
 		LINE,
 		/**
+		 * Pointer as a shadow.
+		 */
+		SHADOW,
+		/**
 		 * Pointer as a cross-hair.
 		 */
 		CROSS_HAIR,
 		/**
 		 * No pointer.
 		 */
-		NONE
+		NONE;
+
+		public String encode() {
+			return toString().toLowerCase();
+		}
 	}
 
 	private final long id = ID.newID();
@@ -75,12 +86,15 @@ public abstract class Axis extends VisibleProperty {
 	private int divisions = 0;
 	private boolean showZero = true;
 	private Label label;
+	private Line line;
 	private MinorTicks minorTicks;
 	private Ticks ticks;
 	private GridLines gridLines;
 	private MinorGridLines minorGridLines;
 	private GridAreas gridAreas;
 	private Pointer pointer;
+	private LineProperty splitLine;
+	private LineProperty minorSplitLine;
 
 	/**
 	 * Constructor.
@@ -106,10 +120,20 @@ public abstract class Axis extends VisibleProperty {
 		return Objects.hash(id);
 	}
 
+	public DataType getDataType() {
+		return dataType;
+	}
+
+	public boolean isDataType(DataType type) {
+		return Objects.equals(dataType, type);
+	}
+
+	public boolean isDataType(Class<?> type) {
+		return type.isAssignableFrom(dataType.getType());
+	}
+
 	public String axisName() {
-		String name = getClass().getName();
-		name = name.substring(name.lastIndexOf('.') + 1);
-		return Character.toLowerCase(name.charAt(0)) + name.substring(1);
+		return axisName(getClass());
 	}
 
 	Object value(Object value) {
@@ -147,74 +171,52 @@ public abstract class Axis extends VisibleProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		if (inverted) {
-			sb.append(",\"inverse\":true");
-		}
-		sb.append(",\"type\":").append(dataType);
-		if (name != null) {
-			sb.append(",\"name\":\"").append(name).append('"');
-			if (nameLocation != null) {
-				sb.append(",\"nameLocation\":").append(nameLocation);
-			}
-			sb.append(",\"nameGap\":").append(nameGap);
-			sb.append(",\"nameRotate\":").append(nameRotation);
-			if (nameTextStyle != null) {
-				sb.append(",\"nameTextStyle\":{");
-				ComponentPart.encodeProperty(sb, nameTextStyle);
-				sb.append('}');
-			}
-		}
-		if (label != null) {
-			sb.append(",\"axisLabel\":{");
-			ComponentPart.encodeProperty(sb, label);
-			sb.append('}');
-		}
-		if (min != null) {
-			sb.append(",\"min\":").append(min);
-		}
-		if (max != null) {
-			sb.append(",\"max\":").append(max);
-		}
-		if (dataType != DataType.CATEGORY) {
-			if (divisions > 0) {
-				sb.append(",\"splitNumber\":").append(divisions);
-			}
-			if (min == null && max == null) {
-				sb.append(",\"scale\":").append(!showZero);
-			}
-		}
-		if (ticks != null) {
-			sb.append(",\"axisTick\":{");
-			ComponentPart.encodeProperty(sb, ticks);
-			sb.append('}');
-		}
-		if (minorTicks != null) {
-			sb.append(",\"minorTick\":{");
-			ComponentPart.encodeProperty(sb, minorTicks);
-			sb.append('}');
-		}
+	public void encodeProperty(StringBuilder sb) {
+		super.encodeProperty(sb);
+
 		if (gridLines != null) {
-			sb.append(",\"splitLine\":{");
-			ComponentPart.encodeProperty(sb, gridLines);
-			sb.append('}');
+			LineProperty splitLine = getSplitLine(true);
+			splitLine.setProperty(gridLines);
 		}
 		if (minorGridLines != null) {
-			sb.append(",\"minorSplitLine\":{");
-			ComponentPart.encodeProperty(sb, minorGridLines);
-			sb.append('}');
+			LineProperty minorSplitLine = getMinorSplitLine();
+			minorSplitLine.setProperty(minorGridLines);
 		}
-		if (gridAreas != null) {
-			sb.append(",\"splitArea\":{");
-			ComponentPart.encodeProperty(sb, gridAreas);
-			sb.append('}');
+
+		if (inverted) {
+			encodeValueProperty("inverse", inverted, sb);
 		}
-		if (pointer != null) {
-			sb.append(",\"axisPointer\":{");
-			ComponentPart.encodeProperty(sb, pointer);
-			sb.append('}');
+
+		encodeValueProperty("type", dataType, sb);
+
+		if (name != null) {
+			encodeValueProperty("name", name, sb);
+			encodeValueProperty("nameLocation", nameLocation, sb);
+			encodeValueProperty("nameGap", nameGap, sb);
+			encodeValueProperty("nameRotate", nameRotation, sb);
+			encodeComponentProperty("nameTextStyle", nameTextStyle, sb);
 		}
+
+		encodeComponentProperty("axisLine", line, sb);
+		encodeComponentProperty("axisLabel", label, sb);
+		encodeValueProperty("min", min, sb);
+		encodeValueProperty("max", max, sb);
+
+		if (dataType != DataType.CATEGORY) {
+			if (divisions > 0) {
+				encodeValueProperty("splitNumber", divisions, sb);
+			}
+			if (min == null && max == null) {
+				encodeValueProperty("scale", !showZero, sb);
+			}
+		}
+
+		encodeComponentProperty("axisTick", ticks, sb);
+		encodeComponentProperty("minorTick", minorTicks, sb);
+		encodeComponentProperty(splitLine, sb);
+		encodeComponentProperty(minorSplitLine, sb);
+		encodeComponentProperty("splitArea", gridAreas, sb);
+		encodeComponentProperty("axisPointer", pointer, sb);
 	}
 
 	/**
@@ -381,6 +383,28 @@ public abstract class Axis extends VisibleProperty {
 	}
 
 	/**
+	 * Get the line.
+	 *
+	 * @param create Whether to create if not exists or not.
+	 * @return Line.
+	 */
+	public final Line getLine(boolean create) {
+		if (line == null && create) {
+			line = new Line();
+		}
+		return line;
+	}
+
+	/**
+	 * Set the line for the axis.
+	 *
+	 * @param line Line.
+	 */
+	public void setLine(Line line) {
+		this.line = line;
+	}
+
+	/**
 	 * Get the label.
 	 *
 	 * @param create Whether to create if not exists or not.
@@ -537,6 +561,28 @@ public abstract class Axis extends VisibleProperty {
 		this.pointer = pointer;
 	}
 
+	public final LineProperty getSplitLine(boolean create) {
+		if (splitLine == null && create) {
+			splitLine = LineProperty.splitLine();
+		}
+		return splitLine;
+	}
+
+	public void setSplitLine(LineProperty splitLine) {
+		this.splitLine = splitLine;
+	}
+
+	public final LineProperty getMinorSplitLine() {
+		if (minorSplitLine == null) {
+			minorSplitLine = LineProperty.minorSplitLine();
+		}
+		return minorSplitLine;
+	}
+
+	public void setMinorSplitLine(LineProperty minorSplitLine) {
+		this.minorSplitLine = minorSplitLine;
+	}
+
 	/**
 	 * Represents the label used by {@link Axis}.
 	 *
@@ -563,11 +609,20 @@ public abstract class Axis extends VisibleProperty {
 
 		@Override
 		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			ComponentPart.addComma(sb);
-			sb.append("\"show\":").append(show);
+			if (show) {
+				super.encodeJSON(sb);
+			}
+
+			encodeValueProperty("show", show, sb);
+
+			if (show) {
+				encodeProperty(sb);
+			}
+		}
+
+		protected void encodeProperty(StringBuilder sb) {
 			if (gap > Integer.MIN_VALUE) {
-				sb.append(",\"margin\":").append(gap);
+				encodeValueProperty("margin", gap, sb);
 			}
 		}
 
@@ -645,23 +700,16 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			ComponentPart.addComma(sb);
-			sb.append("\"inside\":").append(inside);
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
+			encodeValueProperty("inside", inside, sb);
 			if (rotation >= -90 && rotation <= 90) {
-				sb.append(",\"rotate\":").append(rotation);
+				encodeValueProperty("rotate", rotation, sb);
 			}
-			sb.append(",\"showMinLabel\":").append(showMinLabel);
-			sb.append(",\"showMaxLabel\":").append(showMaxLabel);
-			if (interval >= -1) {
-				sb.append(",\"interval\":");
-				if (interval == -1) {
-					sb.append("\"auto\"");
-				} else {
-					sb.append(interval);
-				}
-			}
+			encodeValueProperty("showMinLabel", showMinLabel, sb);
+			encodeValueProperty("showMaxLabel", showMaxLabel, sb);
+			encodeIntervalValue(interval, sb);
 		}
 
 		/**
@@ -670,7 +718,7 @@ public abstract class Axis extends VisibleProperty {
 		 * @return True or false. <code>Null</code> value means that it will be
 		 *         determined automatically to eliminate labels-overlap.
 		 */
-		public final Boolean getShowMaxLabel() {
+		public final Boolean isShowMaxLabel() {
 			return showMaxLabel;
 		}
 
@@ -690,7 +738,7 @@ public abstract class Axis extends VisibleProperty {
 		 * @return True or false. <code>Null</code> value means that it will be
 		 *         determined automatically to eliminate labels-overlap.
 		 */
-		public final Boolean getShowMinLabel() {
+		public final Boolean isShowMinLabel() {
 			return showMinLabel;
 		}
 
@@ -750,11 +798,11 @@ public abstract class Axis extends VisibleProperty {
 		private int width = 0;
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
 			if (width > 0) {
-				ComponentPart.addComma(sb);
-				sb.append("\"length\":").append(width);
+				encodeValueProperty("length", width, sb);
 			}
 		}
 
@@ -793,11 +841,11 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
 			if (divisions > 0) {
-				ComponentPart.addComma(sb);
-				sb.append("\"splitNumber\":").append(divisions);
+				encodeValueProperty("splitNumber", divisions, sb);
 			}
 		}
 
@@ -838,18 +886,12 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			sb.append(",\"inside\":").append(inside);
-			if (interval >= -1) {
-				sb.append(",\"interval\":");
-				if (interval == -1) {
-					sb.append("\"auto\"");
-				} else {
-					sb.append(interval);
-				}
-			}
-			sb.append(",\"alignWithLabel\":").append(alignWithLabels);
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
+			encodeValueProperty("inside", inside, sb);
+			encodeIntervalValue(interval, sb);
+			encodeValueProperty("alignWithLabel", alignWithLabels, sb);
 		}
 
 		/**
@@ -929,17 +971,10 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			ComponentPart.addComma(sb);
-			if (interval >= -1) {
-				sb.append("\"interval\":");
-				if (interval == -1) {
-					sb.append("\"auto\"");
-				} else {
-					sb.append(interval);
-				}
-			}
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
+			encodeIntervalValue(interval, sb);
 		}
 
 		/**
@@ -995,17 +1030,10 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			ComponentPart.addComma(sb);
-			if (interval >= -1) {
-				sb.append("\"interval\":");
-				if (interval == -1) {
-					sb.append("\"auto\"");
-				} else {
-					sb.append(interval);
-				}
-			}
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
+			encodeIntervalValue(interval, sb);
 		}
 
 		/**
@@ -1054,29 +1082,14 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			if (type != null) {
-				sb.append(",\"type\":\"").append(type.toString().toLowerCase()).append('"');
-			}
-			if (snap != null) {
-				sb.append(",\"snap\":").append(snap);
-			}
-			if (label != null) {
-				sb.append(",\"label\":{");
-				ComponentPart.encodeProperty(sb, label);
-				sb.append('}');
-			}
-			if (shadow != null) {
-				sb.append(",\"shadowStyle\":{");
-				ComponentPart.encodeProperty(sb, shadow);
-				sb.append('}');
-			}
-			if (handle != null) {
-				sb.append(",\"handle\":{");
-				ComponentPart.encodeProperty(sb, handle);
-				sb.append('}');
-			}
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
+			encodeValueProperty("type", type, PointerType::encode, sb);
+			encodeValueProperty("snap", snap, sb);
+			encodeComponentProperty("label", label, sb);
+			encodeComponentProperty("shadowStyle", shadow, sb);
+			encodeComponentProperty("handle", handle, sb);
 		}
 
 		/**
@@ -1224,13 +1237,13 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
-			sb.append(",\"precision\":").append(precision);
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
 			if (precision >= 0) {
-				sb.append(precision);
+				encodeValueProperty("precision", precision, sb);
 			} else {
-				sb.append("\"auto\"");
+				encodeValueProperty("precision", "auto", sb);
 			}
 		}
 
@@ -1274,8 +1287,9 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			super.encodeJSON(sb);
+		public void encodeProperty(StringBuilder sb) {
+			super.encodeProperty(sb);
+
 			if (width > 0 || height > 0) {
 				int w = width, h = height;
 				if (w <= 0) {
@@ -1284,20 +1298,17 @@ public abstract class Axis extends VisibleProperty {
 				if (h <= 0) {
 					h = 45;
 				}
-				sb.append(",\"size\":");
 				if (w == h) {
-					sb.append(w);
+					encodeValueProperty("size", w, sb);
 				} else {
-					sb.append('[').append(w).append(',').append(h).append(']');
+					encodeValueProperty("size", "[" + w + "," + h + "]", sb);
 				}
 				if (gap >= 0) {
-					sb.append(",\"margin\":").append(gap);
+					encodeValueProperty("margin", gap, sb);
 				}
 			}
-			if (color != null) {
-				sb.append(",\"color\":").append(color);
-			}
-			ComponentPart.encodeProperty(sb, shadow);
+			encodeValueProperty("color", color, sb);
+			encodeComponentProperty(shadow, sb);
 		}
 
 		/**
@@ -1403,6 +1414,7 @@ public abstract class Axis extends VisibleProperty {
 		public void setShadow(Shadow shadow) {
 			this.shadow = shadow;
 		}
+
 	}
 
 	public abstract ComponentPart wrap(CoordinateSystem coordinateSystem);
@@ -1431,13 +1443,12 @@ public abstract class Axis extends VisibleProperty {
 
 		@Override
 		public void encodeJSON(StringBuilder sb) {
-			sb.append("\"id\":").append(id).append(',');
+			encodeValueProperty("id", id, sb);
 			for (ComponentEncoder encoder : SOChart.encoders) {
 				if (!encoder.exact(coordinateSystem)) {
 					continue;
 				}
-				sb.append('"').append(encoder.getLabel()).append("Index\":").append(coordinateSystem.getSerial())
-						.append(',');
+				encodeValueProperty(encoder.getLabel() + "Index", coordinateSystem.getSerial(), sb);
 				break;
 			}
 			axis.encodeJSON(sb);
@@ -1457,5 +1468,18 @@ public abstract class Axis extends VisibleProperty {
 		public void validate() throws ChartException {
 			axis.validate();
 		}
+	}
+
+	protected static void encodeIntervalValue(int interval, StringBuilder sb) {
+		if (interval == -1) {
+			encodeValueProperty("interval", "auto", sb);
+		} else if (interval >= 0) {
+			encodeValueProperty("interval", interval, sb);
+		}
+	}
+
+	public static String axisName(Class<? extends Axis> axisClass) {
+		String name = axisClass.getSimpleName();
+		return Character.toLowerCase(name.charAt(0)) + name.substring(1);
 	}
 }

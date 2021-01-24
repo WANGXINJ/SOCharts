@@ -16,9 +16,11 @@
 
 package com.storedobject.chart.data;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeStream;
+import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import com.storedobject.chart.component.ComponentPart;
@@ -92,7 +94,7 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 	}
 
 	default void encodeDataContent(StringBuilder sb) {
-		encode(sb, stream(), "[", "]", true, getDataEncoder());
+		encodeStream(sb, stream(), "[", "]", true, getDataEncoder());
 	}
 
 	public default boolean isDataSetEncoding() {
@@ -100,49 +102,12 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 	}
 
 	public static TriConsumer<StringBuilder, Object, Integer> DEFAULT_DATA_ENCODER = (sb, data, index) -> sb
-			.append(ComponentPart.escape(data));
+			.append(escape(data));
 
 	default TriConsumer<StringBuilder, T, Integer> getDataEncoder() {
 		@SuppressWarnings("unchecked")
 		TriConsumer<StringBuilder, T, Integer> defaultDataEncoder = (TriConsumer<StringBuilder, T, Integer>) DEFAULT_DATA_ENCODER;
 		return defaultDataEncoder;
-	}
-
-	/**
-	 * Append the JSON encoding of all values coming from a stream to the given
-	 * string builder.
-	 *
-	 * @param sb           Append the JSONified string to this.
-	 * @param dataStream   Sream of data values.
-	 * @param prefix       Prefix to add.
-	 * @param suffix       Suffix to add.
-	 * @param appendAnyway Append prefix and suffix even if data is empty.
-	 * @param dataEncoder  Encoder for the value read from the stream. If
-	 *                     <code>null</code> is passed, stringified version will be
-	 *                     appended.
-	 * @param <DATA>       Type of data value in the stream.
-	 */
-	static <DATA> void encode(StringBuilder sb, Stream<DATA> dataStream, String prefix, String suffix,
-			boolean appendAnyway, TriConsumer<StringBuilder, DATA, Integer> dataEncoder) {
-		AtomicInteger index = new AtomicInteger(-1);
-		dataStream.forEach(data -> {
-			boolean first = index.incrementAndGet() == 0;
-			if (first) {
-				sb.append(prefix);
-			} else {
-				sb.append(',');
-			}
-
-			dataEncoder.accept(sb, data, index.get());
-		});
-
-		if (index.get() == -1) {
-			if (appendAnyway) {
-				sb.append(prefix).append(suffix);
-			}
-		} else {
-			sb.append(suffix);
-		}
 	}
 
 	@Override

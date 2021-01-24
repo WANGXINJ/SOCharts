@@ -42,7 +42,18 @@ public abstract class VisiblePart extends AbstractPart {
 
 	@Override
 	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+		if (show) {
+			super.encodeJSON(sb);
+		}
+
 		sb.append("\"show\":").append(show).append(',');
+
+		if (show) {
+			encodePart(sb);
+		}
+	}
+
+	protected void encodePart(StringBuilder sb) {
+		// FI
 	}
 }

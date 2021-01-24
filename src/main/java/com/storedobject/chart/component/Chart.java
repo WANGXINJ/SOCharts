@@ -16,8 +16,6 @@
 
 package com.storedobject.chart.component;
 
-import static com.storedobject.chart.SOChart.isDataSetEncoding;
-
 import java.util.*;
 
 import com.storedobject.chart.SOChart;
@@ -184,7 +182,7 @@ public class Chart extends AbstractPart implements Component {
 				axes = type.getAxes();
 			}
 
-			if (isDataSetEncoding(List.of(data))) {
+			if (ComponentParts.of(data).isDataSetEncoding()) {
 				sb.append(",\"encode\":{");
 				for (int i = 0; i < axes.length; i++) {
 					if (i > 0) {
@@ -259,7 +257,6 @@ public class Chart extends AbstractPart implements Component {
 		return name;
 	}
 
-	@SuppressWarnings("unused")
 	<P extends ComponentProperty> void setPropertyName(Class<P> propertyClass, String name) {
 		propertyNameMap.put(propertyClass, name);
 	}
@@ -278,7 +275,7 @@ public class Chart extends AbstractPart implements Component {
 		return property;
 	}
 
-	void setProperty(ComponentProperty property) {
+	public void setProperty(ComponentProperty property) {
 		propertyMap.put(property.getClass(), property);
 	}
 
@@ -302,12 +299,12 @@ public class Chart extends AbstractPart implements Component {
 	}
 
 	@Override
-	public void addParts(SOChart soChart) {
+	public void addPartsInto(ComponentParts parts) {
 		if (coordinateSystem != null) {
-			soChart.addParts(coordinateSystem);
-			coordinateSystem.addParts(soChart);
+			parts.add(coordinateSystem);
+			coordinateSystem.addPartsInto(parts);
 		} else {
-			soChart.addParts(data);
+			parts.addAll(data);
 		}
 	}
 

@@ -18,6 +18,7 @@ package com.storedobject.chart.component;
 
 import com.storedobject.chart.coordinate_system.HasPosition;
 import com.storedobject.chart.property.ComponentProperties;
+import com.storedobject.chart.property.ComponentProperty;
 import com.storedobject.chart.property.HasPadding;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.helper.ID;
@@ -91,6 +92,18 @@ public abstract class AbstractPart implements ComponentPart {
 
 	public void setProperty(String name, Object property) {
 		properties.set(name, property);
+	}
+
+	public void setComponentProperty(ComponentProperty componentProperty) {
+		properties.set(componentProperty);
+	}
+
+	public void setJsonProperty(String propertyJson) {
+		properties.set(propertyJson);
+	}
+
+	public void setComponentProperties(ComponentProperties props) {
+		properties.setAll(props);
 	}
 
 	@Override

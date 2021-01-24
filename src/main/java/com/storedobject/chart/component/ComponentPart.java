@@ -16,6 +16,8 @@
 
 package com.storedobject.chart.component;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
+
 import com.storedobject.chart.SOChart;
 import com.storedobject.chart.property.ComponentProperty;
 import com.storedobject.chart.util.ChartException;
@@ -172,34 +174,5 @@ public interface ComponentPart extends ComponentProperty {
 	static String className(Class<?> anyClass) {
 		String cName = anyClass.getName();
 		return Chart.name(cName.substring(cName.lastIndexOf('.') + 1)).replace('$', '/');
-	}
-
-	/**
-	 * Helper method to escape invalid characters in JSON strings. Please note that
-	 * this method returns a double-quoted string unless the parameter is a number.
-	 * For example, escape("Hello") will return "Hello" not Hello.
-	 *
-	 * @param any Anything to encode.
-	 * @return Encoded string.
-	 */
-	static String escape(Object any) {
-		if (any instanceof Number || any instanceof Boolean) {
-			return any.toString();
-		}
-
-		String string = any == null ? "" : any.toString();
-		if (string == null) {
-			string = "";
-		}
-		if (string.startsWith("\"") && string.endsWith("\"")) {
-			return string; // Special case - already encoded.
-		}
-		if (string.contains("\"")) {
-			string = string.replace("\"", "\\\"");
-		}
-		if (string.contains("\n")) {
-			string = string.replace("\n", "\\n");
-		}
-		return '"' + string + '"';
 	}
 }

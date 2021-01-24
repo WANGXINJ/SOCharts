@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.storedobject.chart.SOChart;
 import com.storedobject.chart.component.Chart;
 import com.storedobject.chart.component.Component;
+import com.storedobject.chart.component.ComponentParts;
 import com.storedobject.chart.component.NightingaleRoseChart;
 import com.storedobject.chart.component.PieChart;
 import com.storedobject.chart.component.VisiblePart;
@@ -127,13 +127,13 @@ public abstract class CoordinateSystem extends VisiblePart implements Component,
 	}
 
 	@Override
-	public void addParts(SOChart soChart) {
+	public void addPartsInto(ComponentParts parts) {
 		for (Chart chart : charts) {
-			soChart.addParts(chart);
-			soChart.addParts(chart.getData());
+			parts.add(chart);
+			parts.addAll(chart.getData());
 		}
 		for (Axis axis : axes) {
-			soChart.addParts(axis.wrap(this));
+			parts.add(axis.wrap(this));
 		}
 	}
 

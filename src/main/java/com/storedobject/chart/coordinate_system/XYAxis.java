@@ -41,8 +41,9 @@ public abstract class XYAxis extends Axis {
 	abstract String positionString();
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+	public void encodeProperty(StringBuilder sb) {
+		super.encodeProperty(sb);
+
 		if (isOpposite()) {
 			sb.append(',');
 			ComponentPart.encode(sb, "position", positionString());

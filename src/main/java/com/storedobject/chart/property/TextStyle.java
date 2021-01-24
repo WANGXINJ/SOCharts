@@ -16,14 +16,12 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.ComponentPart;
-
 /**
  * As the name indicates, "text style" is for styling texts.
  *
  * @author Syam
  */
-public class TextStyle implements ComponentProperty {
+public class TextStyle extends AbstractComponentProperty {
 
 	private Color color, background;
 	private FontStyle fontStyle;
@@ -36,31 +34,23 @@ public class TextStyle implements ComponentProperty {
 	private TextBorder textBorder;
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		encode(sb, "color", color);
-		encode(sb, "fontStyle", fontStyle);
-		encode(sb, "fontWeight", fontWeight);
-		encode(sb, "fontFamily", fontFamily);
-		encode(sb, "fontSize", fontSize);
-		encode(sb, "backgroundColor", background);
-		ComponentPart.encodeProperty(sb, border);
-		ComponentPart.encodeProperty(sb, padding);
-		ComponentPart.encodeProperty(sb, alignment);
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("color", color);
+		property("fontStyle", fontStyle);
+		property("fontWeight", fontWeight);
+		property("fontFamily", fontFamily);
+		property("fontSize", fontSize, size -> size > 0);
+		property("backgroundColor", background);
+		property(border);
+		property(padding);
+		property(alignment);
+
 		if (textBorder != null) {
 			textBorder.setPrefix("text");
 		}
-		ComponentPart.encodeProperty(sb, textBorder);
-	}
-
-	private static void encode(StringBuilder sb, String name, Object value) {
-		if (value == null) {
-			return;
-		}
-		if (value instanceof Integer && (Integer) value <= 0) {
-			return;
-		}
-		ComponentPart.addComma(sb);
-		ComponentPart.encode(sb, name, value);
+		property(textBorder);
 	}
 
 	/**

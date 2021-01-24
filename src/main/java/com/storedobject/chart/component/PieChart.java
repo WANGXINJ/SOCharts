@@ -18,9 +18,9 @@ package com.storedobject.chart.component;
 
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.data.DataProvider;
-import com.storedobject.chart.property.HasLabelProperty;
+import com.storedobject.chart.property.HasLabel;
 import com.storedobject.chart.property.HasPolarProperty;
-import com.storedobject.chart.property.LabelProperty;
+import com.storedobject.chart.property.Label;
 import com.storedobject.chart.property.PolarProperty;
 import com.storedobject.chart.property.Size;
 
@@ -29,10 +29,10 @@ import com.storedobject.chart.property.Size;
  *
  * @author Syam
  */
-public class PieChart extends SelfPositioningChart implements HasPolarProperty, HasLabelProperty {
+public class PieChart extends SelfPositioningChart implements HasPolarProperty, HasLabel {
 
 	private PolarProperty polarProperty;
-	private LabelProperty labelProperty;
+	private Label labelProperty;
 
 	/**
 	 * Constructor.
@@ -83,15 +83,15 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 	}
 
 	@Override
-	public LabelProperty getLabelProperty() {
+	public Label getLabel() {
 		if (labelProperty == null) {
-			labelProperty = new LabelProperty();
+			labelProperty = new Label();
 		}
 		return labelProperty;
 	}
 
 	@Override
-	public void setLabelProperty(LabelProperty labelProperty) {
+	public void setLabel(Label labelProperty) {
 		this.labelProperty = labelProperty;
 	}
 

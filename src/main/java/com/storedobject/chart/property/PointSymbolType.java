@@ -79,6 +79,6 @@ public enum PointSymbolType {
 
 	@Override
 	public String toString() {
-		return "\"" + (value == null ? super.toString().toLowerCase() : value) + "\"";
+		return "\"" + (value == null ? name().toLowerCase() : value) + "\"";
 	}
 }

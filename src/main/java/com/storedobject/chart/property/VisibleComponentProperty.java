@@ -16,35 +16,34 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.PieChart;
-
 /**
- * Represents labelLine property. Certain charts supports this property
- * (Example: {@link PieChart}.
+ * Represents a common base for {@link ComponentProperty} with visibility as a
+ * property.
  *
- * @author xj
+ * @author Syam
  */
-public class LabelLineProperty extends BaseComponentProperty {
+public abstract class VisibleComponentProperty extends BaseComponentProperty {
 
 	private Boolean show;
 
-	public LabelLineProperty() {
-		super("labelLine");
+	protected VisibleComponentProperty(String name) {
+		super(name);
 	}
 
-	public Boolean isShow() {
-		return show;
+	public void show() {
+		show = true;
 	}
 
-	public LabelLineProperty setShow(Boolean show) {
-		this.show = show;
-
-		return this;
+	/**
+	 * Hide this part.
+	 */
+	public void hide() {
+		show = false;
 	}
 
 	@Override
-	protected void initProperties() {
-		super.initProperties();
+	protected void buildProperties() {
+		super.buildProperties();
 
 		property("show", show);
 	}

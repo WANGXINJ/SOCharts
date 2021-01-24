@@ -52,7 +52,7 @@ public interface Component extends ComponentPart {
 	 *
 	 * @param soChart Chart to which components to be added.
 	 */
-	default void addParts(SOChart soChart) {
+	default void addPartsInto(ComponentParts parts) {
 	}
 
 	/**

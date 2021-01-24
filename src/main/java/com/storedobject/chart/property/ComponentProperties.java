@@ -1,11 +1,14 @@
 package com.storedobject.chart.property;
 
+import static com.storedobject.chart.component.ComponentPart.addComma;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeJsonProperty;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-import com.storedobject.chart.component.ComponentPart;
-import com.storedobject.chart.util.ComponentPropertyUtil;
 import com.storedobject.helper.ID;
 
 public class ComponentProperties {
@@ -16,23 +19,31 @@ public class ComponentProperties {
 	final Map<String, Object> properties = new LinkedHashMap<>();
 
 	public void encode(StringBuilder sb) {
-		ComponentPart.addComma(sb);
+		if (isEmpty())
+			return;
 
+		addComma(sb);
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
 			String key = entry.getKey();
 			if (key.startsWith(PREFIX_COMPONENT_PROPERTY)) {
-				ComponentPropertyUtil.encode(((ComponentProperty) entry.getValue()), sb);
+				encodeComponentProperty(((ComponentProperty) entry.getValue()), sb);
 			} else if (key.startsWith(PREFIX_PROPERTY_JSON)) {
-				ComponentPropertyUtil.encode(((String) entry.getValue()), sb);
+				encodeJsonProperty(((String) entry.getValue()), sb);
 			} else {
-				ComponentPropertyUtil.encode(entry.getKey(), entry.getValue(), sb);
+				encodeValueProperty(entry.getKey(), entry.getValue(), sb);
 			}
 		}
 	}
 
-	final public ComponentProperties set(String property, Object value) {
-		properties.put(property, value);
+	final public <T> ComponentProperties set(String name, T value, Predicate<T> condition) {
+		if (name != null && value != null && (condition == null || condition.test(value))) {
+			properties.put(name, value);
+		}
 		return this;
+	}
+
+	final public ComponentProperties set(String name, Object value) {
+		return set(name, value, (Predicate<Object>) null);
 	}
 
 	final public ComponentProperties set(ComponentProperty componentProperty) {

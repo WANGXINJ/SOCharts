@@ -19,23 +19,23 @@ package com.storedobject.chart.property;
 import com.storedobject.chart.component.ComponentPart;
 
 /**
- * Interface to denote that a {@link ComponentPart} has {@link LabelProperty}.
+ * Interface to denote that a {@link ComponentPart} has {@link Label}.
  *
  * @author Syam
  */
-public interface HasLabelProperty {
+public interface HasLabel {
 
 	/**
 	 * Get the label property.
 	 *
 	 * @return Label property.
 	 */
-	LabelProperty getLabelProperty();
+	Label getLabel();
 
 	/**
 	 * Set the label property.
 	 *
 	 * @param labelProperty Label property to set. It could be <code>null</code>.
 	 */
-	void setLabelProperty(LabelProperty labelProperty);
+	void setLabel(Label label);
 }

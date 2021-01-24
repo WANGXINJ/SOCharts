@@ -19,39 +19,33 @@ package com.storedobject.chart.property;
 import com.storedobject.chart.component.PieChart;
 
 /**
- * Represents label property. Certain charts supports this property (Example:
- * {@link PieChart}.
+ * Represents labelLine property. Certain charts supports this property
+ * (Example: {@link PieChart}.
  *
  * @author xj
  */
-public class LabelProperty extends BaseComponentProperty {
+public class LabelLine extends BaseComponentProperty {
 
-	private Integer fontSize;
+	private Boolean show;
 
-	public LabelProperty() {
-		super("label");
+	public LabelLine() {
+		super("labelLine");
 	}
 
-	public Integer getFontSize() {
-		return fontSize;
+	public Boolean isShow() {
+		return show;
 	}
 
-	public LabelProperty setFontSize(Integer fontSize) {
-		this.fontSize = fontSize;
+	public LabelLine setShow(Boolean show) {
+		this.show = show;
 
 		return this;
 	}
 
 	@Override
-	protected void initProperties() {
-		super.initProperties();
+	protected void buildProperties() {
+		super.buildProperties();
 
-		property("fontSize", fontSize);
-	}
-
-	public enum AlignTo {
-		none, //
-		labelLine, //
-		edge
+		property("show", show);
 	}
 }

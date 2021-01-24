@@ -29,7 +29,7 @@ import com.storedobject.chart.util.Key;
  */
 public class CoordinateSystemZoom extends AbstractDataZoom {
 
-	private boolean enabled = true;
+	private Boolean disabled;
 	private Object zoomOnMouseWheel, moveOnMouseWheel, moveOnMouseMove;
 
 	/**
@@ -39,39 +39,49 @@ public class CoordinateSystemZoom extends AbstractDataZoom {
 	 * @param axis             Axis list.
 	 */
 	public CoordinateSystemZoom(CoordinateSystem coordinateSystem, Axis... axis) {
-		super("inside", coordinateSystem, axis);
+		super(coordinateSystem, axis);
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		sb.append(",\"disabled\":").append(!enabled);
+	public DataZoomType getType() {
+		return DataZoomType.inside;
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("disabled", disabled);
 		if (zoomOnMouseWheel != null) {
-			ComponentPart.encode(sb, "zoomOnMouseWheel", zoomOnMouseWheel, true);
+			property("zoomOnMouseWheel", zoomOnMouseWheel);
 			zoomOnMouseWheel = null;
 		}
 		if (moveOnMouseWheel != null) {
-			ComponentPart.encode(sb, "moveOnMouseWheel", moveOnMouseWheel, true);
+			property("moveOnMouseWheel", moveOnMouseWheel);
 			moveOnMouseWheel = null;
 		}
 		if (moveOnMouseMove != null) {
-			ComponentPart.encode(sb, "moveOnMouseMove", moveOnMouseMove, true);
+			property("moveOnMouseMove", moveOnMouseMove);
 			moveOnMouseMove = null;
 		}
+
 	}
 
 	/**
 	 * Enable the zooming feature.
 	 */
 	public void enable() {
-		enabled = true;
+		if (disabled == null || !disabled)
+			return;
+
+		disabled = false;
 	}
 
 	/**
 	 * Disable the zooming feature.
 	 */
 	public void disable() {
-		enabled = false;
+		disabled = true;
 	}
 
 	/**

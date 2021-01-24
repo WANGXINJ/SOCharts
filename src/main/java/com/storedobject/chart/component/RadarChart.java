@@ -16,6 +16,8 @@
 
 package com.storedobject.chart.component;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +108,7 @@ public class RadarChart extends AbstractDataChart {
 				name = "Data " + i;
 			}
 			data.encodeDataSet(sb);
-			sb.append(",\"name\":").append(ComponentPart.escape(name)).append('}');
+			sb.append(",\"name\":").append(escape(name)).append('}');
 			++i;
 		}
 		sb.append(']');

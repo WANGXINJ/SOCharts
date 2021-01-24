@@ -16,6 +16,9 @@
 
 package com.storedobject.chart.data;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeStream;
+import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
+
 import java.util.stream.Stream;
 
 import com.storedobject.chart.component.ComponentPart;
@@ -47,10 +50,10 @@ public interface TreeDataProvider extends ComponentPart {
 		if (name == null) {
 			name = "Name?";
 		}
-		sb.append("{\"name\":").append(ComponentPart.escape(name)).append(",\"value\":").append(getValue());
+		sb.append("{\"name\":").append(escape(name)).append(",\"value\":").append(getValue());
 		Stream<? extends TreeDataProvider> children = getChildren();
 		if (children != null) {
-			AbstractDataProvider.encode(sb, children, ",\"children\":[", "]", false,
+			encodeStream(sb, children, ",\"children\":[", "]", false,
 					(strbuilder, data, index) -> data.encodeJSON(strbuilder));
 		}
 		sb.append('}');

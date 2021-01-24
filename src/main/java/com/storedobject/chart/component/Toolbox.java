@@ -33,7 +33,7 @@ import com.storedobject.chart.coordinate_system.RectangularCoordinate;
  *
  * @author Syam
  */
-public class Toolbox extends VisiblePart implements Component, HasPosition {
+public class Toolbox extends VisiblePart implements Component, HasPosition, SinglePart {
 
 	private final List<ToolboxButton> buttons = new ArrayList<>();
 	private Position position;
@@ -46,8 +46,9 @@ public class Toolbox extends VisiblePart implements Component, HasPosition {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+	public void encodePart(StringBuilder sb) {
+		super.encodePart(sb);
+
 		sb.append("\"tooltip\":{\"show\":true}");
 		if (vertical) {
 			sb.append(',');

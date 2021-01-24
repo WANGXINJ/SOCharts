@@ -16,15 +16,67 @@
 
 package com.storedobject.chart.component;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
+
+import com.storedobject.chart.coordinate_system.Axis;
+
 /**
  * Tooltip to display. Basic support only. Future versions will provide more
  * detailed features.
  *
  * @author Syam
  */
-public class Tooltip extends VisiblePart implements Component {
+public class Tooltip extends VisiblePart implements Component, SinglePart, SkipPart {
+
+	private Trigger trigger;
+	private Axis.Pointer axisPointer;
+
+	public Trigger getTrigger() {
+		return trigger;
+	}
+
+	public Tooltip setTrigger(Trigger trigger) {
+		this.trigger = trigger;
+		return this;
+	}
+
+	public Axis.Pointer getAxisPointer(boolean create) {
+		if (axisPointer == null && create) {
+			axisPointer = new Axis.Pointer();
+		}
+		return axisPointer;
+	}
+
+	public Tooltip setAxisointer(Axis.Pointer axisPointer) {
+		this.axisPointer = axisPointer;
+		return this;
+	}
+
+	public Axis.PointerType getAxisPointerType() {
+		return axisPointer != null ? axisPointer.getType() : Axis.PointerType.LINE;
+	}
+
+	public void setAxisPointerType(Axis.PointerType axisPointerType) {
+		getAxisPointer(true).setType(axisPointerType);
+	}
+
+	@Override
+	protected void encodePart(StringBuilder sb) {
+		super.encodePart(sb);
+
+		encodeValueProperty("trigger", trigger, sb);
+		encodeComponentProperty("axisPointer", axisPointer, sb);
+	}
 
 	@Override
 	public void validate() {
+	}
+
+	public static enum Trigger {
+		item, //
+		axis, //
+		none //
+		;
 	}
 }

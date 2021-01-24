@@ -16,7 +16,9 @@
 
 package com.storedobject.chart.coordinate_system;
 
-import com.storedobject.chart.component.ComponentPart;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
+
 import com.storedobject.chart.property.Border;
 import com.storedobject.chart.util.ChartException;
 
@@ -75,11 +77,12 @@ public class RectangularCoordinate extends CoordinateSystem {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		ComponentPart.encodeProperty(sb, border);
+	public void encodePart(StringBuilder sb) {
+		super.encodePart(sb);
+
+		encodeComponentProperty(border, sb);
 		if (sizeIncludeLabels) {
-			sb.append(",\"containLabel\":true");
+			encodeValueProperty("containLabel", sizeIncludeLabels, sb);
 		}
 	}
 

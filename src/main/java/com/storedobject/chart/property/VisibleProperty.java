@@ -22,7 +22,7 @@ package com.storedobject.chart.property;
  *
  * @author Syam
  */
-public abstract class VisibleProperty implements ComponentProperty {
+public abstract class VisibleProperty extends AbstractComponentProperty {
 
 	boolean show = true;
 
@@ -42,6 +42,18 @@ public abstract class VisibleProperty implements ComponentProperty {
 
 	@Override
 	public void encodeJSON(StringBuilder sb) {
+		if (show) {
+			super.encodeJSON(sb);
+		}
+
 		sb.append("\"show\":").append(show);
+
+		if (show) {
+			encodeProperty(sb);
+		}
+	}
+
+	protected void encodeProperty(StringBuilder sb) {
+		// FI
 	}
 }

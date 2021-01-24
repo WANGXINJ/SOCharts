@@ -19,14 +19,16 @@ package com.storedobject.chart;
 import com.storedobject.chart.component.Chart;
 import com.storedobject.chart.component.Component;
 import com.storedobject.chart.component.ComponentPart;
+import com.storedobject.chart.component.ComponentParts;
 import com.storedobject.chart.component.Legend;
 import com.storedobject.chart.component.PieChart;
+import com.storedobject.chart.component.Title;
+import com.storedobject.chart.component.Toolbox;
 import com.storedobject.chart.component.Tooltip;
 import com.storedobject.chart.coordinate_system.AngleAxis;
 import com.storedobject.chart.coordinate_system.PolarCoordinate;
 import com.storedobject.chart.coordinate_system.RectangularCoordinate;
 import com.storedobject.chart.data.AbstractData;
-import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.encoder.AngleAxisEncoder;
 import com.storedobject.chart.encoder.ColorEncoder;
 import com.storedobject.chart.encoder.ComponentEncoder;
@@ -59,16 +61,13 @@ import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 import elemental.json.impl.JsonUtil;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
+
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -109,7 +108,8 @@ import java.util.stream.Stream;
 public class SOChart extends AbstractJavaScriptComponent {
 	private static final long serialVersionUID = 3054575609878387969L;
 
-	private static final String SKIP_DATA = "Skipping data but new data found: ";
+	public static final String SKIP_DATA = "Skipping data but new data found: ";
+
 	final public static ComponentEncoder[] encoders = { //
 			new ColorEncoder(), //
 			new TextStyleEncoder(), //
@@ -118,25 +118,26 @@ public class SOChart extends AbstractJavaScriptComponent {
 			new ToolboxEncoder(), //
 			new TooltipEncoder(), //
 			new DataSetEncoder(), //
-			new AngleAxisEncoder(), //
-			new RadiusAxisEncoder(), //
-			new XAxisEncoder(), //
-			new YAxisEncoder(), //
 			new PolarCoordinateEncoder(), //
 			new RadarCoordinateEncoder(), //
+			new AngleAxisEncoder(), //
+			new RadiusAxisEncoder(), //
 			new RectangularCoordinateEncoder(), //
-			new ChartEncoder(), //
+			new XAxisEncoder(), //
+			new YAxisEncoder(), //
 			new DataZoomEncoder(), //
+			new ChartEncoder(), //
 	};
 	private final List<Component> components = new ArrayList<>();
-	private final List<ComponentPart> parts = new ArrayList<>();
+	private final ComponentParts parts = new ComponentParts();
+	private Title title;
 	private Legend legend = new Legend();
-	private Tooltip tooltip = new Tooltip();
+	private Tooltip tooltip;
+	private Toolbox toolbox;
 	private boolean neverUpdated = true;
 	private DefaultColors defaultColors;
 	private Color defaultBackground;
 	private DefaultTextStyle defaultTextStyle;
-	private boolean isDataSetEncoding;
 
 	/**
 	 * Constructor.
@@ -145,15 +146,52 @@ public class SOChart extends AbstractJavaScriptComponent {
 		getState().setProperty("idChart", "sochart" + ID.newID());
 	}
 
-	@Override
-	public void attach() {
-		super.attach();
-		try {
-			if (neverUpdated) {
-				update();
-			}
-		} catch (Exception ignored) {
+	public Title getTitle() {
+		if (title == null) {
+			title = new Title();
 		}
+		return title;
+	}
+
+	public SOChart setTitle(Title title) {
+		this.title = title;
+		return this;
+	}
+
+	public Legend getLegend() {
+		if (legend == null) {
+			legend = new Legend();
+		}
+		return legend;
+	}
+
+	public SOChart setLegend(Legend legend) {
+		this.legend = legend;
+		return this;
+	}
+
+	public Tooltip getTooltip() {
+		if (tooltip == null) {
+			tooltip = new Tooltip();
+		}
+		return tooltip;
+	}
+
+	public SOChart setTooltip(Tooltip tooltip) {
+		this.tooltip = tooltip;
+		return this;
+	}
+
+	public Toolbox getToolbox() {
+		if (toolbox == null) {
+			toolbox = new Toolbox();
+		}
+		return toolbox;
+	}
+
+	public SOChart setToolbox(Toolbox toolbox) {
+		this.toolbox = toolbox;
+		return this;
 	}
 
 	/**
@@ -197,28 +235,6 @@ public class SOChart extends AbstractJavaScriptComponent {
 		return defaultTextStyle.getTextStyle();
 	}
 
-	public Tooltip getTooltip() {
-		return tooltip;
-	}
-
-	/**
-	 * A tooltip will be shown by default. However, you can either disable it using
-	 * this method or you can create your own customized tooltips and add it using
-	 * {@link #add(Component...)}.
-	 */
-	public void disableDefaultTooltip() {
-		tooltip = null;
-	}
-
-	/**
-	 * Legends will be shown by default. However, you can either disable it using
-	 * this method or you can create your own customized legends and add it using
-	 * {@link #add(Component...)}.
-	 */
-	public void disableDefaultLegend() {
-		legend = null;
-	}
-
 	/**
 	 * Set the size.
 	 *
@@ -259,34 +275,18 @@ public class SOChart extends AbstractJavaScriptComponent {
 	}
 
 	/**
-	 * This should be invoked only from {@link Component#addParts(SOChart)} method
-	 * (That method will be called on each {@link Component} whenever chart is
-	 * getting updated).
-	 *
-	 * @param parts Parts to add.
-	 */
-	public void addParts(ComponentPart... parts) {
-		if (parts != null) {
-			for (ComponentPart cp : parts) {
-				if (cp != null) {
-					this.parts.add(cp);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Add components to the chart. (Chart will not be updated unless
 	 * {@link #update()} method is called).
 	 *
 	 * @param components Components to add.
 	 */
 	public void add(Component... components) {
-		if (components != null) {
-			for (Component c : components) {
-				if (c != null) {
-					this.components.add(c);
-				}
+		if (components == null)
+			return;
+
+		for (Component c : components) {
+			if (c != null) {
+				this.components.add(c);
 			}
 		}
 	}
@@ -325,6 +325,30 @@ public class SOChart extends AbstractJavaScriptComponent {
 			return;
 		}
 //        executeJS("clearChart");
+	}
+
+	public void refresh() {
+		try {
+			clear();
+			update();
+		} catch (Exception e) {
+		}
+	}
+
+	@Override
+	public void attach() {
+		super.attach();
+		try {
+			if (neverUpdated) {
+				update();
+			}
+		} catch (Exception ignored) {
+		}
+	}
+
+	@Override
+	protected SOChartState getState() {
+		return (SOChartState) super.getState();
 	}
 
 	/**
@@ -378,7 +402,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 		prepareComponents(skipData);
 		setupParts(skipData);
 
-		String options = customizeJSON(buildOption(skipData));
+		String options = customizeJSON(buildOption());
 		JsonObject jsonOption = buildOptionJson(options);
 		System.out.println(JsonUtil.stringify(jsonOption, 4));
 		getState().options = JsonUtil.stringify(jsonOption, 0);
@@ -387,15 +411,71 @@ public class SOChart extends AbstractJavaScriptComponent {
 		closeUpdate();
 	}
 
-	protected JsonObject buildOptionJson(String options) {
-		JsonObject jsonOption = Json.parse(options);
-		Map<String, String> optionFunctions = buildOptionJson(jsonOption, "option", new HashMap<String, String>(),
-				null);
-		optionFunctions.forEach((functionKey, function) -> {
-			jsonOption.put(functionKey, function);
-		});
+	protected void prepareComponents(boolean skipData) throws ChartException {
+		for (Component component : components) {
+			if (skipData) {
+				if (component instanceof AbstractData) {
+					if (component.getSerial() < 0) {
+						throw new ChartException(SKIP_DATA + component.className());
+					}
+					continue;
+				}
+			}
+			component.skippingData(skipData);
+			component.validate();
+			component.setSerial(-2);
+		}
+	}
 
-		return jsonOption;
+	protected void setupParts(boolean skipData) throws ChartException {
+		parts.init(components, skipData) //
+				.addAll(getRootParts()) //
+				.setupPartSerial();
+	}
+
+	protected ComponentParts getRootParts() {
+		return new ComponentParts() //
+				.add(defaultColors) //
+				.add(defaultTextStyle) //
+				.add(title) //
+				.add(tooltip) //
+				.add(legend) //
+		;
+	}
+
+	protected String buildOption() {
+		StringBuilder sb = new StringBuilder();
+		sb.append('{');
+
+		encodeValueProperty("backgroundColor", defaultBackground, sb);
+
+		for (ComponentEncoder encoder : encoders) {
+			encoder.encode(sb, parts);
+
+			if (sb.length() > 1 && sb.charAt(sb.length() - 1) != '\n') {
+				sb.append('\n');
+			}
+		}
+
+		sb.append('}');
+
+		return sb.toString();
+	}
+
+	protected JsonObject buildOptionJson(String options) {
+		try {
+			JsonObject jsonOption = Json.parse(options);
+			Map<String, String> optionFunctions = buildOptionJson(jsonOption, "option", new HashMap<String, String>(),
+					null);
+			optionFunctions.forEach((functionKey, function) -> {
+				jsonOption.put(functionKey, function);
+			});
+
+			return jsonOption;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	protected Map<String, String> buildOptionJson(JsonValue json, String functionName, Map<String, String> functions,
@@ -423,100 +503,6 @@ public class SOChart extends AbstractJavaScriptComponent {
 		}
 
 		return functions;
-	}
-
-	protected void prepareComponents(boolean skipData) throws ChartException {
-		for (Component component : components) {
-			if (skipData) {
-				if (component instanceof AbstractData) {
-					if (component.getSerial() < 0) {
-						throw new ChartException(SKIP_DATA + component.className());
-					}
-					continue;
-				}
-			}
-			component.skippingData(skipData);
-			component.validate();
-			component.setSerial(-2);
-		}
-	}
-
-	protected void setupParts(boolean skipData) throws ChartException {
-		parts.clear();
-		for (Component component : components) {
-			component.addParts(this);
-		}
-		for (ComponentPart part : parts) {
-			if (skipData) {
-				if (part instanceof AbstractData) {
-					if (part.getSerial() < 0) {
-						throw new ChartException(SKIP_DATA + part.className());
-					}
-					continue;
-				}
-			}
-			part.validate();
-			part.setSerial(-2);
-		}
-		parts.addAll(components);
-		if (defaultColors != null && !defaultColors.isEmpty()) {
-			parts.add(defaultColors);
-		}
-		if (defaultTextStyle != null) {
-			parts.add(defaultTextStyle);
-		}
-		if (!skipData && legend != null && parts.stream().noneMatch(cp -> cp instanceof Legend)) {
-			parts.add(legend);
-		}
-		if (!skipData && tooltip != null && parts.stream().noneMatch(cp -> cp instanceof Tooltip)) {
-			parts.add(tooltip);
-		}
-
-		setupPartSeries();
-
-		isDataSetEncoding = isDataSetEncoding(parts);
-	}
-
-	protected void setupPartSeries() {
-		for (ComponentEncoder encoder : encoders) {
-			int serial = 0;
-			List<ComponentPart> encodePartList = parts.stream()
-					.filter(part -> encoder.support(part) && part.getSerial() == -2).collect(Collectors.toList());
-			Map<ComponentPart, List<ComponentPart>> serialPartMap = encodePartList.stream()
-					.collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.toList()));
-			for (List<ComponentPart> serialPartList : serialPartMap.values()) {
-				for (ComponentPart serialPart : serialPartList) {
-					serialPart.setSerial(serial);
-				}
-				serial++;
-			}
-		}
-
-		parts.sort(Comparator.comparing(ComponentPart::getSerial));
-	}
-
-	protected String buildOption(boolean skipData) {
-		StringBuilder sb = new StringBuilder();
-		sb.append('{');
-
-		if (defaultBackground != null) {
-			sb.append("\"backgroundColor\":").append(defaultBackground);
-		}
-
-		for (ComponentEncoder encoder : encoders) {
-			if (encoder instanceof DataSetEncoder && (skipData || !isDataSetEncoding)) {
-				continue;
-			}
-
-			encoder.encode(sb, parts);
-
-			if (sb.length() > 1 && sb.charAt(sb.length() - 1) != '\n') {
-				sb.append('\n');
-			}
-		}
-		sb.append('}');
-
-		return sb.toString();
 	}
 
 	protected void closeUpdate() {
@@ -548,27 +534,5 @@ public class SOChart extends AbstractJavaScriptComponent {
 //    @SuppressWarnings("RedundantThrows")
 	protected String customizeJSON(String json) throws Exception {
 		return json;
-	}
-
-	@Override
-	protected SOChartState getState() {
-		return (SOChartState) super.getState();
-	}
-
-	public void refresh() {
-		try {
-			clear();
-			update();
-		} catch (Exception e) {
-		}
-	}
-
-	public static boolean isDataSetEncoding(List<ComponentPart> parts) {
-		return dataProviderStream(parts).allMatch(dataProvider -> dataProvider.isDataSetEncoding());
-	}
-
-	protected static Stream<AbstractDataProvider<?>> dataProviderStream(List<ComponentPart> parts) {
-		return parts.stream().filter(part -> part instanceof AbstractDataProvider)
-				.map(part -> (AbstractDataProvider<?>) part);
 	}
 }

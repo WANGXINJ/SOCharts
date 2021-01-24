@@ -1,21 +1,15 @@
 package com.storedobject.chart.property;
 
-public class InnerLabelProperty extends LabelProperty {
+public class InnerLabelProperty extends Label {
 
 	public InnerLabelProperty() {
-	}
-
-	@Override
-	protected void initProperties() {
-		super.initProperties();
-
-		property("position", "inner");
+		setPosition(Position.inner);
 	}
 
 	@Override
 	public void encodeJSON(StringBuilder sb) {
 		super.encodeJSON(sb);
 
-		new LabelLineProperty().setShow(false).encodeJSON(sb);
+		new LabelLine().setShow(false).encodeJSON(sb);
 	}
 }

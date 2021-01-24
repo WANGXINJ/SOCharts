@@ -8,14 +8,14 @@ import com.storedobject.chart.component.PieChart;
  *
  * @author xj
  */
-public class ItemStyleProperty extends BaseComponentProperty {
+public class ItemStyle extends BaseComponentProperty {
 
 	private Color color;
 	private Color borderColor;
 	private Integer borderWidth;
 	private LineStyle.Type borderType;
 
-	public ItemStyleProperty() {
+	public ItemStyle() {
 		super("itemStyle");
 	}
 
@@ -23,7 +23,7 @@ public class ItemStyleProperty extends BaseComponentProperty {
 		return color;
 	}
 
-	public ItemStyleProperty setColor(Color color) {
+	public ItemStyle setColor(Color color) {
 		this.color = color;
 		return this;
 	}
@@ -32,7 +32,7 @@ public class ItemStyleProperty extends BaseComponentProperty {
 		return borderColor;
 	}
 
-	public ItemStyleProperty setBorderColor(Color borderColor) {
+	public ItemStyle setBorderColor(Color borderColor) {
 		this.borderColor = borderColor;
 		return this;
 	}
@@ -41,7 +41,7 @@ public class ItemStyleProperty extends BaseComponentProperty {
 		return borderWidth;
 	}
 
-	public ItemStyleProperty setBorderWidth(Integer borderWidth) {
+	public ItemStyle setBorderWidth(Integer borderWidth) {
 		this.borderWidth = borderWidth;
 		return this;
 	}
@@ -50,15 +50,15 @@ public class ItemStyleProperty extends BaseComponentProperty {
 		return borderType;
 	}
 
-	public ItemStyleProperty setBorderType(LineStyle.Type borderType) {
+	public ItemStyle setBorderType(LineStyle.Type borderType) {
 		this.borderType = borderType;
 
 		return this;
 	}
 
 	@Override
-	protected void initProperties() {
-		super.initProperties();
+	protected void buildProperties() {
+		super.buildProperties();
 
 		property("color", color);
 		property("borderColor", borderColor);

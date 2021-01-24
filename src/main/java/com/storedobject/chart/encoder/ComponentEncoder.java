@@ -1,8 +1,7 @@
 package com.storedobject.chart.encoder;
 
-import java.util.List;
-
 import com.storedobject.chart.component.ComponentPart;
+import com.storedobject.chart.component.ComponentParts;
 
 public abstract class ComponentEncoder {
 	final String label;
@@ -38,7 +37,7 @@ public abstract class ComponentEncoder {
 		return partType == part.getClass();
 	}
 
-	public void encode(StringBuilder sb, List<ComponentPart> parts) {
+	public void encode(StringBuilder sb, ComponentParts parts) {
 		boolean first = true;
 		int serial = -2;
 		for (ComponentPart part : parts) {
@@ -91,7 +90,7 @@ public abstract class ComponentEncoder {
 		sb.append(']');
 	}
 
-	protected void afterPartEncode(StringBuilder sb, List<ComponentPart> parts) {
+	protected void afterPartEncode(StringBuilder sb, ComponentParts parts) {
 		// FI
 	}
 }

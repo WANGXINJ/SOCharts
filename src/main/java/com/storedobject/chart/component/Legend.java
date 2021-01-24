@@ -32,7 +32,7 @@ import com.storedobject.chart.property.TextStyle;
  *
  * @author Syam
  */
-public class Legend extends VisiblePart implements Component, HasPosition, HasPadding {
+public class Legend extends VisiblePart implements Component, HasPosition, HasPadding, SinglePart, SkipPart {
 
 	private Position position;
 	private Padding padding;
@@ -41,8 +41,9 @@ public class Legend extends VisiblePart implements Component, HasPosition, HasPa
 	private Border border;
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+	public void encodePart(StringBuilder sb) {
+		super.encodePart(sb);
+
 		if (textStyle != null) {
 			sb.append("\"textStyle\":{");
 			ComponentPart.encodeProperty(sb, textStyle);

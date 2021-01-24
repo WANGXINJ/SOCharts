@@ -45,8 +45,9 @@ public class AngleAxis extends Axis {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
+	public void encodeProperty(StringBuilder sb) {
+		super.encodeProperty(sb);
+
 		if (!clockwise) {
 			sb.append(",\"clockwise\":false");
 		}
