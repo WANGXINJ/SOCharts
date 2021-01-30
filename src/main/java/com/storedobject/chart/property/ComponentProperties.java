@@ -72,7 +72,7 @@ public class ComponentProperties {
 	}
 
 	final public <T> ComponentProperties set(String name, T value, boolean condition) {
-		if (value instanceof PropertyValue) {
+		if (value instanceof PropertyValue && !name.startsWith(PREFIX_COMPONENT_PROPERTY)) {
 			return set(name, (PropertyValue) value, condition);
 		}
 
@@ -83,6 +83,10 @@ public class ComponentProperties {
 	}
 
 	final public ComponentProperties set(ComponentProperty componentProperty) {
+		if (componentProperty instanceof PropertyComponentValue) {
+			return setAll(((PropertyComponentValue) componentProperty).buildAndGetProperties());
+		}
+
 		return set(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
 	}
 

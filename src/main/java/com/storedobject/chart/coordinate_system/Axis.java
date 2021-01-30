@@ -44,34 +44,6 @@ import java.util.function.Predicate;
  */
 public abstract class Axis extends VisibleProperty {
 
-	/**
-	 * Definition of pointer types.
-	 *
-	 * @author Syam
-	 */
-	public enum PointerType {
-		/**
-		 * Pointer as a line.
-		 */
-		LINE,
-		/**
-		 * Pointer as a shadow.
-		 */
-		SHADOW,
-		/**
-		 * Pointer as a cross-hair.
-		 */
-		CROSS_HAIR,
-		/**
-		 * No pointer.
-		 */
-		NONE;
-
-		public String encode() {
-			return toString().toLowerCase();
-		}
-	}
-
 	private final long id = ID.newID();
 	private DataType dataType;
 	Map<CoordinateSystem, AxisWrapper> wrappers = new HashMap<>();
@@ -101,6 +73,48 @@ public abstract class Axis extends VisibleProperty {
 	 */
 	public Axis(DataType dataType) {
 		this.dataType = dataType;
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		if (gridLines != null) {
+			Line splitLine = getSplitLine(true);
+			splitLine.setProperty(gridLines);
+		}
+		if (minorGridLines != null) {
+			Line minorSplitLine = getMinorSplitLine();
+			minorSplitLine.setProperty(minorGridLines);
+		}
+
+		property("inverse", true, inverted);
+		property("type", dataType);
+
+		if (name != null) {
+			property("name", name);
+			property("nameLocation", nameLocation);
+			property("nameGap", nameGap);
+			property("nameRotate", nameRotation);
+			property("nameTextStyle", nameTextStyle);
+		}
+
+		property("axisLine", line);
+		property("axisLabel", label);
+		property("min", min);
+		property("max", max);
+
+		if (dataType != DataType.CATEGORY) {
+			property("splitNumber", divisions, divisions > 0);
+			property("scale", !showZero, min == null && max == null);
+		}
+
+		property("axisTick", ticks);
+		property("minorTick", minorTicks);
+		property("splitLine", splitLine);
+		property("minorSplitLine", minorSplitLine);
+		property("splitArea", gridAreas);
+		property("axisPointer", pointer);
 	}
 
 	@Override
@@ -146,48 +160,6 @@ public abstract class Axis extends VisibleProperty {
 			}
 			throw new ChartException("Unable to determine the data type for this axis - " + name);
 		}
-	}
-
-	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		if (gridLines != null) {
-			Line splitLine = getSplitLine(true);
-			splitLine.setProperty(gridLines);
-		}
-		if (minorGridLines != null) {
-			Line minorSplitLine = getMinorSplitLine();
-			minorSplitLine.setProperty(minorGridLines);
-		}
-
-		property("inverse", true, inverted);
-		property("type", dataType);
-
-		if (name != null) {
-			property("name", name);
-			property("nameLocation", nameLocation);
-			property("nameGap", nameGap);
-			property("nameRotate", nameRotation);
-			property("nameTextStyle", nameTextStyle);
-		}
-
-		property("axisLine", line);
-		property("axisLabel", label);
-		property("min", min);
-		property("max", max);
-
-		if (dataType != DataType.CATEGORY) {
-			property("splitNumber", divisions, divisions > 0);
-			property("scale", !showZero, min == null && max == null);
-		}
-
-		property("axisTick", ticks);
-		property("minorTick", minorTicks);
-		property("splitLine", splitLine);
-		property("minorSplitLine", minorSplitLine);
-		property("splitArea", gridAreas);
-		property("axisPointer", pointer);
 	}
 
 	/**
@@ -552,6 +524,34 @@ public abstract class Axis extends VisibleProperty {
 
 	public void setMinorSplitLine(Line minorSplitLine) {
 		this.minorSplitLine = minorSplitLine;
+	}
+
+	/**
+	 * Definition of pointer types.
+	 *
+	 * @author Syam
+	 */
+	public enum PointerType {
+		/**
+		 * Pointer as a line.
+		 */
+		LINE,
+		/**
+		 * Pointer as a shadow.
+		 */
+		SHADOW,
+		/**
+		 * Pointer as a cross-hair.
+		 */
+		CROSS_HAIR,
+		/**
+		 * No pointer.
+		 */
+		NONE;
+
+		public String encode() {
+			return toString().toLowerCase();
+		}
 	}
 
 	/**

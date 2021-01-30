@@ -31,6 +31,14 @@ public class Alignment extends PropertyComponentValue implements ComponentProper
 	public Alignment() {
 	}
 
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property(p("align"), justify);
+		property(p("verticalAlign"), align);
+	}
+
 	/**
 	 * Justify left.
 	 */
@@ -98,13 +106,5 @@ public class Alignment extends PropertyComponentValue implements ComponentProper
 			return any;
 		}
 		return prefix + any.substring(0, 1).toUpperCase() + any.substring(1);
-	}
-
-	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		property(p("align"), justify);
-		property(p("verticalAlign"), align);
 	}
 }

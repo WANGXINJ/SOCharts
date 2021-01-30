@@ -23,31 +23,6 @@ package com.storedobject.chart.property;
  */
 public class LineStyle extends PropertyComponentValue {
 
-	/**
-	 * Line-type.
-	 *
-	 * @author Syam
-	 */
-	public enum Type {
-		/**
-		 * Solid.
-		 */
-		SOLID,
-		/**
-		 * Dashed.
-		 */
-		DASHED,
-		/**
-		 * Dotted.
-		 */
-		DOTTED;
-
-		@Override
-		public String toString() {
-			return name().toLowerCase();
-		}
-	}
-
 	private Color color;
 	private int width = Integer.MIN_VALUE;
 	private Type type;
@@ -163,5 +138,30 @@ public class LineStyle extends PropertyComponentValue {
 	 */
 	public void setOpacity(int opacity) {
 		this.opacity = opacity;
+	}
+
+	/**
+	 * Line-type.
+	 *
+	 * @author Syam
+	 */
+	public enum Type {
+		/**
+		 * Solid.
+		 */
+		SOLID,
+		/**
+		 * Dashed.
+		 */
+		DASHED,
+		/**
+		 * Dotted.
+		 */
+		DOTTED;
+
+		@Override
+		public String toString() {
+			return name().toLowerCase();
+		}
 	}
 }

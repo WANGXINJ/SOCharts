@@ -37,8 +37,6 @@ public abstract class XYAxis extends Axis {
 		super(dataType);
 	}
 
-	abstract String positionString();
-
 	@Override
 	protected void buildProperties() {
 		super.buildProperties();
@@ -46,6 +44,8 @@ public abstract class XYAxis extends Axis {
 		property("position", positionString(), isOpposite());
 		property("offset", offset, offset > 0);
 	}
+
+	abstract String positionString();
 
 	/**
 	 * Is this displayed on the opposite side (For example, an X axis is normally
