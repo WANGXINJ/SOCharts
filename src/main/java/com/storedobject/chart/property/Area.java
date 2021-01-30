@@ -16,8 +16,6 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.ComponentPart;
-
 /**
  * Represents an area (mostly a rectangular block). Mainly used as a building
  * block for constructing grids-like things.
@@ -35,15 +33,10 @@ public class Area extends VisibleProperty {
 	}
 
 	@Override
-	public void encodeProperty(StringBuilder sb) {
-		super.encodeProperty(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		if (style != null) {
-			ComponentPart.addComma(sb);
-			sb.append("\"areaStyle\":{");
-			ComponentPart.encodeProperty(sb, style);
-			sb.append('}');
-		}
+		property("areaStyle", style);
 	}
 
 	/**

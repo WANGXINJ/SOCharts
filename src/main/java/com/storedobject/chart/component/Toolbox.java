@@ -23,6 +23,7 @@ import java.util.List;
 import com.storedobject.chart.coordinate_system.HasPosition;
 import com.storedobject.chart.coordinate_system.Position;
 import com.storedobject.chart.coordinate_system.RectangularCoordinate;
+import com.storedobject.chart.property.PropertyComponentValue;
 
 /**
  * Toolbox provides certain utilities (Example: "Download the chart display as
@@ -46,27 +47,17 @@ public class Toolbox extends VisiblePart implements Component, HasPosition, Sing
 	}
 
 	@Override
-	public void encodePart(StringBuilder sb) {
-		super.encodePart(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		sb.append("\"tooltip\":{\"show\":true}");
-		if (vertical) {
-			sb.append(',');
-			ComponentPart.encode(sb, "orient", "vertical");
-		}
+		property("tooltip", new PropertyComponentValue().setProperty("show", true));
+		property("orient", "vertical", vertical);
 		if (show) {
-			sb.append(",\"feature\":{");
-			for (ToolboxButton button : buttons) {
-				if (button instanceof Internal) {
-					sb.append('"').append(((Internal) button).getTag()).append("\":{");
-				} else {
-					continue;
-				}
-				button.encodeJSON(sb);
-				sb.append("},");
-			}
-			ComponentPart.removeComma(sb);
-			sb.append('}');
+			PropertyComponentValue buttonValue = new PropertyComponentValue();
+			buttons.stream().filter(button -> button instanceof Internal).forEach(button -> {
+				buttonValue.setProperty(((Internal) button).getTag(), button);
+			});
+			property("feature", buttonValue);
 		}
 	}
 
@@ -230,22 +221,15 @@ public class Toolbox extends VisiblePart implements Component, HasPosition, Sing
 		}
 
 		@Override
-		protected void encodeCaptionJSON(StringBuilder sb) {
-			String c = getCaption(), rc = getResetCaption();
-			if (c == null && rc == null) {
+		protected void buildCaptionProperties() {
+			String caption = getCaption(), resetCaption = getResetCaption();
+			if (caption == null && resetCaption == null) {
 				return;
 			}
-			sb.append(",\"title\":{");
-			if (c != null) {
-				ComponentPart.encode(sb, "zoom", c);
-			}
-			if (rc != null) {
-				if (c != null) {
-					sb.append(',');
-				}
-				ComponentPart.encode(sb, "back", rc);
-			}
-			sb.append('}');
+
+			property("title", new PropertyComponentValue() //
+					.setProperty("zoom", caption) //
+					.setProperty("back", resetCaption));
 		}
 
 		/**

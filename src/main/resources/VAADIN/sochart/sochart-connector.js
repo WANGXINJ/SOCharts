@@ -1,6 +1,6 @@
 window.com_storedobject_chart_SOChart = function() {
-    // Create the component
-	var sochart = new sochartLib.SOChart(this.getElement());
+	// Create the component
+	var sochart = new sochartLib.SOChart(this);
 
 	// Handle changes from the server-side
 	this.onStateChange = function() {
@@ -18,23 +18,22 @@ window.com_storedobject_chart_SOChart = function() {
 			var properties = state.properties;
 			rootElement.id = properties.idChart;
 
-			if (properties.minw){
+			if (properties.minw) {
 				rootStyle.minWidth = properties.minw;
 			}
-			if (properties.maxw){
+			if (properties.maxw) {
 				rootStyle.maxWidth = properties.maxw;
 			}
-			if (properties.minh){
+			if (properties.minh) {
 				rootStyle.minHeight = properties.minh;
 			}
-			if (properties.maxh){
+			if (properties.maxh) {
 				rootStyle.maxHeight = properties.maxh;
 			}
 		}
-		
+
 		if (state.options && state.options.length > 0) {
 			sochart.updateChart(state.options);
 		}
-		
 	};
 };

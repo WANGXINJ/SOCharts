@@ -2,7 +2,7 @@ package com.storedobject.chart.property;
 
 public interface PropertyValue {
 
-	void encodeValue(StringBuilder sb);
+	public StringBuilder encodeValue(StringBuilder sb);
 
 	public ComponentProperty asProperty(String name);
 

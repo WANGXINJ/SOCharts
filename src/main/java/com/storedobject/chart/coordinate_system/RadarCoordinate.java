@@ -16,17 +16,13 @@
 
 package com.storedobject.chart.coordinate_system;
 
-import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.storedobject.chart.component.ComponentPart;
 import com.storedobject.chart.component.RadarChart;
 import com.storedobject.chart.data.CategoryData;
 import com.storedobject.chart.data.CategoryDataProvider;
 import com.storedobject.chart.property.Color;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.chart.property.PolarProperty;
+import com.storedobject.chart.property.PropertyValueArray;
 import com.storedobject.chart.util.ChartException;
 
 /**
@@ -84,21 +80,16 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 	}
 
 	@Override
-	public void encodePart(StringBuilder sb) {
-		super.encodePart(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		sb.append("\"indicator\":[");
-		final AtomicBoolean first = new AtomicBoolean(true);
+		PropertyValueArray indicatorValue = new PropertyValueArray();
 		axisIndicators.stream().forEach(category -> {
-			if (first.get()) {
-				first.set(false);
-			} else {
-				sb.append(',');
-			}
-			sb.append("{\"name\":").append(escape(category)).append('}');
+			indicatorValue.newPropertyValue().setProperty("name", category);
 		});
-		sb.append("],\"startAngle\":").append(startingAngle);
-		ComponentPart.encodeProperty(sb, color);
+		property("indicator", indicatorValue);
+		property("startAngle", startingAngle);
+		property(color);
 	}
 
 	@Override

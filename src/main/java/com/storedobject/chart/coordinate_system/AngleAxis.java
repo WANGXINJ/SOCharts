@@ -45,13 +45,11 @@ public class AngleAxis extends Axis {
 	}
 
 	@Override
-	public void encodeProperty(StringBuilder sb) {
-		super.encodeProperty(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		if (!clockwise) {
-			sb.append(",\"clockwise\":false");
-		}
-		sb.append(",\"startAngle\":").append(startingAngle);
+		property("clockwise", false, !clockwise);
+		property("startAngle", startingAngle);
 	}
 
 	@Override

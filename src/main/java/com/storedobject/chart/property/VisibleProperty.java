@@ -16,13 +16,15 @@
 
 package com.storedobject.chart.property;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
+
 /**
  * Represents a common base for {@link ComponentProperty} with visibility as a
  * property.
  *
  * @author Syam
  */
-public abstract class VisibleProperty extends AbstractComponentProperty {
+public abstract class VisibleProperty extends PropertyComponentValue {
 
 	boolean show = true;
 
@@ -41,19 +43,19 @@ public abstract class VisibleProperty extends AbstractComponentProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (show) {
-			super.encodeJSON(sb);
-		}
+	protected void buildProperties() {
+		super.buildProperties();
 
-		sb.append("\"show\":").append(show);
-
-		if (show) {
-			encodeProperty(sb);
-		}
+		property("show", show);
 	}
 
-	protected void encodeProperty(StringBuilder sb) {
-		// FI
+	@Override
+	final public void encodeJSON(StringBuilder sb) {
+		if (!show) {
+			encodeValueProperty("show", false, sb);
+			return;
+		}
+
+		super.encodeJSON(sb);
 	}
 }

@@ -193,6 +193,10 @@ public class Color extends AbstractColor {
 		}
 	}
 
+	public java.awt.Color toAwtColor() {
+		return new java.awt.Color(red, green, blue, alpha);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

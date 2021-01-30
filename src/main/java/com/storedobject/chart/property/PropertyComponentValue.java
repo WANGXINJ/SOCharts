@@ -6,21 +6,27 @@ import static com.storedobject.chart.util.ComponentPropertyUtil.endNode;
 public class PropertyComponentValue extends AbstractComponentProperty implements PropertyValue {
 
 	@Override
-	public void encodeValue(StringBuilder sb) {
+	public StringBuilder encodeValue(StringBuilder sb) {
 		buildProperties();
-		if (isEmpty())
-			return;
+		if (isEmpty()) {
+			return sb;
+		}
 
 		beginValueNode(sb);
 		encodeProperties(sb);
 		endNode(sb);
+
+		return sb;
 	}
 
 	@Override
-	public BaseComponentProperty asProperty(String name) {
-		BaseComponentProperty componentProperty = new BaseComponentProperty(name);
-		componentProperty.copyProperties(this);
-		return componentProperty;
+	public String toString() {
+		return encodeValue(new StringBuilder()).toString();
+	}
+
+	@Override
+	public PropertyComponentValueWrapper asProperty(String name) {
+		return new PropertyComponentValueWrapper(name, this);
 	}
 
 	public static BaseComponentProperty toComponentProperty(String name, PropertyComponentValue propertyValue) {

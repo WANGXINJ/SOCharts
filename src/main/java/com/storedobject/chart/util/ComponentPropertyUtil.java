@@ -3,8 +3,10 @@ package com.storedobject.chart.util;
 import static com.storedobject.chart.component.ComponentPart.addComma;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -15,6 +17,8 @@ import elemental.json.JsonObject;
 import elemental.json.impl.JsonUtil;
 
 public class ComponentPropertyUtil {
+
+	public static final SimpleDateFormat ISO_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	public static StringBuilder encodeValueProperty(String name, Object value, StringBuilder sb) {
 		if (value == null) {
@@ -173,6 +177,11 @@ public class ComponentPropertyUtil {
 			return any.toString();
 		}
 
+		if (any instanceof Date) {
+			any = ISO_DATE_FORMATTER.format((Date) any);
+//			any = DataType.TIME.mapValue(any); 
+		}
+
 		String string = any != null ? any.toString() : null;
 		if (string == null) {
 			string = "";
@@ -187,6 +196,32 @@ public class ComponentPropertyUtil {
 			string = string.replace("\n", "\\n");
 		}
 		return '"' + string + '"';
+	}
+
+	public static String camelName(boolean firstLower, boolean lowerCase, String... names) {
+		String name = null;
+		for (String str : names) {
+			int length = str.length();
+			if (length == 0)
+				continue;
+
+			boolean first = name == null;
+			String capital = str.substring(0, 1);
+			capital = first && firstLower ? capital.toLowerCase() : capital.toUpperCase();
+			if (length > 1) {
+				String follow = str.substring(1);
+				if (lowerCase) {
+					follow = follow.toLowerCase();
+				}
+				str = capital + follow;
+			} else {
+				str = capital;
+			}
+
+			name = first ? str : name + str;
+		}
+
+		return name;
 	}
 
 	private static Object[] toObjectArray(Object obj) {

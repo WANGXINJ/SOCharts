@@ -19,14 +19,12 @@ package com.storedobject.chart.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.storedobject.chart.component.ComponentPart;
-
 /**
  * Area-style. Determines how an area or a series of areas will be drawn.
  *
  * @author Syam
  */
-public class AreaStyle implements ComponentProperty {
+public class AreaStyle extends PropertyComponentValue {
 
 	private final List<Color> colors = new ArrayList<>();
 	private int opacity = -1;
@@ -39,25 +37,12 @@ public class AreaStyle implements ComponentProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (!colors.isEmpty()) {
-			for (int i = 0; i < colors.size(); i++) {
-				if (i == 0) {
-					sb.append("\"color\":[");
-				} else {
-					sb.append(',');
-				}
-				sb.append(colors.get(i));
-			}
-			sb.append(']');
-		}
-		if (opacity >= 0) {
-			ComponentPart.addComma(sb);
-			sb.append("\"opacity\":").append(Math.min(100, opacity) / 100.0);
-		}
-		if (shadow != null) {
-			ComponentPart.encodeProperty(sb, shadow);
-		}
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("color", colors);
+		property("opacity", Math.min(100, opacity) / 100.0, opacity >= 0);
+		property(shadow);
 	}
 
 	/**

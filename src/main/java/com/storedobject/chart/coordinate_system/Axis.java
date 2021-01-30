@@ -25,19 +25,17 @@ import com.storedobject.chart.property.Color;
 import com.storedobject.chart.property.LineStyle;
 import com.storedobject.chart.property.Location;
 import com.storedobject.chart.property.Shadow;
-import com.storedobject.chart.property.LineProperty;
 import com.storedobject.chart.property.TextStyle;
 import com.storedobject.chart.property.VisibleProperty;
 import com.storedobject.chart.util.ChartException;
 import com.storedobject.helper.ID;
 
-import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
 import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Abstract representation of an axis.
@@ -93,8 +91,8 @@ public abstract class Axis extends VisibleProperty {
 	private MinorGridLines minorGridLines;
 	private GridAreas gridAreas;
 	private Pointer pointer;
-	private LineProperty splitLine;
-	private LineProperty minorSplitLine;
+	private Line splitLine;
+	private Line minorSplitLine;
 
 	/**
 	 * Constructor.
@@ -137,27 +135,7 @@ public abstract class Axis extends VisibleProperty {
 	}
 
 	Object value(Object value) {
-		if (value == null) {
-			return value;
-		}
-		if (dataType != null) {
-			if (dataType == DataType.CATEGORY) {
-				return value;
-			}
-			if (dataType == DataType.TIME && value instanceof LocalDate) {
-				value = ((LocalDate) value).atStartOfDay();
-			} else if (dataType == DataType.DATE && value instanceof LocalDateTime) {
-				value = ((LocalDateTime) value).toLocalDate();
-			}
-			return dataType.getType().isAssignableFrom(value.getClass()) ? value : null;
-		}
-		for (DataType dt : DataType.values()) {
-			if (dt.getType().isAssignableFrom(value.getClass())) {
-				dataType = dt;
-				return value;
-			}
-		}
-		return value;
+		return DataType.mapValue(value, dataType, type -> dataType = type);
 	}
 
 	void validate() throws ChartException {
@@ -171,52 +149,45 @@ public abstract class Axis extends VisibleProperty {
 	}
 
 	@Override
-	public void encodeProperty(StringBuilder sb) {
-		super.encodeProperty(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
 		if (gridLines != null) {
-			LineProperty splitLine = getSplitLine(true);
+			Line splitLine = getSplitLine(true);
 			splitLine.setProperty(gridLines);
 		}
 		if (minorGridLines != null) {
-			LineProperty minorSplitLine = getMinorSplitLine();
+			Line minorSplitLine = getMinorSplitLine();
 			minorSplitLine.setProperty(minorGridLines);
 		}
 
-		if (inverted) {
-			encodeValueProperty("inverse", inverted, sb);
-		}
-
-		encodeValueProperty("type", dataType, sb);
+		property("inverse", true, inverted);
+		property("type", dataType);
 
 		if (name != null) {
-			encodeValueProperty("name", name, sb);
-			encodeValueProperty("nameLocation", nameLocation, sb);
-			encodeValueProperty("nameGap", nameGap, sb);
-			encodeValueProperty("nameRotate", nameRotation, sb);
-			encodeComponentProperty("nameTextStyle", nameTextStyle, sb);
+			property("name", name);
+			property("nameLocation", nameLocation);
+			property("nameGap", nameGap);
+			property("nameRotate", nameRotation);
+			property("nameTextStyle", nameTextStyle);
 		}
 
-		encodeComponentProperty("axisLine", line, sb);
-		encodeComponentProperty("axisLabel", label, sb);
-		encodeValueProperty("min", min, sb);
-		encodeValueProperty("max", max, sb);
+		property("axisLine", line);
+		property("axisLabel", label);
+		property("min", min);
+		property("max", max);
 
 		if (dataType != DataType.CATEGORY) {
-			if (divisions > 0) {
-				encodeValueProperty("splitNumber", divisions, sb);
-			}
-			if (min == null && max == null) {
-				encodeValueProperty("scale", !showZero, sb);
-			}
+			property("splitNumber", divisions, divisions > 0);
+			property("scale", !showZero, min == null && max == null);
 		}
 
-		encodeComponentProperty("axisTick", ticks, sb);
-		encodeComponentProperty("minorTick", minorTicks, sb);
-		encodeComponentProperty(splitLine, sb);
-		encodeComponentProperty(minorSplitLine, sb);
-		encodeComponentProperty("splitArea", gridAreas, sb);
-		encodeComponentProperty("axisPointer", pointer, sb);
+		property("axisTick", ticks);
+		property("minorTick", minorTicks);
+		property("splitLine", splitLine);
+		property("minorSplitLine", minorSplitLine);
+		property("splitArea", gridAreas);
+		property("axisPointer", pointer);
 	}
 
 	/**
@@ -561,25 +532,25 @@ public abstract class Axis extends VisibleProperty {
 		this.pointer = pointer;
 	}
 
-	public final LineProperty getSplitLine(boolean create) {
+	public final Line getSplitLine(boolean create) {
 		if (splitLine == null && create) {
-			splitLine = LineProperty.splitLine();
+			splitLine = new Line();
 		}
 		return splitLine;
 	}
 
-	public void setSplitLine(LineProperty splitLine) {
+	public void setSplitLine(Line splitLine) {
 		this.splitLine = splitLine;
 	}
 
-	public final LineProperty getMinorSplitLine() {
+	public final Line getMinorSplitLine() {
 		if (minorSplitLine == null) {
-			minorSplitLine = LineProperty.minorSplitLine();
+			minorSplitLine = new Line();
 		}
 		return minorSplitLine;
 	}
 
-	public void setMinorSplitLine(LineProperty minorSplitLine) {
+	public void setMinorSplitLine(Line minorSplitLine) {
 		this.minorSplitLine = minorSplitLine;
 	}
 
@@ -653,9 +624,9 @@ public abstract class Axis extends VisibleProperty {
 	public static class Label extends AbstractLabel {
 
 		private int rotation = Integer.MIN_VALUE;
-		private boolean inside = false;
+		private Boolean inside;
 		private Boolean showMaxLabel, showMinLabel;
-		private int interval = Integer.MIN_VALUE;
+		private Integer interval;
 
 		/**
 		 * Constructor.
@@ -686,8 +657,8 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return True if inside.
 		 */
-		public boolean isInside() {
-			return inside;
+		public Boolean isInside() {
+			return inside != null && inside;
 		}
 
 		/**
@@ -695,21 +666,21 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param inside True if inside.
 		 */
-		public void setInside(boolean inside) {
+		public void setInside(Boolean inside) {
 			this.inside = inside;
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
-			encodeValueProperty("inside", inside, sb);
+			property("inside", inside);
 			if (rotation >= -90 && rotation <= 90) {
-				encodeValueProperty("rotate", rotation, sb);
+				property("rotate", rotation);
 			}
-			encodeValueProperty("showMinLabel", showMinLabel, sb);
-			encodeValueProperty("showMaxLabel", showMaxLabel, sb);
-			encodeIntervalValue(interval, sb);
+			property("showMinLabel", showMinLabel);
+			property("showMaxLabel", showMaxLabel);
+			property("interval", interval, nonNegative());
 		}
 
 		/**
@@ -757,7 +728,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return Interval.
 		 */
-		public final int getInterval() {
+		public final Integer getInterval() {
 			return interval;
 		}
 
@@ -765,11 +736,11 @@ public abstract class Axis extends VisibleProperty {
 		 * Set the interval between labels.
 		 *
 		 * @param interval 0 means all labels, 1 means every alternate labels, 2 means
-		 *                 every 2nd labels and so on. A special value of -1 means
+		 *                 every 2nd labels and so on. null or negative number means
 		 *                 labelling will be determined automatically to eliminate
 		 *                 overlap.
 		 */
-		public void setInterval(int interval) {
+		public void setInterval(Integer interval) {
 			this.interval = interval;
 		}
 	}
@@ -798,11 +769,11 @@ public abstract class Axis extends VisibleProperty {
 		private int width = 0;
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
 			if (width > 0) {
-				encodeValueProperty("length", width, sb);
+				property("length", width);
 			}
 		}
 
@@ -841,11 +812,11 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
 			if (divisions > 0) {
-				encodeValueProperty("splitNumber", divisions, sb);
+				property("splitNumber", divisions);
 			}
 		}
 
@@ -875,9 +846,9 @@ public abstract class Axis extends VisibleProperty {
 	 */
 	public static class Ticks extends AbstractTicks {
 
-		private boolean inside = false;
-		private int interval = Integer.MIN_VALUE;
-		private boolean alignWithLabels;
+		private Boolean inside;
+		private Integer interval;
+		private Boolean alignWithLabels;
 
 		/**
 		 * Constructor.
@@ -886,12 +857,12 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
-			encodeValueProperty("inside", inside, sb);
-			encodeIntervalValue(interval, sb);
-			encodeValueProperty("alignWithLabel", alignWithLabels, sb);
+			property("inside", inside);
+			property("interval", interval, nonNegative());
+			property("alignWithLabel", alignWithLabels);
 		}
 
 		/**
@@ -899,8 +870,8 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return True if inside.
 		 */
-		public boolean isInside() {
-			return inside;
+		public Boolean isInside() {
+			return inside != null && inside;
 		}
 
 		/**
@@ -908,7 +879,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param inside True if inside.
 		 */
-		public void setInside(boolean inside) {
+		public void setInside(Boolean inside) {
 			this.inside = inside;
 		}
 
@@ -917,7 +888,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return Interval.
 		 */
-		public final int getInterval() {
+		public final Integer getInterval() {
 			return interval;
 		}
 
@@ -926,11 +897,11 @@ public abstract class Axis extends VisibleProperty {
 		 * the {@link Label} of the axis, that will be used).
 		 *
 		 * @param interval 0 means all labels, 1 means every alternate labels, 2 means
-		 *                 every 2nd labels and so on. A special value of -1 means
+		 *                 every 2nd labels and so on. null or negative number means
 		 *                 labelling will be determined automatically to eliminate
 		 *                 overlap.
 		 */
-		public void setInterval(int interval) {
+		public void setInterval(Integer interval) {
 			this.interval = interval;
 		}
 
@@ -940,8 +911,8 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return True or false.
 		 */
-		public final boolean isAlignWithLabels() {
-			return alignWithLabels;
+		public final Boolean isAlignWithLabels() {
+			return alignWithLabels != null ? alignWithLabels : false;
 		}
 
 		/**
@@ -950,7 +921,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param alignWithLabels True or false.
 		 */
-		public void setAlignWithLabel(boolean alignWithLabels) {
+		public void setAlignWithLabel(Boolean alignWithLabels) {
 			this.alignWithLabels = alignWithLabels;
 		}
 	}
@@ -962,7 +933,7 @@ public abstract class Axis extends VisibleProperty {
 	 */
 	public static class GridLines extends com.storedobject.chart.property.Line {
 
-		private int interval = Integer.MIN_VALUE;
+		private Integer interval;
 
 		/**
 		 * Constructor.
@@ -971,10 +942,10 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
-			encodeIntervalValue(interval, sb);
+			property("interval", interval, nonNegative());
 		}
 
 		/**
@@ -983,7 +954,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return Interval.
 		 */
-		public final int getInterval() {
+		public final Integer getInterval() {
 			return interval;
 		}
 
@@ -992,10 +963,10 @@ public abstract class Axis extends VisibleProperty {
 		 * the axis-label will be used).
 		 *
 		 * @param interval 0 means all, 1 means every alternate line, 2 means every 2nd
-		 *                 line and so on. A special value of -1 means it will be
+		 *                 line and so on. null or negative number means it will be
 		 *                 determined automatically.
 		 */
-		public void setInterval(int interval) {
+		public void setInterval(Integer interval) {
 			this.interval = interval;
 		}
 	}
@@ -1021,7 +992,7 @@ public abstract class Axis extends VisibleProperty {
 	 */
 	public static class GridAreas extends Area {
 
-		private int interval = Integer.MIN_VALUE;
+		private Integer interval;
 
 		/**
 		 * Constructor.
@@ -1030,10 +1001,10 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
-			encodeIntervalValue(interval, sb);
+			property("interval", interval, nonNegative());
 		}
 
 		/**
@@ -1042,7 +1013,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return Interval.
 		 */
-		public final int getInterval() {
+		public final Integer getInterval() {
 			return interval;
 		}
 
@@ -1051,10 +1022,10 @@ public abstract class Axis extends VisibleProperty {
 		 * the axis-label will be used).
 		 *
 		 * @param interval 0 means all, 1 means every alternate line, 2 means every 2nd
-		 *                 line and so on. A special value of -1 means it will be
+		 *                 line and so on. null or negative number means it will be
 		 *                 determined automatically.
 		 */
-		public void setInterval(int interval) {
+		public void setInterval(Integer interval) {
 			this.interval = interval;
 		}
 	}
@@ -1082,14 +1053,14 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
-			encodeValueProperty("type", type, PointerType::encode, sb);
-			encodeValueProperty("snap", snap, sb);
-			encodeComponentProperty("label", label, sb);
-			encodeComponentProperty("shadowStyle", shadow, sb);
-			encodeComponentProperty("handle", handle, sb);
+			property("type", type, PointerType::encode);
+			property("snap", snap);
+			property("label", label);
+			property("shadowStyle", shadow);
+			property("handle", handle);
 		}
 
 		/**
@@ -1287,8 +1258,8 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
 			if (width > 0 || height > 0) {
 				int w = width, h = height;
@@ -1299,16 +1270,14 @@ public abstract class Axis extends VisibleProperty {
 					h = 45;
 				}
 				if (w == h) {
-					encodeValueProperty("size", w, sb);
+					property("size", w);
 				} else {
-					encodeValueProperty("size", "[" + w + "," + h + "]", sb);
+					property("size", new int[] { w, h });
 				}
-				if (gap >= 0) {
-					encodeValueProperty("margin", gap, sb);
-				}
+				property("margin", gap, gap >= 0);
 			}
-			encodeValueProperty("color", color, sb);
-			encodeComponentProperty(shadow, sb);
+			property("color", color);
+			property(shadow);
 		}
 
 		/**
@@ -1470,12 +1439,8 @@ public abstract class Axis extends VisibleProperty {
 		}
 	}
 
-	protected static void encodeIntervalValue(int interval, StringBuilder sb) {
-		if (interval == -1) {
-			encodeValueProperty("interval", "auto", sb);
-		} else if (interval >= 0) {
-			encodeValueProperty("interval", interval, sb);
-		}
+	protected static Predicate<Integer> nonNegative() {
+		return number -> number >= 0;
 	}
 
 	public static String axisName(Class<? extends Axis> axisClass) {

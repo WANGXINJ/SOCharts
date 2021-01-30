@@ -33,7 +33,7 @@ public abstract class AbstractArrayProperty {
 		});
 	}
 
-	public PropertyComponentValue addPropertyValue() {
+	public PropertyComponentValue newPropertyValue() {
 		PropertyComponentValue properties = new PropertyComponentValue();
 		addPropertyValue(properties);
 		return properties;

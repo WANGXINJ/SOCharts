@@ -16,6 +16,7 @@
 
 package com.storedobject.chart.component;
 
+import com.storedobject.chart.property.PropertyComponentValue;
 import com.storedobject.chart.util.ChartException;
 import com.storedobject.helper.ID;
 
@@ -27,7 +28,7 @@ import com.storedobject.helper.ID;
  *
  * @author Syam
  */
-public abstract class ToolboxButton implements ComponentPart {
+public abstract class ToolboxButton extends PropertyComponentValue implements ComponentPart {
 
 	private final long id = ID.newID();
 	private boolean show = true;
@@ -39,9 +40,11 @@ public abstract class ToolboxButton implements ComponentPart {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		sb.append("\"show\":").append(show);
-		encodeCaptionJSON(sb);
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("show", show);
+		buildCaptionProperties();
 	}
 
 	/**
@@ -50,12 +53,8 @@ public abstract class ToolboxButton implements ComponentPart {
 	 *
 	 * @param sb Append the encoded stuff to this.
 	 */
-	protected void encodeCaptionJSON(StringBuilder sb) {
-		String s = getCaption();
-		if (s != null) {
-			sb.append(',');
-			ComponentPart.encode(sb, "title", s);
-		}
+	protected void buildCaptionProperties() {
+		property("title", getCaption());
 	}
 
 	@Override

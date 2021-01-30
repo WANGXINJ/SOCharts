@@ -16,14 +16,12 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.ComponentPart;
-
 /**
  * Line-style. Determines how a line will be drawn.
  *
  * @author Syam
  */
-public class LineStyle implements ComponentProperty {
+public class LineStyle extends PropertyComponentValue {
 
 	/**
 	 * Line-type.
@@ -63,28 +61,14 @@ public class LineStyle implements ComponentProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		encode(sb, "color", color);
-		encode(sb, "width", width);
-		encode(sb, "type", type);
-		encode(sb, "opacity", Math.min(100, opacity) / 100.0);
-		if (shadow != null) {
-			ComponentPart.encodeProperty(sb, shadow);
-		}
-	}
+	protected void buildProperties() {
+		super.buildProperties();
 
-	private static void encode(StringBuilder sb, String name, Object value) {
-		if (value == null) {
-			return;
-		}
-		if (value instanceof Integer && (Integer) value <= 0) {
-			return;
-		}
-		ComponentPart.addComma(sb);
-		if (value instanceof Type) {
-			value = ((Type) value).toString();
-		}
-		ComponentPart.encode(sb, name, value);
+		property("color", color);
+		property("width", width, width > 0);
+		property("type", type);
+		property("opacity", Math.min(100, opacity) / 100.0);
+		property(shadow);
 	}
 
 	/**

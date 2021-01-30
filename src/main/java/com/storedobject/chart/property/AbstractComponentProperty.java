@@ -1,7 +1,6 @@
 package com.storedobject.chart.property;
 
-import static com.storedobject.chart.property.PropertyValue.toProperty;
-
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class AbstractComponentProperty implements ComponentProperty {
@@ -14,6 +13,11 @@ public abstract class AbstractComponentProperty implements ComponentProperty {
 
 	public ComponentProperties getProperties() {
 		return new ComponentProperties().setAll(properties).setAll(customProperties);
+	}
+
+	public ComponentProperties buildAndGetProperties() {
+		buildProperties();
+		return getProperties();
 	}
 
 	@Override
@@ -33,21 +37,27 @@ public abstract class AbstractComponentProperty implements ComponentProperty {
 		properties.clear();
 	}
 
-	final public <T> AbstractComponentProperty setProperty(String name, T value, Predicate<T> condition) {
-		customProperties.set(name, value, condition);
-		return this;
-	}
-
-	final public AbstractComponentProperty setProperty(String name, PropertyValue propertyValue) {
-		return setProperty(toProperty(name, propertyValue));
-	}
-
 	final public AbstractComponentProperty setProperty(String name, Object value) {
 		customProperties.set(name, value);
 		return this;
 	}
 
-	final public AbstractComponentProperty setProperty(ComponentProperty componentProperty) {
+	final public <T> AbstractComponentProperty setProperty(String name, T value, Function<T, Object> mapper) {
+		customProperties.set(name, value, mapper);
+		return this;
+	}
+
+	final public <T> AbstractComponentProperty setProperty(String name, T value, Predicate<T> condition) {
+		customProperties.set(name, value, condition);
+		return this;
+	}
+
+	final public <T> AbstractComponentProperty setProperty(String name, T value, boolean condition) {
+		customProperties.set(name, value, condition);
+		return this;
+	}
+
+	public AbstractComponentProperty setProperty(ComponentProperty componentProperty) {
 		customProperties.set(componentProperty);
 		return this;
 	}
@@ -57,22 +67,24 @@ public abstract class AbstractComponentProperty implements ComponentProperty {
 		return this;
 	}
 
-	final protected void property(String name, PropertyValue propertyValue) {
-		property(name, propertyValue, null);
-	}
-
-	final protected <T extends PropertyValue> void property(String name, T propertyValue, Predicate<T> condition) {
-		if (propertyValue == null || condition != null && !condition.test(propertyValue))
-			return;
-
-		property(toProperty(name, propertyValue));
+	final public AbstractComponentProperty setProperty(ComponentProperties props) {
+		customProperties.setAll(props);
+		return this;
 	}
 
 	final protected void property(String name, Object value) {
 		properties.set(name, value);
 	}
 
+	final protected <T> void property(String name, T value, Function<T, Object> mapper) {
+		properties.set(name, value, mapper);
+	}
+
 	final protected <T> void property(String property, T value, Predicate<T> condition) {
+		properties.set(property, value, condition);
+	}
+
+	final protected <T> void property(String property, T value, boolean condition) {
 		properties.set(property, value, condition);
 	}
 
@@ -88,7 +100,14 @@ public abstract class AbstractComponentProperty implements ComponentProperty {
 		properties.set(propertyJson);
 	}
 
+	final protected void property(ComponentProperties otherProperties) {
+		properties.setAll(otherProperties);
+	}
+
 	final protected void copyProperties(AbstractComponentProperty other) {
+		if (other == null)
+			return;
+
 		customProperties.setAll(other.customProperties);
 		properties.setAll(other.properties);
 	}

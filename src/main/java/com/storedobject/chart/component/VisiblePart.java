@@ -16,6 +16,8 @@
 
 package com.storedobject.chart.component;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
+
 /**
  * Represents an abstract {@link ComponentPart} with some common base
  * properties.
@@ -41,19 +43,19 @@ public abstract class VisiblePart extends AbstractPart {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (show) {
-			super.encodeJSON(sb);
-		}
+	protected void buildProperties() {
+		super.buildProperties();
 
-		sb.append("\"show\":").append(show).append(',');
-
-		if (show) {
-			encodePart(sb);
-		}
+		property("show", show);
 	}
 
-	protected void encodePart(StringBuilder sb) {
-		// FI
+	@Override
+	public void encodeJSON(StringBuilder sb) {
+		if (!show) {
+			encodeValueProperty("show", false, sb);
+			return;
+		}
+
+		super.encodeJSON(sb);
 	}
 }

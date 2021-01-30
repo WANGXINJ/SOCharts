@@ -41,21 +41,14 @@ public class Legend extends VisiblePart implements Component, HasPosition, HasPa
 	private Border border;
 
 	@Override
-	public void encodePart(StringBuilder sb) {
-		super.encodePart(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		if (textStyle != null) {
-			sb.append("\"textStyle\":{");
-			ComponentPart.encodeProperty(sb, textStyle);
-			sb.append('}');
-		}
+		property("textStyle", textStyle);
 		if (vertical) {
-			if (textStyle != null) {
-				sb.append(',');
-			}
-			sb.append("\"orient\":\"vertical\"");
+			property("orient", "vertical");
 		}
-		ComponentPart.encodeProperty(sb, border);
+		property(border);
 	}
 
 	@Override

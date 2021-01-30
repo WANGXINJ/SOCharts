@@ -17,8 +17,7 @@
 package com.storedobject.chart.component;
 
 import com.storedobject.chart.coordinate_system.HasPosition;
-import com.storedobject.chart.property.ComponentProperties;
-import com.storedobject.chart.property.ComponentProperty;
+import com.storedobject.chart.property.AbstractComponentProperty;
 import com.storedobject.chart.property.HasPadding;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.helper.ID;
@@ -31,11 +30,10 @@ import java.util.Objects;
  *
  * @author Syam
  */
-public abstract class AbstractPart implements ComponentPart {
+public abstract class AbstractPart extends AbstractComponentProperty implements ComponentPart {
 
 	private int serial;
 	private final long id = ID.newID();
-	private final ComponentProperties properties = new ComponentProperties();
 
 	/**
 	 * Get a unique Id for this part.
@@ -48,26 +46,20 @@ public abstract class AbstractPart implements ComponentPart {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		String name = getName();
-		if (name != null) {
-			ComponentPart.addComma(sb);
-			ComponentPart.encode(sb, "name", name);
-			sb.append(',');
-		}
-		sb.append("\"id\":").append(id);
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("name", getName());
+		property("id", id);
 		if (this instanceof HasPosition) {
-			ComponentPart.encodeProperty(sb, ((HasPosition) this).getPosition(false));
+			property(((HasPosition) this).getPosition(false));
 		}
 		if (this instanceof HasPadding) {
-			ComponentPart.encodeProperty(sb, ((HasPadding) this).getPadding(false));
+			property(((HasPadding) this).getPadding(false));
 		}
 		if (this instanceof HasPolarProperty) {
-			ComponentPart.encodeProperty(sb, ((HasPolarProperty) this).getPolarProperty(false));
+			property(((HasPolarProperty) this).getPolarProperty(false));
 		}
-		sb.append(',');
-
-		properties.encode(sb);
 	}
 
 	/**
@@ -88,22 +80,6 @@ public abstract class AbstractPart implements ComponentPart {
 	@Override
 	public final void setSerial(int serial) {
 		this.serial = serial;
-	}
-
-	public void setProperty(String name, Object property) {
-		properties.set(name, property);
-	}
-
-	public void setComponentProperty(ComponentProperty componentProperty) {
-		properties.set(componentProperty);
-	}
-
-	public void setJsonProperty(String propertyJson) {
-		properties.set(propertyJson);
-	}
-
-	public void setComponentProperties(ComponentProperties props) {
-		properties.setAll(props);
 	}
 
 	@Override

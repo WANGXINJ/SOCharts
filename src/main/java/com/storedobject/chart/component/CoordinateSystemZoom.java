@@ -64,7 +64,6 @@ public class CoordinateSystemZoom extends AbstractDataZoom {
 			property("moveOnMouseMove", moveOnMouseMove);
 			moveOnMouseMove = null;
 		}
-
 	}
 
 	/**

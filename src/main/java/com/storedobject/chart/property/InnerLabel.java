@@ -1,9 +1,9 @@
 package com.storedobject.chart.property;
 
-public class InnerLabelProperty extends Label {
+public class InnerLabel extends LabelProperty {
 
-	public InnerLabelProperty() {
-		setPosition(Position.inner);
+	public InnerLabel() {
+		innerLabel();
 	}
 
 	@Override

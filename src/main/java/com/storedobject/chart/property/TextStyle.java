@@ -21,7 +21,7 @@ package com.storedobject.chart.property;
  *
  * @author Syam
  */
-public class TextStyle extends AbstractComponentProperty {
+public class TextStyle extends PropertyComponentValue {
 
 	private Color color, background;
 	private FontStyle fontStyle;
@@ -41,7 +41,7 @@ public class TextStyle extends AbstractComponentProperty {
 		property("fontStyle", fontStyle);
 		property("fontWeight", fontWeight);
 		property("fontFamily", fontFamily);
-		property("fontSize", fontSize, size -> size > 0);
+		property("fontSize", fontSize, fontSize > 0);
 		property("backgroundColor", background);
 		property(border);
 		property(padding);

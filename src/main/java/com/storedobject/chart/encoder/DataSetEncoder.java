@@ -18,7 +18,7 @@ public class DataSetEncoder extends ComponentEncoder {
 	}
 
 	@Override
-	protected void begin(StringBuilder sb) {
+	protected void begin(StringBuilder sb, int partCount) {
 		sb.append("{\"source\":{");
 	}
 
@@ -33,7 +33,7 @@ public class DataSetEncoder extends ComponentEncoder {
 	}
 
 	@Override
-	protected void end(StringBuilder sb) {
+	protected void end(StringBuilder sb, int partCount) {
 		sb.append("}}");
 	}
 }

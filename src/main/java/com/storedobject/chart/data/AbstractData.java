@@ -67,12 +67,8 @@ public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvide
 	}
 
 	private static DataType dataType(Class<?> dataClass) {
-		for (DataType dt : DataType.values()) {
-			if (dt.getType().isAssignableFrom(dataClass)) {
-				return dt;
-			}
-		}
-		return DataType.CATEGORY;
+		DataType dataType = DataType.typeFor(dataClass);
+		return dataType != null ? dataType : DataType.CATEGORY;
 	}
 
 	/**

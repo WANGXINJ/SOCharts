@@ -64,48 +64,39 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	}
 
 	@Override
-	public void encodePart(StringBuilder sb) {
-		super.encodePart(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
 		if (text == null && subtext == null)
 			return;
 
+		property("text", text);
+
 		TextStyle.OuterProperties outerProperties = new TextStyle.OuterProperties();
-		ComponentPart.encode(sb, "text", text);
-		String t = getSubtext();
-		if (t != null) {
-			sb.append(',');
-			ComponentPart.encode(sb, "subtext", t);
+		String subText = getSubtext();
+		if (subText != null) {
+			property("subtext", subText);
 			if (subtextStyle != null) {
 				subtextStyle.save(outerProperties);
-				sb.append(",\"subtextStyle\":{");
-				ComponentPart.encodeProperty(sb, subtextStyle);
-				sb.append('}');
+				property("subtextStyle", subtextStyle);
 				subtextStyle.restore(outerProperties);
 			}
 		}
-		ComponentPart.encodeProperty(sb, position);
+		property(position);
 		if (textStyle != null) {
 			textStyle.save(outerProperties);
-			ComponentPart.addComma(sb);
-			sb.append("\"textStyle\":{");
-			ComponentPart.encodeProperty(sb, textStyle);
-			sb.append('}');
+			property("textStyle", textStyle);
 			textStyle.restore(outerProperties);
-			if (outerProperties.getBackground() != null) {
-				sb.append(",\"backgroundColor\":").append(outerProperties.getBackground());
-			}
-			ComponentPart.encodeProperty(sb, outerProperties.getPadding());
-			ComponentPart.encodeProperty(sb, outerProperties.getBorder());
+
+			property("backgroundColor", outerProperties.getBackground());
+			property(outerProperties.getPadding());
+			property(outerProperties.getBorder());
 			if (outerProperties.getAlignment() != null) {
 				outerProperties.getAlignment().setPrefix("text");
-				ComponentPart.encodeProperty(sb, outerProperties.getAlignment());
+				property(outerProperties.getAlignment());
 			}
 		}
-		if (gap > 0 && t != null) {
-			ComponentPart.addComma(sb);
-			sb.append("\"itemGap\":").append(gap);
-		}
+		property("itemGap", gap, gap > 0 && subText != null);
 	}
 
 	@Override

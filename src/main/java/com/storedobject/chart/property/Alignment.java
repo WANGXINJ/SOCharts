@@ -16,14 +16,12 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.ComponentPart;
-
 /**
  * Representation of Alignment property (both horizontal and vertical).
  *
  * @author Syam
  */
-public class Alignment implements ComponentProperty {
+public class Alignment extends PropertyComponentValue implements ComponentProperty {
 
 	private String prefix, justify, align;
 
@@ -36,55 +34,63 @@ public class Alignment implements ComponentProperty {
 	/**
 	 * Justify left.
 	 */
-	public void justifyLeft() {
+	public Alignment justifyLeft() {
 		this.justify = "left";
+		return this;
 	}
 
 	/**
 	 * Justify right.
 	 */
-	public void justifyRight() {
+	public Alignment justifyRight() {
 		this.justify = "right";
+		return this;
 	}
 
 	/**
 	 * Justify center.
 	 */
-	public void justifyCenter() {
+	public Alignment justifyCenter() {
 		this.justify = "center";
+		return this;
 	}
 
 	/**
 	 * Align top.
 	 */
-	public void alignTop() {
+	public Alignment alignTop() {
 		align = "top";
+		return this;
 	}
 
 	/**
 	 * Align center/middle.
 	 */
-	public void alignCenter() {
+	public Alignment alignCenter() {
 		align = "middle";
+		return this;
 	}
 
 	/**
 	 * Align bottom.
 	 */
-	public void alignBottom() {
+	public Alignment alignBottom() {
 		align = "bottom";
+		return this;
 	}
 
 	/**
 	 * Align and justify at the center.
 	 */
-	public void center() {
+	public Alignment center() {
 		justifyCenter();
 		alignCenter();
+		return this;
 	}
 
-	public void setPrefix(String prefix) {
+	public Alignment setPrefix(String prefix) {
 		this.prefix = prefix;
+		return this;
 	}
 
 	private String p(String any) {
@@ -95,16 +101,10 @@ public class Alignment implements ComponentProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (justify != null) {
-			ComponentPart.encode(sb, p("align"), justify);
-		}
-		if (align != null) {
-			if (justify != null) {
-				sb.append(',');
-			}
-			ComponentPart.encode(sb, p("verticalAlign"), align);
-		}
-		prefix = null;
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property(p("align"), justify);
+		property(p("verticalAlign"), align);
 	}
 }

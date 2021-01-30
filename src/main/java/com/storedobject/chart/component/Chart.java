@@ -23,6 +23,7 @@ import com.storedobject.chart.coordinate_system.Axis;
 import com.storedobject.chart.coordinate_system.CoordinateSystem;
 import com.storedobject.chart.coordinate_system.Position;
 import com.storedobject.chart.data.AbstractDataProvider;
+import com.storedobject.chart.property.BaseComponentProperty;
 import com.storedobject.chart.property.Color;
 import com.storedobject.chart.property.ComponentProperty;
 import com.storedobject.chart.util.ChartException;
@@ -275,8 +276,18 @@ public class Chart extends AbstractPart implements Component {
 		return property;
 	}
 
-	public void setProperty(ComponentProperty property) {
+	@Override
+	public Chart setProperty(ComponentProperty property) {
+		if (property == null) {
+			return this;
+		}
+
+		if (property instanceof BaseComponentProperty) {
+			return (Chart) super.setProperty(property);
+		}
+
 		propertyMap.put(property.getClass(), property);
+		return this;
 	}
 
 	String axisName(int axis) {

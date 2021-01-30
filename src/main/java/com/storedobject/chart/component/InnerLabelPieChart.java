@@ -1,16 +1,16 @@
 package com.storedobject.chart.component;
 
-import com.storedobject.chart.property.InnerLabelProperty;
-import com.storedobject.chart.property.Label;
+import com.storedobject.chart.property.InnerLabel;
+import com.storedobject.chart.property.LabelProperty;
 
 public class InnerLabelPieChart extends PieChart {
 
 	public InnerLabelPieChart() {
-		super.setLabel(new InnerLabelProperty());
+		super.setLabel(new InnerLabel());
 	}
 
 	@Override
-	public void setLabel(Label labelProperty) {
+	public void setLabel(LabelProperty labelProperty) {
 		// NOOP
 	}
 

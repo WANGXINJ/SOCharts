@@ -16,9 +16,6 @@
 
 package com.storedobject.chart.coordinate_system;
 
-import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
-import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
-
 import com.storedobject.chart.property.Border;
 import com.storedobject.chart.util.ChartException;
 
@@ -31,7 +28,7 @@ import com.storedobject.chart.util.ChartException;
 public class RectangularCoordinate extends CoordinateSystem {
 
 	private Border border;
-	private boolean sizeIncludeLabels = false;
+	private Boolean sizeIncludeLabels;
 
 	/**
 	 * Constructor.
@@ -77,13 +74,11 @@ public class RectangularCoordinate extends CoordinateSystem {
 	}
 
 	@Override
-	public void encodePart(StringBuilder sb) {
-		super.encodePart(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		encodeComponentProperty(border, sb);
-		if (sizeIncludeLabels) {
-			encodeValueProperty("containLabel", sizeIncludeLabels, sb);
-		}
+		property(border);
+		property("containLabel", sizeIncludeLabels);
 	}
 
 	/**

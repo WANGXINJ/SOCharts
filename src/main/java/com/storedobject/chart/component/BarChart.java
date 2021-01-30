@@ -18,13 +18,17 @@ package com.storedobject.chart.component;
 
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.data.DataProvider;
+import com.storedobject.chart.property.HasLabel;
+import com.storedobject.chart.property.LabelProperty;
 
 /**
  * Bar chart. (Future versions will provide more chart-specific methods).
  *
  * @author Syam
  */
-public class BarChart extends XYChart {
+public class BarChart extends XYChart implements HasLabel {
+
+	private LabelProperty label;
 
 	/**
 	 * Constructor. (Data can be set later).
@@ -41,5 +45,25 @@ public class BarChart extends XYChart {
 	 */
 	public BarChart(AbstractDataProvider<?> xData, DataProvider yData) {
 		super(ChartType.Bar, xData, yData);
+	}
+
+	@Override
+	public LabelProperty getLabel(boolean create) {
+		if (label == null && create) {
+			label = new LabelProperty();
+		}
+		return label;
+	}
+
+	@Override
+	public void setLabel(LabelProperty labelProperty) {
+		this.label = labelProperty;
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property(label);
 	}
 }

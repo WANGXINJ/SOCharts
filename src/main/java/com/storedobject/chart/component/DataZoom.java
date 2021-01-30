@@ -70,7 +70,7 @@ public class DataZoom extends AbstractDataZoom implements HasPosition {
 		property("borderColor", borderColor);
 		property("handleSize", handleSize);
 		property("handleStyle", handleStyle);
-		property("dataBackground", dataShadowStyle, shadowStyle -> shadowStyle.valid());
+		property("dataBackground", dataShadowStyle, DataShadowStyle::valid);
 	}
 
 	@Override

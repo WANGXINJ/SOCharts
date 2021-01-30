@@ -14,50 +14,24 @@
  *
  */
 
-package com.storedobject.chart.property;
+package com.storedobject.chart.data;
+
+import java.util.Date;
 
 /**
- * Represents a line.
+ * Time data provider. (A list-based data provider).
  *
  * @author Syam
  */
-public class Line extends VisibleProperty {
-
-	private LineStyle style;
+public class LegacyDateData extends AbstractData<Date> implements LegacyDateDataProvider {
+	private static final long serialVersionUID = -4217512258658536356L;
 
 	/**
 	 * Constructor.
-	 */
-	public Line() {
-	}
-
-	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		property("lineStyle", style);
-	}
-
-	/**
-	 * Get the style.
 	 *
-	 * @param create Whether to create if not exists or not.
-	 * @return Style.
+	 * @param data Initial data to add
 	 */
-	public LineStyle getStyle(boolean create) {
-		if (style == null && create) {
-			style = new LineStyle();
-		}
-
-		return style;
-	}
-
-	/**
-	 * Set the style.
-	 *
-	 * @param style Style to set.
-	 */
-	public void setStyle(LineStyle style) {
-		this.style = style;
+	public LegacyDateData(Date... data) {
+		super(Date.class, data);
 	}
 }

@@ -16,9 +16,6 @@
 
 package com.storedobject.chart.component;
 
-import static com.storedobject.chart.util.ComponentPropertyUtil.encodeComponentProperty;
-import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
-
 import com.storedobject.chart.coordinate_system.Axis;
 
 /**
@@ -62,11 +59,11 @@ public class Tooltip extends VisiblePart implements Component, SinglePart, SkipP
 	}
 
 	@Override
-	protected void encodePart(StringBuilder sb) {
-		super.encodePart(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		encodeValueProperty("trigger", trigger, sb);
-		encodeComponentProperty("axisPointer", axisPointer, sb);
+		property("trigger", trigger);
+		property("axisPointer", axisPointer);
 	}
 
 	@Override

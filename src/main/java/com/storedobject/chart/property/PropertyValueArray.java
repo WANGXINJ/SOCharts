@@ -7,8 +7,9 @@ public class PropertyValueArray extends AbstractArrayProperty implements Propert
 	}
 
 	@Override
-	public void encodeValue(StringBuilder sb) {
+	public StringBuilder encodeValue(StringBuilder sb) {
 		encodeArray(sb);
+		return sb;
 	}
 
 	@Override
@@ -20,5 +21,10 @@ public class PropertyValueArray extends AbstractArrayProperty implements Propert
 
 	public static BaseArrayProperty toArrayProperty(String name, PropertyValueArray propertyValue) {
 		return name != null && propertyValue != null ? propertyValue.asProperty(name) : null;
+	}
+
+	@Override
+	public String toString() {
+		return encodeValue(new StringBuilder()).toString();
 	}
 }

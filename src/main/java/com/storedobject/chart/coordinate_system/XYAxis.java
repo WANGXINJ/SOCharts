@@ -16,7 +16,6 @@
 
 package com.storedobject.chart.coordinate_system;
 
-import com.storedobject.chart.component.ComponentPart;
 import com.storedobject.chart.data.DataType;
 
 /**
@@ -41,18 +40,11 @@ public abstract class XYAxis extends Axis {
 	abstract String positionString();
 
 	@Override
-	public void encodeProperty(StringBuilder sb) {
-		super.encodeProperty(sb);
+	protected void buildProperties() {
+		super.buildProperties();
 
-		if (isOpposite()) {
-			sb.append(',');
-			ComponentPart.encode(sb, "position", positionString());
-		}
-		int offset = getOffset();
-		if (offset > 0) {
-			sb.append(',');
-			ComponentPart.encode(sb, "offset", offset);
-		}
+		property("position", positionString(), isOpposite());
+		property("offset", offset, offset > 0);
 	}
 
 	/**

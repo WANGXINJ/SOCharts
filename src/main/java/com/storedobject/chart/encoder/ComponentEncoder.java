@@ -1,5 +1,10 @@
 package com.storedobject.chart.encoder;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.storedobject.chart.component.ComponentPart;
 import com.storedobject.chart.component.ComponentParts;
 
@@ -38,12 +43,20 @@ public abstract class ComponentEncoder {
 	}
 
 	public void encode(StringBuilder sb, ComponentParts parts) {
+		Set<Integer> serials = new HashSet<>();
+		List<ComponentPart> partList = parts.stream().filter(this::support).filter(part -> {
+			int serial = part.getSerial();
+			boolean first = !serials.contains(serial);
+			if (first) {
+				serials.add(serial);
+			}
+			return first;
+		}).collect(Collectors.toList());
+
 		boolean first = true;
 		int serial = -2;
-		for (ComponentPart part : parts) {
-			if (!support(part) || part.getSerial() == serial)
-				continue;
-
+		int partCount = partList.size();
+		for (ComponentPart part : partList) {
 			if (part.getSerial() < serial)
 				break;
 
@@ -54,7 +67,7 @@ public abstract class ComponentEncoder {
 					sb.append(',');
 				}
 				sb.append('"').append(label).append("\":");
-				begin(sb);
+				begin(sb, partCount);
 
 			} else {
 				sb.append(',');
@@ -70,24 +83,28 @@ public abstract class ComponentEncoder {
 		}
 
 		if (!first) {
-			end(sb);
+			end(sb, partCount);
 		}
 	}
 
-	protected void partEnd(StringBuilder sb) {
-		sb.append('}');
-	}
-
-	protected void begin(StringBuilder sb) {
-		sb.append('[');
+	protected void begin(StringBuilder sb, int partCount) {
+		if (partCount > 1) {
+			sb.append('[');
+		}
 	}
 
 	protected void partBegin(StringBuilder sb) {
 		sb.append('{');
 	}
 
-	protected void end(StringBuilder sb) {
-		sb.append(']');
+	protected void partEnd(StringBuilder sb) {
+		sb.append('}');
+	}
+
+	protected void end(StringBuilder sb, int partCount) {
+		if (partCount > 1) {
+			sb.append(']');
+		}
 	}
 
 	protected void afterPartEncode(StringBuilder sb, ComponentParts parts) {

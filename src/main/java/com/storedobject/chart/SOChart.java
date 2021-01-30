@@ -53,8 +53,9 @@ import com.storedobject.chart.property.TextStyle;
 import com.storedobject.chart.util.ChartException;
 import com.storedobject.helper.ID;
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.AbstractJavaScriptComponent;
-
+import com.vaadin.ui.JavaScriptFunction;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -102,7 +103,7 @@ import java.util.function.Consumer;
  *
  * @author Syam
  */
-@JavaScript({ "vaadin://echarts-4.8.0/echarts.min.js", //
+@JavaScript({ "vaadin://echarts-5.0.1/echarts.min.js", //
 		"vaadin://sochart/sochart.js", //
 		"vaadin://sochart/sochart-connector.js" })
 public class SOChart extends AbstractJavaScriptComponent {
@@ -144,6 +145,8 @@ public class SOChart extends AbstractJavaScriptComponent {
 	 */
 	public SOChart() {
 		getState().setProperty("idChart", "sochart" + ID.newID());
+
+		addOnClickJsFunction();
 	}
 
 	public Title getTitle() {
@@ -534,5 +537,19 @@ public class SOChart extends AbstractJavaScriptComponent {
 //    @SuppressWarnings("RedundantThrows")
 	protected String customizeJSON(String json) throws Exception {
 		return json;
+	}
+
+	public Registration addClickListener(ChartClick.Listener listener) {
+		return addListener(ChartClick.Event.class, listener, ChartClick.Listener.CHART_CLICK_METHOD);
+	}
+
+	@SuppressWarnings("serial")
+	private void addOnClickJsFunction() {
+		addFunction("onClick", new JavaScriptFunction() {
+			@Override
+			public void call(JsonArray params) {
+				fireEvent(new ChartClick.Event(SOChart.this, params.get(0)));
+			}
+		});
 	}
 }
