@@ -22,6 +22,8 @@ import com.storedobject.chart.data.DataType;
 import com.storedobject.chart.encoder.ComponentEncoder;
 import com.storedobject.chart.property.Area;
 import com.storedobject.chart.property.Color;
+import com.storedobject.chart.property.Format;
+import com.storedobject.chart.property.HasFormatter;
 import com.storedobject.chart.property.LineStyle;
 import com.storedobject.chart.property.Location;
 import com.storedobject.chart.property.Shadow;
@@ -31,11 +33,11 @@ import com.storedobject.chart.util.ChartException;
 import com.storedobject.helper.ID;
 
 import static com.storedobject.chart.util.ComponentPropertyUtil.encodeValueProperty;
+import static com.storedobject.chart.util.ComponentPropertyUtil.nonNegativeInt;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * Abstract representation of an axis.
@@ -55,7 +57,7 @@ public abstract class Axis extends VisibleProperty {
 	private Object min, max;
 	private int divisions = 0;
 	private boolean showZero = true;
-	private Label label;
+	private AxisLabel label;
 	private Line line;
 	private MinorTicks minorTicks;
 	private Ticks ticks;
@@ -281,7 +283,7 @@ public abstract class Axis extends VisibleProperty {
 	 * the data.
 	 */
 	public void setMinAsMinData() {
-		min = "\"dataMin\"";
+		min = "dataMin";
 	}
 
 	/**
@@ -299,7 +301,7 @@ public abstract class Axis extends VisibleProperty {
 	 * the data.
 	 */
 	public void setMaxAsMaxData() {
-		max = "\"dataMax\"";
+		max = "dataMax";
 	}
 
 	/**
@@ -353,9 +355,9 @@ public abstract class Axis extends VisibleProperty {
 	 * @param create Whether to create if not exists or not.
 	 * @return Label.
 	 */
-	public final Label getLabel(boolean create) {
+	public final AxisLabel getLabel(boolean create) {
 		if (label == null && create) {
-			label = new Label();
+			label = new AxisLabel();
 		}
 		return label;
 	}
@@ -365,7 +367,7 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param label Label.
 	 */
-	public void setLabel(Label label) {
+	public void setLabel(AxisLabel label) {
 		this.label = label;
 	}
 
@@ -559,10 +561,30 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @author Syam
 	 */
-	public abstract static class AbstractLabel extends TextStyle {
+	public abstract static class BaseAxisLabel extends TextStyle implements HasFormatter<BaseAxisLabel> {
 
 		private boolean show = true;
-		private int gap = Integer.MIN_VALUE;
+		private Integer gap;
+		private String formatter;
+
+		@Override
+		protected void buildProperties() {
+			super.buildProperties();
+
+			property("show", show);
+			property("margin", gap);
+			property("formatter", formatter);
+		}
+
+		@Override
+		public void encodeJSON(StringBuilder sb) {
+			if (!show) {
+				encodeValueProperty("show", false, sb);
+				return;
+			}
+
+			super.encodeJSON(sb);
+		}
 
 		/**
 		 * Show labels.
@@ -578,31 +600,12 @@ public abstract class Axis extends VisibleProperty {
 			show = false;
 		}
 
-		@Override
-		public void encodeJSON(StringBuilder sb) {
-			if (show) {
-				super.encodeJSON(sb);
-			}
-
-			encodeValueProperty("show", show, sb);
-
-			if (show) {
-				encodeProperty(sb);
-			}
-		}
-
-		protected void encodeProperty(StringBuilder sb) {
-			if (gap > Integer.MIN_VALUE) {
-				encodeValueProperty("margin", gap, sb);
-			}
-		}
-
 		/**
 		 * Set the gap between the axis and labels.
 		 *
 		 * @return Gap in pixels.
 		 */
-		public int getGap() {
+		public Integer getGap() {
 			return gap;
 		}
 
@@ -611,8 +614,23 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param gap Gap in pixels.
 		 */
-		public void setGap(int gap) {
+		public void setGap(Integer gap) {
 			this.gap = gap;
+		}
+
+		@Override
+		public String getFormatter() {
+			return formatter;
+		}
+
+		@Override
+		public BaseAxisLabel setFormatter(String formatter, Format... formats) {
+			if (formats != null && formats.length > 0) {
+				formats = new Format[] { formats[formats.length - 1].clone("value") };
+			}
+
+			this.formatter = toFormatter(formatter, formats);
+			return this;
 		}
 	}
 
@@ -621,7 +639,7 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @author Syam
 	 */
-	public static class Label extends AbstractLabel {
+	public static class AxisLabel extends BaseAxisLabel {
 
 		private int rotation = Integer.MIN_VALUE;
 		private Boolean inside;
@@ -631,7 +649,20 @@ public abstract class Axis extends VisibleProperty {
 		/**
 		 * Constructor.
 		 */
-		public Label() {
+		public AxisLabel() {
+		}
+
+		@Override
+		protected void buildProperties() {
+			super.buildProperties();
+
+			property("inside", inside);
+			if (rotation >= -90 && rotation <= 90) {
+				property("rotate", rotation);
+			}
+			property("showMinLabel", showMinLabel);
+			property("showMaxLabel", showMaxLabel);
+			property("interval", interval, nonNegativeInt());
 		}
 
 		/**
@@ -668,19 +699,6 @@ public abstract class Axis extends VisibleProperty {
 		 */
 		public void setInside(Boolean inside) {
 			this.inside = inside;
-		}
-
-		@Override
-		protected void buildProperties() {
-			super.buildProperties();
-
-			property("inside", inside);
-			if (rotation >= -90 && rotation <= 90) {
-				property("rotate", rotation);
-			}
-			property("showMinLabel", showMinLabel);
-			property("showMaxLabel", showMaxLabel);
-			property("interval", interval, nonNegative());
 		}
 
 		/**
@@ -766,15 +784,13 @@ public abstract class Axis extends VisibleProperty {
 	 */
 	public static abstract class AbstractTicks extends com.storedobject.chart.property.Line {
 
-		private int width = 0;
+		private Integer width;
 
 		@Override
 		protected void buildProperties() {
 			super.buildProperties();
 
-			if (width > 0) {
-				property("length", width);
-			}
+			property("length", width, nonNegativeInt());
 		}
 
 		/**
@@ -782,7 +798,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @return Width of the tick.
 		 */
-		public final int getWidth() {
+		public final Integer getWidth() {
 			return width;
 		}
 
@@ -791,7 +807,7 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param width Width of the tick.
 		 */
-		public void setWidth(int width) {
+		public void setWidth(Integer width) {
 			this.width = width;
 		}
 	}
@@ -815,9 +831,7 @@ public abstract class Axis extends VisibleProperty {
 		protected void buildProperties() {
 			super.buildProperties();
 
-			if (divisions > 0) {
-				property("splitNumber", divisions);
-			}
+			property("splitNumber", divisions, divisions > 0);
 		}
 
 		/**
@@ -861,7 +875,7 @@ public abstract class Axis extends VisibleProperty {
 			super.buildProperties();
 
 			property("inside", inside);
-			property("interval", interval, nonNegative());
+			property("interval", interval, nonNegativeInt());
 			property("alignWithLabel", alignWithLabels);
 		}
 
@@ -894,7 +908,7 @@ public abstract class Axis extends VisibleProperty {
 
 		/**
 		 * Set the interval between labels. (If not set and if the "interval" is set for
-		 * the {@link Label} of the axis, that will be used).
+		 * the {@link AxisLabel} of the axis, that will be used).
 		 *
 		 * @param interval 0 means all labels, 1 means every alternate labels, 2 means
 		 *                 every 2nd labels and so on. null or negative number means
@@ -945,7 +959,7 @@ public abstract class Axis extends VisibleProperty {
 		protected void buildProperties() {
 			super.buildProperties();
 
-			property("interval", interval, nonNegative());
+			property("interval", interval, nonNegativeInt());
 		}
 
 		/**
@@ -1004,7 +1018,7 @@ public abstract class Axis extends VisibleProperty {
 		protected void buildProperties() {
 			super.buildProperties();
 
-			property("interval", interval, nonNegative());
+			property("interval", interval, nonNegativeInt());
 		}
 
 		/**
@@ -1197,7 +1211,7 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @author Syam
 	 */
-	public static class PointerLabel extends AbstractLabel {
+	public static class PointerLabel extends BaseAxisLabel {
 
 		private int precision = -1;
 
@@ -1208,14 +1222,11 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public void encodeProperty(StringBuilder sb) {
-			super.encodeProperty(sb);
+		protected void buildProperties() {
+			super.buildProperties();
 
-			if (precision >= 0) {
-				encodeValueProperty("precision", precision, sb);
-			} else {
-				encodeValueProperty("precision", "auto", sb);
-			}
+			property("precision", precision, precision >= 0);
+			property("precision", "auto", precision < 0);
 		}
 
 		/**
@@ -1269,11 +1280,9 @@ public abstract class Axis extends VisibleProperty {
 				if (h <= 0) {
 					h = 45;
 				}
-				if (w == h) {
-					property("size", w);
-				} else {
-					property("size", new int[] { w, h });
-				}
+				property("size", w, w == h);
+				property("size", new int[] { w, h }, w != h);
+
 				property("margin", gap, gap >= 0);
 			}
 			property("color", color);
@@ -1437,10 +1446,6 @@ public abstract class Axis extends VisibleProperty {
 		public void validate() throws ChartException {
 			axis.validate();
 		}
-	}
-
-	protected static Predicate<Integer> nonNegative() {
-		return number -> number >= 0;
 	}
 
 	public static String axisName(Class<? extends Axis> axisClass) {

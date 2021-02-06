@@ -28,6 +28,7 @@ import com.storedobject.chart.component.Tooltip;
 import com.storedobject.chart.coordinate_system.AngleAxis;
 import com.storedobject.chart.coordinate_system.PolarCoordinate;
 import com.storedobject.chart.coordinate_system.RectangularCoordinate;
+import com.storedobject.chart.coordinate_system.VisualMap;
 import com.storedobject.chart.data.AbstractData;
 import com.storedobject.chart.encoder.AngleAxisEncoder;
 import com.storedobject.chart.encoder.ColorEncoder;
@@ -44,6 +45,7 @@ import com.storedobject.chart.encoder.TextStyleEncoder;
 import com.storedobject.chart.encoder.TitleEncoder;
 import com.storedobject.chart.encoder.ToolboxEncoder;
 import com.storedobject.chart.encoder.TooltipEncoder;
+import com.storedobject.chart.encoder.VisualMapEncoder;
 import com.storedobject.chart.encoder.XAxisEncoder;
 import com.storedobject.chart.encoder.YAxisEncoder;
 import com.storedobject.chart.property.Color;
@@ -103,7 +105,7 @@ import java.util.function.Consumer;
  *
  * @author Syam
  */
-@JavaScript({ "vaadin://echarts-5.0.1/echarts.min.js", //
+@JavaScript({ "vaadin://echarts-5.0.1/echarts.js", //
 		"vaadin://sochart/sochart.js", //
 		"vaadin://sochart/sochart-connector.js" })
 public class SOChart extends AbstractJavaScriptComponent {
@@ -126,6 +128,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 			new RectangularCoordinateEncoder(), //
 			new XAxisEncoder(), //
 			new YAxisEncoder(), //
+			new VisualMapEncoder(), //
 			new DataZoomEncoder(), //
 			new ChartEncoder(), //
 	};
@@ -135,6 +138,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 	private Legend legend = new Legend();
 	private Tooltip tooltip;
 	private Toolbox toolbox;
+	private List<VisualMap> visualMaps = new ArrayList<>();
 	private boolean neverUpdated = true;
 	private DefaultColors defaultColors;
 	private Color defaultBackground;
@@ -194,6 +198,32 @@ public class SOChart extends AbstractJavaScriptComponent {
 
 	public SOChart setToolbox(Toolbox toolbox) {
 		this.toolbox = toolbox;
+		return this;
+	}
+
+	public List<VisualMap> getVisualMaps() {
+		return visualMaps;
+	}
+
+	public SOChart setVisualMap(VisualMap visualMap) {
+		visualMaps.clear();
+
+		if (visualMap == null) {
+			return this;
+		}
+
+		return addVisualMap(visualMap);
+	}
+
+	public SOChart addVisualMap(VisualMap visualMap) {
+		if (visualMap != null) {
+			visualMaps.add(visualMap);
+		}
+		return this;
+	}
+
+	public SOChart noVisualMap() {
+		visualMaps.clear();
 		return this;
 	}
 
@@ -316,6 +346,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 	 */
 	public void removeAll() {
 		components.clear();
+		parts.clear();
 	}
 
 	/**
@@ -333,7 +364,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 	public void refresh() {
 		try {
 			clear();
-			update();
+			draw();
 		} catch (Exception e) {
 		}
 	}
@@ -343,7 +374,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 		super.attach();
 		try {
 			if (neverUpdated) {
-				update();
+				draw();
 			}
 		} catch (Exception ignored) {
 		}
@@ -352,6 +383,26 @@ public class SOChart extends AbstractJavaScriptComponent {
 	@Override
 	protected SOChartState getState() {
 		return (SOChartState) super.getState();
+	}
+
+	final void draw() {
+		draw(false);
+	}
+
+	final void draw(boolean skipData) {
+		beforeUpdate();
+
+		try {
+			update(skipData);
+		} catch (Exception e) {
+			// NOOP
+		}
+
+		closeUpdate();
+	}
+
+	protected void beforeUpdate() {
+		// FI
 	}
 
 	/**
@@ -366,9 +417,9 @@ public class SOChart extends AbstractJavaScriptComponent {
 	 * @throws ChartException When any of the component is not valid.
 	 * @throws Exception      If the JSON customizer raises any exception.
 	 */
-	public void update() throws ChartException, Exception {
-		update(false);
-	}
+//	protected void update() throws ChartException, Exception {
+//		update(false);
+//	}
 
 	/**
 	 * <p>
@@ -393,7 +444,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 	 *                        found while skipping data.
 	 * @throws Exception      If the JSON customizer raises any exception.
 	 */
-	public void update(boolean skipData) throws ChartException, Exception {
+	protected void update(boolean skipData) throws ChartException, Exception {
 		if (neverUpdated && skipData) {
 			skipData = false;
 		}
@@ -410,8 +461,6 @@ public class SOChart extends AbstractJavaScriptComponent {
 		System.out.println(JsonUtil.stringify(jsonOption, 4));
 		getState().options = JsonUtil.stringify(jsonOption, 0);
 //		executeJS("updateChart", customizeJSON(sb.toString()));
-
-		closeUpdate();
 	}
 
 	protected void prepareComponents(boolean skipData) throws ChartException {
@@ -434,6 +483,8 @@ public class SOChart extends AbstractJavaScriptComponent {
 		parts.init(components, skipData) //
 				.addAll(getRootParts()) //
 				.setupPartSerial();
+
+		firePartsSetupEvent();
 	}
 
 	protected ComponentParts getRootParts() {
@@ -443,6 +494,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 				.add(title) //
 				.add(tooltip) //
 				.add(legend) //
+				.addAll(visualMaps) //
 		;
 	}
 
@@ -541,6 +593,14 @@ public class SOChart extends AbstractJavaScriptComponent {
 
 	public Registration addClickListener(ChartClick.Listener listener) {
 		return addListener(ChartClick.Event.class, listener, ChartClick.Listener.CHART_CLICK_METHOD);
+	}
+
+	public Registration addPartsSetupListener(ComponentParts.Setup.Listener listener) {
+		return addListener(ComponentParts.Setup.Event.class, listener, ComponentParts.Setup.Listener.SETUP_METHOD);
+	}
+
+	private void firePartsSetupEvent() {
+		fireEvent(new ComponentParts.Setup.Event(this, parts));
 	}
 
 	@SuppressWarnings("serial")

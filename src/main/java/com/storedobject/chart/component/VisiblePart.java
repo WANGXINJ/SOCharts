@@ -51,11 +51,15 @@ public abstract class VisiblePart extends AbstractPart {
 
 	@Override
 	public void encodeJSON(StringBuilder sb) {
-		if (!show) {
+		if (!show && !encodeJsonWhenHide()) {
 			encodeValueProperty("show", false, sb);
 			return;
 		}
 
 		super.encodeJSON(sb);
+	}
+
+	protected boolean encodeJsonWhenHide() {
+		return false;
 	}
 }

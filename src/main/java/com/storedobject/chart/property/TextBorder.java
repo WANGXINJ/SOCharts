@@ -16,7 +16,8 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.ComponentPart;
+import static com.storedobject.chart.util.ComponentPropertyUtil.camelName;
+import static com.storedobject.chart.util.ComponentPropertyUtil.nonNegativeInt;
 
 /**
  * Represents text-border. Text can be drawn with borders and the width and
@@ -24,11 +25,11 @@ import com.storedobject.chart.component.ComponentPart;
  *
  * @author Syam
  */
-public class TextBorder implements ComponentProperty {
+public class TextBorder extends PropertyComponentValue {
 
 	private String prefix;
 	private Color color;
-	private int width = -1;
+	private Integer width;
 	private Shadow shadow;
 
 	/**
@@ -38,27 +39,12 @@ public class TextBorder implements ComponentProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (color != null) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("borderColor")).append("\":").append(color);
-		}
-		if (width >= 0) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("borderWidth")).append("\":").append(width);
-		}
-		if (shadow != null) {
-			shadow.setPrefix(prefix);
-			ComponentPart.encodeProperty(sb, shadow);
-		}
-		prefix = null;
-	}
+	protected void buildProperties() {
+		super.buildProperties();
 
-	String p(String any) {
-		if (prefix == null) {
-			return any;
-		}
-		return prefix + any.substring(0, 1).toUpperCase() + any.substring(1);
+		property(p("borderColor"), color);
+		property(p("borderWidth"), width, nonNegativeInt());
+		property(shadow());
 	}
 
 	/**
@@ -75,8 +61,9 @@ public class TextBorder implements ComponentProperty {
 	 *
 	 * @param color Color to set.
 	 */
-	public void setColor(Color color) {
+	public TextBorder setColor(Color color) {
 		this.color = color;
+		return this;
 	}
 
 	/**
@@ -84,7 +71,7 @@ public class TextBorder implements ComponentProperty {
 	 *
 	 * @return Width of the border.
 	 */
-	public final int getWidth() {
+	public final Integer getWidth() {
 		return width;
 	}
 
@@ -98,12 +85,9 @@ public class TextBorder implements ComponentProperty {
 	 *
 	 * @param width Width of the border.
 	 */
-	public void setWidth(int width) {
+	public TextBorder setWidth(Integer width) {
 		this.width = width;
-	}
-
-	void setPrefix(String prefix) {
-		this.prefix = prefix;
+		return this;
 	}
 
 	/**
@@ -124,7 +108,21 @@ public class TextBorder implements ComponentProperty {
 	 *
 	 * @param shadow Shadow.
 	 */
-	public void setShadow(Shadow shadow) {
+	public TextBorder setShadow(Shadow shadow) {
 		this.shadow = shadow;
+		return this;
+	}
+
+	public TextBorder setPrefix(String prefix) {
+		this.prefix = prefix;
+		return this;
+	}
+
+	private Shadow shadow() {
+		return shadow != null ? shadow.setPrefix(prefix) : null;
+	}
+
+	protected String p(String any) {
+		return camelName(true, false, prefix, any);
 	}
 }

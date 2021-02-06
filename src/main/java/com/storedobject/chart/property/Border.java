@@ -18,8 +18,6 @@ package com.storedobject.chart.property;
 
 import java.util.Arrays;
 
-import com.storedobject.chart.component.ComponentPart;
-
 /**
  * Represents a border. Several other properties or parts have border as an
  * additional property.
@@ -39,38 +37,20 @@ public class Border extends TextBorder {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (any()) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("borderRadius")).append("\":");
-			if (radius[0] == radius[1] && radius[1] == radius[2] && radius[2] == radius[3]) {
-				sb.append(radius[0]);
-			} else {
-				for (int i = 0; i < radius.length; i++) {
-					if (i == 0) {
-						sb.append('[');
-					} else {
-						sb.append(',');
-					}
-					sb.append(radius[i]);
-				}
-				sb.append(']');
-			}
-		}
-		if (background != null) {
-			ComponentPart.addComma(sb);
-			sb.append("\"backgroundColor\":").append(background);
-		}
-		super.encodeJSON(sb);
-	}
+	protected void buildProperties() {
+		super.buildProperties();
 
-	private boolean any() {
-		for (int r : radius) {
-			if (r > 0) {
-				return true;
+		if (any()) {
+			int[] radii;
+			if (radius[0] == radius[1] && radius[1] == radius[2] && radius[2] == radius[3]) {
+				radii = new int[] { radius[0] };
+			} else {
+				radii = radius;
 			}
+			property(p("borderRadius"), radii);
 		}
-		return false;
+
+		property("backgroundColor", background);
 	}
 
 	/**
@@ -87,8 +67,9 @@ public class Border extends TextBorder {
 	 *
 	 * @param background Background color.
 	 */
-	public void setBackground(Color background) {
+	public Border setBackground(Color background) {
 		this.background = background;
+		return this;
 	}
 
 	/**
@@ -96,8 +77,9 @@ public class Border extends TextBorder {
 	 *
 	 * @param radius Radius of the corner.
 	 */
-	public void setRadius(int radius) {
+	public Border setRadius(int radius) {
 		Arrays.fill(this.radius, Math.min(90, Math.max(0, radius)));
+		return this;
 	}
 
 	/**
@@ -107,9 +89,20 @@ public class Border extends TextBorder {
 	 * @param index  Corner index.
 	 * @param radius Radius to set in degrees.
 	 */
-	public void setRadius(int index, int radius) {
+	public Border setRadius(int index, int radius) {
 		if (index >= 0) {
 			this.radius[index % this.radius.length] = Math.min(90, Math.max(0, radius));
 		}
+
+		return this;
+	}
+
+	private boolean any() {
+		for (int r : radius) {
+			if (r > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

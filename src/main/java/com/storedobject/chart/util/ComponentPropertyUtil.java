@@ -9,9 +9,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.storedobject.chart.property.ComponentProperty;
+import com.storedobject.chart.property.PropertyValue;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 import elemental.json.impl.JsonUtil;
@@ -173,7 +175,7 @@ public class ComponentPropertyUtil {
 			}
 		}
 
-		if (any instanceof Number || any instanceof Boolean) {
+		if (any instanceof Number || any instanceof Boolean || any instanceof PropertyValue) {
 			return any.toString();
 		}
 
@@ -199,32 +201,40 @@ public class ComponentPropertyUtil {
 	}
 
 	public static String camelName(boolean firstLower, boolean lowerCase, String... names) {
-		String name = null;
-		for (String str : names) {
-			int length = str.length();
+		String camelName = null;
+		for (String name : names) {
+			int length = name != null ? name.length() : 0;
 			if (length == 0)
 				continue;
 
-			boolean first = name == null;
-			String capital = str.substring(0, 1);
+			boolean first = camelName == null;
+			String capital = name.substring(0, 1);
 			capital = first && firstLower ? capital.toLowerCase() : capital.toUpperCase();
 			if (length > 1) {
-				String follow = str.substring(1);
+				String follow = name.substring(1);
 				if (lowerCase) {
 					follow = follow.toLowerCase();
 				}
-				str = capital + follow;
+				name = capital + follow;
 			} else {
-				str = capital;
+				name = capital;
 			}
 
-			name = first ? str : name + str;
+			camelName = first ? name : camelName + name;
 		}
 
-		return name;
+		return camelName;
 	}
 
-	private static Object[] toObjectArray(Object obj) {
+	public static Predicate<Integer> nonNegativeInt() {
+		return number -> number >= 0;
+	}
+
+	public static Predicate<Integer> positiveInt() {
+		return number -> number > 0;
+	}
+
+	public static Object[] toObjectArray(Object obj) {
 		Object[] array = new Object[Array.getLength(obj)];
 		for (int i = 0; i < array.length; i++) {
 			array[i] = Array.get(obj, i);

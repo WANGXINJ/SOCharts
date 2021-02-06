@@ -71,7 +71,7 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 
 	@Override
 	default void encodeJSON(StringBuilder sb) {
-		sb.append("\"d").append(getSerial()).append("\":");
+		sb.append("\"").append(datasetName()).append("\":");
 		encodeDataSet(sb);
 	}
 
@@ -113,6 +113,10 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 	@Override
 	default long getId() {
 		return -1L;
+	}
+
+	default String datasetName() {
+		return "d" + getSerial();
 	}
 
 	@Override

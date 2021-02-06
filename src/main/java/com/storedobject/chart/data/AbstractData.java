@@ -19,6 +19,7 @@ package com.storedobject.chart.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.storedobject.chart.component.ComponentPart;
@@ -118,5 +119,18 @@ public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvide
 	@Override
 	public Stream<T> stream() {
 		return super.stream();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+
+		if (o != null && !Objects.equals(o.getClass(), getClass())) {
+			return false;
+		}
+
+		return super.equals(o);
 	}
 }

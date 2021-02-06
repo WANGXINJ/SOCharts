@@ -16,7 +16,7 @@
 
 package com.storedobject.chart.property;
 
-import com.storedobject.chart.component.ComponentPart;
+import static com.storedobject.chart.util.ComponentPropertyUtil.camelName;
 
 /**
  * Represents a shadow. Typically, other properties have this property as an
@@ -25,12 +25,12 @@ import com.storedobject.chart.component.ComponentPart;
  *
  * @author Syam
  */
-public class Shadow implements ComponentProperty {
+public class Shadow extends PropertyComponentValue {
 
 	private String prefix;
 	private Color color;
-	private int blur = Integer.MIN_VALUE, offsetX = Integer.MIN_VALUE, offsetY = Integer.MIN_VALUE;
-	private int opacity = Integer.MIN_VALUE;
+	private Integer blur, offsetX, offsetY;
+	private Integer opacity;
 
 	/**
 	 * Constructor.
@@ -39,35 +39,14 @@ public class Shadow implements ComponentProperty {
 	}
 
 	@Override
-	public void encodeJSON(StringBuilder sb) {
-		if (color != null) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("shadowColor")).append("\":").append(color);
-		}
-		if (blur > Integer.MIN_VALUE) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("shadowBlur")).append("\":").append(blur);
-		}
-		if (offsetX > Integer.MIN_VALUE) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("shadowOffsetX")).append("\":").append(offsetX);
-		}
-		if (offsetY > Integer.MIN_VALUE) {
-			ComponentPart.addComma(sb);
-			sb.append('"').append(p("shadowOffsetY")).append("\":").append(offsetY);
-		}
-		if (opacity >= 0) {
-			ComponentPart.addComma(sb);
-			sb.append("\"opacity\":").append(Math.min(100, opacity) / 100.0);
-		}
-		prefix = null;
-	}
+	protected void buildProperties() {
+		super.buildProperties();
 
-	private String p(String any) {
-		if (prefix == null) {
-			return any;
-		}
-		return prefix + any.substring(0, 1).toUpperCase() + any.substring(1);
+		property(p("shadowColor"), color);
+		property(p("shadowBlur"), blur);
+		property(p("shadowOffsetX"), offsetX);
+		property(p("shadowOffsetY"), offsetY);
+		property("opacity", opacity());
 	}
 
 	/**
@@ -75,7 +54,7 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @return Blur.
 	 */
-	public final int getBlur() {
+	public final Integer getBlur() {
 		return blur;
 	}
 
@@ -84,8 +63,9 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @param blur Blur.
 	 */
-	public void setBlur(int blur) {
+	public Shadow setBlur(Integer blur) {
 		this.blur = blur;
+		return this;
 	}
 
 	/**
@@ -102,8 +82,9 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @param color Color.
 	 */
-	public void setColor(Color color) {
+	public Shadow setColor(Color color) {
 		this.color = color;
+		return this;
 	}
 
 	/**
@@ -111,7 +92,7 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @return X offset.
 	 */
-	public final int getOffsetX() {
+	public final Integer getOffsetX() {
 		return offsetX;
 	}
 
@@ -120,8 +101,9 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @param offsetX X offset.
 	 */
-	public void setOffsetX(int offsetX) {
+	public Shadow setOffsetX(Integer offsetX) {
 		this.offsetX = offsetX;
+		return this;
 	}
 
 	/**
@@ -129,7 +111,7 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @return Y offset.
 	 */
-	public final int getOffsetY() {
+	public final Integer getOffsetY() {
 		return offsetY;
 	}
 
@@ -138,12 +120,9 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @param offsetY Y offset.
 	 */
-	public void setOffsetY(int offsetY) {
+	public Shadow setOffsetY(Integer offsetY) {
 		this.offsetY = offsetY;
-	}
-
-	void setPrefix(String prefix) {
-		this.prefix = prefix;
+		return this;
 	}
 
 	/**
@@ -151,7 +130,7 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @return Opacity.
 	 */
-	public int getOpacity() {
+	public Integer getOpacity() {
 		return opacity;
 	}
 
@@ -160,7 +139,21 @@ public class Shadow implements ComponentProperty {
 	 *
 	 * @param opacity Opacity.
 	 */
-	public void setOpacity(int opacity) {
+	public Shadow setOpacity(Integer opacity) {
 		this.opacity = opacity;
+		return this;
+	}
+
+	public Shadow setPrefix(String prefix) {
+		this.prefix = prefix;
+		return this;
+	}
+
+	private Double opacity() {
+		return opacity != null && opacity >= 0 ? Math.min(100, opacity) / 100.0 : null;
+	}
+
+	private String p(String any) {
+		return camelName(true, false, prefix, any);
 	}
 }

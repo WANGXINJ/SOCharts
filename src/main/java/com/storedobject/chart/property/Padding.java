@@ -24,7 +24,7 @@ import com.storedobject.chart.component.ComponentPart;
  *
  * @author Syam
  */
-public class Padding implements ComponentProperty {
+public class Padding extends PropertyComponentValue {
 
 	private int paddingTop = 5, paddingRight = 5, paddingBottom = 5, paddingLeft = 5;
 
@@ -34,13 +34,31 @@ public class Padding implements ComponentProperty {
 	public Padding() {
 	}
 
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		int[] padding;
+		if (paddingTop == paddingBottom && paddingLeft == paddingRight) {
+			if (paddingTop == paddingLeft) {
+				padding = new int[] { paddingTop };
+			} else {
+				padding = new int[] { paddingTop, paddingLeft };
+			}
+		} else {
+			padding = new int[] { paddingTop, paddingRight, paddingBottom, paddingLeft };
+		}
+		property("padding", padding);
+	}
+
 	/**
 	 * Set top padding.
 	 *
 	 * @param paddingTop Padding.
 	 */
-	public void setPaddingTop(int paddingTop) {
+	public Padding setPaddingTop(int paddingTop) {
 		this.paddingTop = Math.max(0, paddingTop);
+		return this;
 	}
 
 	/**
@@ -48,8 +66,9 @@ public class Padding implements ComponentProperty {
 	 *
 	 * @param paddingRight Padding.
 	 */
-	public void setPaddingRight(int paddingRight) {
+	public Padding setPaddingRight(int paddingRight) {
 		this.paddingRight = Math.max(0, paddingRight);
+		return this;
 	}
 
 	/**
@@ -57,8 +76,9 @@ public class Padding implements ComponentProperty {
 	 *
 	 * @param paddingBottom Padding.
 	 */
-	public void setGetPaddingBottom(int paddingBottom) {
+	public Padding setGetPaddingBottom(int paddingBottom) {
 		this.paddingBottom = Math.max(0, paddingBottom);
+		return this;
 	}
 
 	/**
@@ -66,22 +86,8 @@ public class Padding implements ComponentProperty {
 	 *
 	 * @param paddingLeft Padding.
 	 */
-	public void setGetPaddingLeft(int paddingLeft) {
+	public Padding setGetPaddingLeft(int paddingLeft) {
 		this.paddingLeft = Math.max(0, paddingLeft);
-	}
-
-	@Override
-	public void encodeJSON(StringBuilder sb) {
-		sb.append("\"padding\":");
-		if (paddingTop == paddingBottom && paddingLeft == paddingRight) {
-			if (paddingTop == paddingLeft) {
-				sb.append(paddingTop);
-			} else {
-				sb.append('[').append(paddingTop).append(',').append(paddingLeft).append(']');
-			}
-		} else {
-			sb.append('[').append(paddingTop).append(',').append(paddingRight).append(',').append(paddingBottom)
-					.append(',').append(paddingLeft).append(']');
-		}
+		return this;
 	}
 }

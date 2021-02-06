@@ -19171,19 +19171,118 @@
 
     var $vars = paramsList[0].$vars || [];
 
+    // xj
+    var aliasPatterns = buildAliasPatterns(tpl);
+    
     for (var i = 0; i < $vars.length; i++) {
       var alias = TPL_VAR_ALIAS[i];
+      
+      // xj
+      var aliasPattern = aliasPatterns.get(alias);
+      if (aliasPattern) {
+        tpl = tpl.replace(aliasPattern[0], wrapVar(alias));
+      }
+      
       tpl = tpl.replace(wrapVar(alias), wrapVar(alias, 0));
     }
 
     for (var seriesIdx = 0; seriesIdx < seriesLen; seriesIdx++) {
       for (var k = 0; k < $vars.length; k++) {
         var val = paramsList[seriesIdx][$vars[k]];
-        tpl = tpl.replace(wrapVar(TPL_VAR_ALIAS[k], seriesIdx), encode ? encodeHTML(val) : val);
+        var alias = TPL_VAR_ALIAS[k];
+
+       // xj
+        var aliasPattern = aliasPatterns.get(alias);
+        if (aliasPattern) {
+          var pattern = aliasPattern[2];
+          if (isArray(val)) {
+            // val[1] = formatValueByPattern(val[1], pattern);
+            val = formatValueByPattern(val[1], pattern);
+          } else {
+            val = formatValueByPattern(val, pattern);
+          }
+        }
+       // xj
+		
+        tpl = tpl.replace(wrapVar(alias, seriesIdx), encode ? encodeHTML(val) : val);
       }
     }
 
     return tpl;
+  }
+  
+  // xj
+  var LABEL_REG = /\{(.+?)(%.+?)?\}/g;
+
+  // xj
+  function buildAliasPatterns(tpl) {
+    var patterns = new Map();
+    var aliasPattern;
+    while ((aliasPattern = LABEL_REG.exec(tpl)) !== null) {
+      var alias = aliasPattern[1];
+      var pattern = aliasPattern[2];
+      if (alias && pattern) {
+        patterns.set(alias, aliasPattern);
+      }
+    }
+
+    return patterns;
+  }
+  
+  // xj
+  function formatValueByPattern(val, pattern) {
+    if (pattern.startsWith('%n')) {
+      val = formatNumberByPattern(val, pattern);
+    } else if (pattern.startsWith('%p')) {
+      val = formatNumberByPattern(val * 100, pattern) + '%';
+    } else if (pattern.startsWith('%d')) {
+      val = formatDateByPattern(val, pattern);
+    }
+
+    return val;
+  }
+
+  // xj
+  function formatNumberByPattern(num, pattern) {
+    var precision = getPatternPrecision(pattern);
+    if (precision) {
+      num = num.toFixed(precision);
+    }
+ 
+    var kIndex = pattern.indexOf(',');
+    if (kIndex) {
+      num = addCommas(num);
+    }
+
+    return num;
+  }
+
+  // xj
+  function formatDateByPattern(date, pattern) {
+    var format = pattern.replace('%d', '');
+    if (format.chartAt(0) == '\'' && format.chartAt(format.length - 1) == '\'') {
+      format = format.substring(1, format.length - 1);
+    }
+
+    return formatTime(format, date, false);
+  }
+  
+  // xj
+  function getPatternPrecision(pattern) {
+    var dotIndex = pattern.indexOf('.');
+    if (dotIndex == -1) {
+      return null;
+    }
+
+    var precisionStr = pattern.substring(dotIndex + 1);
+    for (i = 0; i < precisionStr.length; i++) {
+      var charAt = precisionStr.charAt(i);
+      if (!(charAt >= '0' && charAt <= '9'))
+        break;
+    }
+    
+    precisionStr = precisionStr.substring(0, i);
+    return parseInt(precisionStr);
   }
 
   function formatTplSimple(tpl, param, encode) {
@@ -22151,7 +22250,8 @@
     return getRawSourceValueGetter(sourceFormat)(dataItem, dimIndex, dimName);
   }
 
-  var DIMENSION_LABEL_REG = /\{@(.+?)\}/g;
+  // xj
+  var DIMENSION_LABEL_REG = /\{@(.+?)(%.+?)?\}/g;
 
   var DataFormatMixin = function () {
     function DataFormatMixin() {}
@@ -22213,14 +22313,20 @@
         return formatter(params);
       } else if (typeof formatter === 'string') {
         var str = formatTpl(formatter, params);
-        return str.replace(DIMENSION_LABEL_REG, function (origin, dim) {
+        return str.replace(DIMENSION_LABEL_REG, function (origin, dim, pattern) {
           var len = dim.length;
 
           if (dim.charAt(0) === '[' && dim.charAt(len - 1) === ']') {
             dim = +dim.slice(1, len - 1);
           }
 
-          return retrieveRawValue(data, dataIndex, dim);
+          // xj
+          var val = retrieveRawValue(data, dataIndex, dim);
+          if (pattern) {
+            val = formatValueByPattern(val, pattern);
+          }
+          
+          return val;
         });
       }
     };
@@ -33860,8 +33966,24 @@
         precision = this._intervalPrecision;
       }
 
-      var dataNum = roundNumber$1(data.value, precision, true);
-      return addCommas(dataNum);
+      // xj
+      var dataNum = data.value;
+      var times = opt && opt.times;
+      if (times) {
+        dataNum = dataNum * times;
+      }
+      dataNum = roundNumber$1(dataNum, precision, true);
+      
+      var label = addCommas(dataNum);
+      var prefix = opt && opt.prefix;
+      if (prefix) {
+        label = prefix + label;
+      }  
+      var suffix = opt && opt.suffix;
+      if (suffix) {
+        label = label + suffix;
+      }  
+      return label;
     };
 
     IntervalScale.prototype.niceTicks = function (splitNumber, minInterval, maxInterval) {
@@ -35244,9 +35366,29 @@
       }(labelFormatter);
     } else if (typeof labelFormatter === 'string') {
       return function (tpl) {
+        // xj
+        var alias = 'value';
+        var value = wrapVar(alias);
+        var valuePattern = buildAliasPatterns(tpl).get(alias);
+        var opt;
+        if (valuePattern) {
+          tpl = tpl.replace(valuePattern[0], value);
+          
+          opt = {};
+          var pattern = valuePattern[2];
+          var precision = getPatternPrecision(pattern);
+          if (precision) {
+            opt['precision'] = precision;
+          }
+          if (pattern.startsWith('%p')) {
+            opt['times'] = 100;
+            opt['suffix'] = '%';
+          }
+        }
+      
         return function (tick) {
-          var label = axis.scale.getLabel(tick);
-          var text = tpl.replace('{value}', label != null ? label : '');
+          var label = axis.scale.getLabel(tick, opt);
+          var text = tpl.replace(value, label != null ? label : '');
           return text;
         };
       }(labelFormatter);
@@ -35268,7 +35410,7 @@
       };
     }
   }
-
+  
   function getAxisRawValue(axis, tick) {
     return axis.type === 'category' ? axis.scale.getLabel(tick) : tick.value;
   }

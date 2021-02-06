@@ -18,7 +18,6 @@ package com.storedobject.chart.component;
 
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.data.DataProvider;
-import com.storedobject.chart.property.HasLabel;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.chart.property.LabelProperty;
 import com.storedobject.chart.property.PolarProperty;
@@ -29,7 +28,7 @@ import com.storedobject.chart.property.Size;
  *
  * @author Syam
  */
-public class PieChart extends SelfPositioningChart implements HasPolarProperty, HasLabel {
+public class PieChart extends SelfPositioningChart implements HasPolarProperty {
 
 	private PolarProperty polarProperty;
 	private LabelProperty label;
@@ -49,6 +48,14 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 	 */
 	public PieChart(AbstractDataProvider<?> itemNames, DataProvider values) {
 		super(ChartType.Pie, itemNames, values);
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property(polarProperty);
+		property("label", label);
 	}
 
 	/**
@@ -82,7 +89,6 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 		this.polarProperty = polarProperty;
 	}
 
-	@Override
 	public LabelProperty getLabel(boolean create) {
 		if (label == null && create) {
 			label = new LabelProperty();
@@ -90,9 +96,8 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 		return label;
 	}
 
-	@Override
-	public void setLabel(LabelProperty labelProperty) {
-		this.label = labelProperty;
+	public void setLabel(LabelProperty label) {
+		this.label = label;
 	}
 
 	/**
@@ -103,13 +108,5 @@ public class PieChart extends SelfPositioningChart implements HasPolarProperty, 
 	 */
 	public void setHoleRadius(Size size) {
 		getPolarProperty(true).setInnerRadius(size);
-	}
-
-	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		property(polarProperty);
-		property(label);
 	}
 }

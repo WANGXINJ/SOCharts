@@ -19,39 +19,23 @@ package com.storedobject.chart.property;
 import static com.storedobject.chart.util.ComponentPropertyUtil.camelName;
 import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
 
-import com.storedobject.chart.component.PieChart;
-
-/**
- * Represents label property. Certain charts supports this property (Example:
- * {@link PieChart}.
- *
- * @author xj
- */
-public class LabelProperty extends BaseComponentProperty {
+public class LabelProperty extends TextStyle implements HasFormatter<LabelProperty> {
 
 	private Boolean show = true;
-	private Integer fontSize;
 	private Position position;
+	private String formatter;
 
-	public LabelProperty() {
-		super("label");
-	}
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
 
-	public Boolean isShow() {
-		return show;
+		property("show", show);
+		property("position", position);
+		property("formatter", formatter);
 	}
 
 	public LabelProperty setShow(Boolean show) {
 		this.show = show;
-		return this;
-	}
-
-	public Integer getFontSize() {
-		return fontSize;
-	}
-
-	public LabelProperty setFontSize(Integer fontSize) {
-		this.fontSize = fontSize;
 		return this;
 	}
 
@@ -65,12 +49,14 @@ public class LabelProperty extends BaseComponentProperty {
 	}
 
 	@Override
-	protected void buildProperties() {
-		super.buildProperties();
+	public String getFormatter() {
+		return formatter;
+	}
 
-		property("show", show);
-		property("fontSize", fontSize);
-		property("position", position);
+	@Override
+	public LabelProperty setFormatter(String formatter, Format... formats) {
+		this.formatter = toFormatter(formatter, formats);
+		return this;
 	}
 
 	public LabelProperty innerLabel() {

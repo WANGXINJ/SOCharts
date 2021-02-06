@@ -16,6 +16,8 @@
 
 package com.storedobject.chart.property;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.positiveInt;
+
 /**
  * As the name indicates, "text style" is for styling texts.
  *
@@ -23,15 +25,21 @@ package com.storedobject.chart.property;
  */
 public class TextStyle extends PropertyComponentValue {
 
-	private Color color, background;
+	private Color color;
 	private FontStyle fontStyle;
 	private FontWeight fontWeight;
 	private String fontFamily;
-	private int fontSize = -1;
+	private Integer fontSize;
+	private Integer lineHeight;
+	private Integer width, height;
+	private TextBorder textBorder;
+	private Overflow overFlow;
+	private String ellipsis;
+	private Overflow lineOverflow;
+	private Color background;
 	private Padding padding;
 	private Border border;
 	private Alignment alignment;
-	private TextBorder textBorder;
 
 	@Override
 	protected void buildProperties() {
@@ -41,16 +49,18 @@ public class TextStyle extends PropertyComponentValue {
 		property("fontStyle", fontStyle);
 		property("fontWeight", fontWeight);
 		property("fontFamily", fontFamily);
-		property("fontSize", fontSize, fontSize > 0);
+		property("fontSize", fontSize, positiveInt());
+		property("lineHeight", lineHeight);
+		property("width", width);
+		property("height", height);
+		property(textBorder != null ? textBorder.setPrefix("text") : null);
+		property("overflow", overFlow);
+		property("ellipsis", ellipsis);
+		property("lineOverflow", lineOverflow);
 		property("backgroundColor", background);
 		property(border);
 		property(padding);
 		property(alignment);
-
-		if (textBorder != null) {
-			textBorder.setPrefix("text");
-		}
-		property(textBorder);
 	}
 
 	/**
@@ -67,26 +77,9 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param color Color.
 	 */
-	public void setColor(Color color) {
+	public TextStyle setColor(Color color) {
 		this.color = color;
-	}
-
-	/**
-	 * Get background color.
-	 *
-	 * @return Background color.
-	 */
-	public final Color getBackground() {
-		return background;
-	}
-
-	/**
-	 * Set background color.
-	 *
-	 * @param background Background color.
-	 */
-	public void setBackground(Color background) {
-		this.background = background;
+		return this;
 	}
 
 	/**
@@ -103,8 +96,9 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param fontStyle Font-style.
 	 */
-	public void setFontStyle(FontStyle fontStyle) {
+	public TextStyle setFontStyle(FontStyle fontStyle) {
 		this.fontStyle = fontStyle;
+		return this;
 	}
 
 	/**
@@ -112,7 +106,7 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @return Font-size.
 	 */
-	public final int getFontSize() {
+	public final Integer getFontSize() {
 		return fontSize;
 	}
 
@@ -121,8 +115,9 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param fontSize Font-size.
 	 */
-	public void setFontSize(int fontSize) {
+	public TextStyle setFontSize(Integer fontSize) {
 		this.fontSize = fontSize;
+		return this;
 	}
 
 	/**
@@ -139,8 +134,9 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param fontWeight Font-weight.
 	 */
-	public void setFontWeight(FontWeight fontWeight) {
+	public TextStyle setFontWeight(FontWeight fontWeight) {
 		this.fontWeight = fontWeight;
+		return this;
 	}
 
 	/**
@@ -157,31 +153,105 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param fontFamily Font-family.
 	 */
-	public void setFontFamily(String fontFamily) {
+	public TextStyle setFontFamily(String fontFamily) {
 		this.fontFamily = fontFamily;
+		return this;
+	}
+
+	public Integer getLineHeight() {
+		return lineHeight;
+	}
+
+	public TextStyle setLineHeight(Integer lineHeight) {
+		this.lineHeight = lineHeight;
+		return this;
+	}
+
+	public Integer getWidth() {
+		return width;
+	}
+
+	public TextStyle setWidth(Integer width) {
+		this.width = width;
+		return this;
+	}
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public TextStyle setHeight(Integer height) {
+		this.height = height;
+		return this;
 	}
 
 	/**
-	 * Get the padding.
-	 * 
+	 * Get the text border.
+	 *
 	 * @param create Whether to create if not exists or not.
-	 *
-	 * @return Padding.
+	 * @return Text border.
 	 */
-	public final Padding getPadding(boolean create) {
-		if (padding == null && create) {
-			padding = new Padding();
+	public final TextBorder getTextBorder(boolean create) {
+		if (textBorder == null && create) {
+			textBorder = new TextBorder();
 		}
-		return padding;
+		return textBorder;
 	}
 
 	/**
-	 * Set the padding.
+	 * Set the text border.
 	 *
-	 * @param padding Padding.
+	 * @param textBorder Text border.
 	 */
-	public void setPadding(Padding padding) {
-		this.padding = padding;
+	public final TextStyle setTextBorder(TextBorder textBorder) {
+		this.textBorder = textBorder;
+		return this;
+	}
+
+	public Overflow getOverflow() {
+		return overFlow;
+	}
+
+	public TextStyle setOverflow(Overflow overFlow) {
+		this.overFlow = overFlow;
+		return this;
+	}
+
+	public String getEllipsis() {
+		return ellipsis;
+	}
+
+	public TextStyle setEllipsis(String ellipsis) {
+		this.ellipsis = ellipsis;
+		return this;
+	}
+
+	public Overflow getLineOverflow() {
+		return lineOverflow;
+	}
+
+	public TextStyle setLineOverflow(Overflow lineOverflow) {
+		this.lineOverflow = lineOverflow;
+		return this;
+	}
+
+	/**
+	 * Get background color.
+	 *
+	 * @return Background color.
+	 */
+	public final Color getBackground() {
+		return background;
+	}
+
+	/**
+	 * Set background color.
+	 *
+	 * @param background Background color.
+	 */
+	public TextStyle setBackground(Color background) {
+		this.background = background;
+		return this;
 	}
 
 	/**
@@ -203,30 +273,33 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param border Border.
 	 */
-	public void setBorder(Border border) {
+	public TextStyle setBorder(Border border) {
 		this.border = border;
+		return this;
 	}
 
 	/**
-	 * Get the text border.
-	 *
+	 * Get the padding.
+	 * 
 	 * @param create Whether to create if not exists or not.
-	 * @return Text border.
+	 *
+	 * @return Padding.
 	 */
-	public final TextBorder getTextBorder(boolean create) {
-		if (textBorder == null && create) {
-			textBorder = new TextBorder();
+	public final Padding getPadding(boolean create) {
+		if (padding == null && create) {
+			padding = new Padding();
 		}
-		return textBorder;
+		return padding;
 	}
 
 	/**
-	 * Set the text border.
+	 * Set the padding.
 	 *
-	 * @param textBorder Text border.
+	 * @param padding Padding.
 	 */
-	public final void setTextBorder(TextBorder textBorder) {
-		this.textBorder = textBorder;
+	public TextStyle setPadding(Padding padding) {
+		this.padding = padding;
+		return this;
 	}
 
 	/**
@@ -244,65 +317,88 @@ public class TextStyle extends PropertyComponentValue {
 	 *
 	 * @param alignment Alignment.
 	 */
-	public void setAlignment(Alignment alignment) {
+	public TextStyle setAlignment(Alignment alignment) {
 		this.alignment = alignment;
+		return this;
 	}
 
 	public void save(OuterProperties op) {
 		op.background = background;
-		background = null;
+		setBackground(null);
 		op.padding = padding;
-		padding = null;
+		setPadding(null);
 		op.border = border;
-		border = null;
+		setBorder(null);
 		op.alignment = alignment;
-		alignment = null;
+		setAlignment(null);
 	}
 
 	public void restore(OuterProperties op) {
-		background = op.background;
-		padding = op.padding;
-		border = op.border;
-		alignment = op.alignment;
+		setBackground(op.background);
+		setPadding(op.padding);
+		setBorder(op.border);
+		setAlignment(op.alignment);
+	}
+
+	public static enum Overflow {
+		none("none"), //
+		truncate("truncate"), //
+		breakLine("break"), //
+		breakAll("breakAll"), //
+		;
+
+		private String name;
+
+		private Overflow(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 	public static class OuterProperties {
 		private Color background;
+		private Padding padding;
+		private Border border;
+		private Alignment alignment;
 
 		public Color getBackground() {
 			return background;
 		}
 
-		public void setBackground(Color background) {
+		public OuterProperties setBackground(Color background) {
 			this.background = background;
+			return this;
 		}
 
 		public Padding getPadding() {
 			return padding;
 		}
 
-		public void setPadding(Padding padding) {
+		public OuterProperties setPadding(Padding padding) {
 			this.padding = padding;
+			return this;
 		}
 
 		public Border getBorder() {
 			return border;
 		}
 
-		public void setBorder(Border border) {
+		public OuterProperties setBorder(Border border) {
 			this.border = border;
+			return this;
 		}
 
 		public Alignment getAlignment() {
 			return alignment;
 		}
 
-		public void setAlignment(Alignment alignment) {
+		public OuterProperties setAlignment(Alignment alignment) {
 			this.alignment = alignment;
+			return this;
 		}
-
-		private Padding padding;
-		private Border border;
-		private Alignment alignment;
 	}
 }

@@ -18,7 +18,6 @@ package com.storedobject.chart.component;
 
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.data.DataProvider;
-import com.storedobject.chart.property.HasLabel;
 import com.storedobject.chart.property.LabelProperty;
 
 /**
@@ -26,7 +25,7 @@ import com.storedobject.chart.property.LabelProperty;
  *
  * @author Syam
  */
-public class BarChart extends XYChart implements HasLabel {
+public class BarChart extends XYChart {
 
 	private LabelProperty label;
 
@@ -48,6 +47,12 @@ public class BarChart extends XYChart implements HasLabel {
 	}
 
 	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("label", label);
+	}
+
 	public LabelProperty getLabel(boolean create) {
 		if (label == null && create) {
 			label = new LabelProperty();
@@ -55,15 +60,7 @@ public class BarChart extends XYChart implements HasLabel {
 		return label;
 	}
 
-	@Override
-	public void setLabel(LabelProperty labelProperty) {
-		this.label = labelProperty;
-	}
-
-	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		property(label);
+	public void setLabel(LabelProperty label) {
+		this.label = label;
 	}
 }

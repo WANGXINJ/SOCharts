@@ -21,7 +21,7 @@ package com.storedobject.chart.property;
  *
  * @author Syam
  */
-public class Alignment extends PropertyComponentValue implements ComponentProperty {
+public class Alignment extends PropertyComponentValue {
 
 	private String prefix, justify, align;
 

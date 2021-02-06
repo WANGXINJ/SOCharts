@@ -190,7 +190,7 @@ public class Chart extends AbstractPart implements Component {
 						sb.append(',');
 					}
 					if (data[i].isDataSetEncoding()) {
-						sb.append('"').append(axes[i]).append("\":\"d").append(data[i].getSerial()).append("\"");
+						sb.append('"').append(axes[i]).append("\":\"").append(data[i].datasetName()).append("\"");
 					}
 				}
 				sb.append('}');

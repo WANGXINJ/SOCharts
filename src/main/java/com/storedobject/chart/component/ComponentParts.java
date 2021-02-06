@@ -2,9 +2,9 @@ package com.storedobject.chart.component;
 
 import static com.storedobject.chart.SOChart.SKIP_DATA;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -22,6 +22,8 @@ import com.storedobject.chart.data.CategoryDataProvider;
 import com.storedobject.chart.data.DataProvider;
 import com.storedobject.chart.encoder.ComponentEncoder;
 import com.storedobject.chart.util.ChartException;
+import com.vaadin.event.SerializableEventListener;
+import com.vaadin.util.ReflectTools;
 
 public class ComponentParts implements Iterable<ComponentPart> {
 
@@ -66,9 +68,10 @@ public class ComponentParts implements Iterable<ComponentPart> {
 			return this;
 		}
 
-		if (part instanceof Collection && ((Collection<?>) part).isEmpty()) {
-			return this;
-		}
+// TODO check to remove
+//		if (part instanceof Collection && ((Collection<?>) part).isEmpty()) {
+//			return this;
+//		}
 
 		int index = -1;
 		if (part instanceof SinglePart) {
@@ -182,5 +185,34 @@ public class ComponentParts implements Iterable<ComponentPart> {
 
 	public static ComponentParts of(ComponentPart... parts) {
 		return new ComponentParts().addAll(parts);
+	}
+
+	public static class Setup {
+
+		public interface Listener extends SerializableEventListener {
+			public static final Method SETUP_METHOD = ReflectTools.findMethod(Listener.class, "onSetup", Event.class);
+
+			void onSetup(Event event);
+		}
+
+		public static class Event extends com.vaadin.ui.Component.Event {
+			private static final long serialVersionUID = -1374743977934914349L;
+
+			private ComponentParts parts;
+
+			public Event(SOChart chart, ComponentParts parts) {
+				super(chart);
+
+				this.parts = parts;
+			}
+
+			public SOChart getChart() {
+				return (SOChart) getSource();
+			}
+
+			public ComponentParts getParts() {
+				return parts;
+			}
+		}
 	}
 }

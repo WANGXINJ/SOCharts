@@ -108,6 +108,7 @@ public abstract class AbstractComponentProperty implements ComponentProperty {
 		if (other == null)
 			return;
 
+		other.buildProperties();
 		customProperties.setAll(other.customProperties);
 		properties.setAll(other.properties);
 	}

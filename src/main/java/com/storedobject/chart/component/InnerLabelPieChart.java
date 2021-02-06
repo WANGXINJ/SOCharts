@@ -10,8 +10,7 @@ public class InnerLabelPieChart extends PieChart {
 	}
 
 	@Override
-	public void setLabel(LabelProperty labelProperty) {
+	public void setLabel(LabelProperty label) {
 		// NOOP
 	}
-
 }

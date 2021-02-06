@@ -31,7 +31,7 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	private String text, subtext;
 	private Position position;
 	private TextStyle textStyle, subtextStyle;
-	private int gap = -1;
+	private Integer gap;
 
 	public Title() {
 	}
@@ -42,24 +42,6 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	 * @param text Text to display as title.
 	 */
 	public Title(String text) {
-		this.text = text;
-	}
-
-	/**
-	 * Get the text of the title.
-	 *
-	 * @return Title text.
-	 */
-	public String getText() {
-		return text;
-	}
-
-	/**
-	 * Set the text of the title.
-	 *
-	 * @param text Text of the title.
-	 */
-	public void setText(String text) {
 		this.text = text;
 	}
 
@@ -96,11 +78,30 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 				property(outerProperties.getAlignment());
 			}
 		}
-		property("itemGap", gap, gap > 0 && subText != null);
+		property("itemGap", gap, gap != null && gap > 0 && subText != null);
 	}
 
 	@Override
 	public void validate() {
+	}
+
+	/**
+	 * Get the text of the title.
+	 *
+	 * @return Title text.
+	 */
+	public String getText() {
+		return text;
+	}
+
+	/**
+	 * Set the text of the title.
+	 *
+	 * @param text Text of the title.
+	 */
+	public Title setText(String text) {
+		this.text = text;
+		return this;
 	}
 
 	/**
@@ -117,8 +118,9 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	 *
 	 * @param subtext Text of the sub-title. It could be <code>null</code>.
 	 */
-	public void setSubtext(String subtext) {
+	public Title setSubtext(String subtext) {
 		this.subtext = subtext;
+		return this;
 	}
 
 	@Override
@@ -152,8 +154,9 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	 *
 	 * @param textStyle Text style to set.
 	 */
-	public void setTextStyle(TextStyle textStyle) {
+	public Title setTextStyle(TextStyle textStyle) {
 		this.textStyle = textStyle;
+		return this;
 	}
 
 	/**
@@ -173,9 +176,11 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	 * Set the sub-text style.
 	 *
 	 * @param textStyle Text style to set.
+	 * @return
 	 */
-	public void setSubtextStyle(TextStyle textStyle) {
+	public Title setSubtextStyle(TextStyle textStyle) {
 		this.subtextStyle = textStyle;
+		return this;
 	}
 
 	/**
@@ -183,7 +188,7 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	 *
 	 * @return Gap in pixels.
 	 */
-	public final int getGap() {
+	public final Integer getGap() {
 		return gap;
 	}
 
@@ -191,8 +196,10 @@ public class Title extends VisiblePart implements Component, HasPosition, Single
 	 * Set the gap between title and sub-title.
 	 *
 	 * @param gap Gap in pixels.
+	 * @return
 	 */
-	public void setGap(int gap) {
+	public Title setGap(Integer gap) {
 		this.gap = gap;
+		return this;
 	}
 }

@@ -17,6 +17,8 @@
 package com.storedobject.chart.component;
 
 import com.storedobject.chart.coordinate_system.Axis;
+import com.storedobject.chart.property.Format;
+import com.storedobject.chart.property.HasFormatter;
 
 /**
  * Tooltip to display. Basic support only. Future versions will provide more
@@ -24,10 +26,24 @@ import com.storedobject.chart.coordinate_system.Axis;
  *
  * @author Syam
  */
-public class Tooltip extends VisiblePart implements Component, SinglePart, SkipPart {
+public class Tooltip extends VisiblePart implements Component, SinglePart, SkipPart, HasFormatter<Tooltip> {
 
 	private Trigger trigger;
 	private Axis.Pointer axisPointer;
+	private String formatter;
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("trigger", trigger);
+		property("axisPointer", axisPointer);
+		property("formatter", formatter);
+	}
+
+	@Override
+	public void validate() {
+	}
 
 	public Trigger getTrigger() {
 		return trigger;
@@ -59,15 +75,14 @@ public class Tooltip extends VisiblePart implements Component, SinglePart, SkipP
 	}
 
 	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		property("trigger", trigger);
-		property("axisPointer", axisPointer);
+	public String getFormatter() {
+		return formatter;
 	}
 
 	@Override
-	public void validate() {
+	public Tooltip setFormatter(String formatter, Format... formats) {
+		this.formatter = toFormatter(formatter, formats);
+		return this;
 	}
 
 	public static enum Trigger {
