@@ -19174,10 +19174,16 @@
     // xj
     var aliasPatterns = buildAliasPatterns(tpl);
     
+    var aliases = new Array($vars.length + 2);
     for (var i = 0; i < $vars.length; i++) {
-      var alias = TPL_VAR_ALIAS[i];
+      aliases[i] = TPL_VAR_ALIAS[i];
+    }
+    aliases[$vars.length] = 'x';
+    aliases[$vars.length + 1] = 'y';
+    
+    for (var i = 0; i < aliases.length; i++) {
+      var alias = aliases[i];
       
-      // xj
       var aliasPattern = aliasPatterns.get(alias);
       if (aliasPattern) {
         tpl = tpl.replace(aliasPattern[0], wrapVar(alias));
@@ -19186,23 +19192,39 @@
       tpl = tpl.replace(wrapVar(alias), wrapVar(alias, 0));
     }
 
+    var x, y;
     for (var seriesIdx = 0; seriesIdx < seriesLen; seriesIdx++) {
-      for (var k = 0; k < $vars.length; k++) {
-        var val = paramsList[seriesIdx][$vars[k]];
-        var alias = TPL_VAR_ALIAS[k];
+      for (var k = 0; k < $vars.length + 2; k++) {
+        var alias = aliases[k];
+        var val;
+        if (k < $vars.length) {
+          val = paramsList[seriesIdx][$vars[k]];
+          if (alias == 'b') {
+            x = val;
+          } else if (alias == 'c') {
+            if (isArray(val)) {
+              x = val[0];
+              y = val[1];
+            } else {
+              y = val;
+            }
+          }
+        } else if (k == $vars.length) {
+          val = x;
+        } else if (k == $vars.length + 1) {
+          val = y;
+        }
 
-       // xj
         var aliasPattern = aliasPatterns.get(alias);
         if (aliasPattern) {
           var pattern = aliasPattern[2];
           if (isArray(val)) {
-            // val[1] = formatValueByPattern(val[1], pattern);
-            val = formatValueByPattern(val[1], pattern);
+            val[1] = formatValueByPattern(val[1], pattern);
+            // val = formatValueByPattern(val[1], pattern);
           } else {
             val = formatValueByPattern(val, pattern);
           }
         }
-       // xj
 		
         tpl = tpl.replace(wrapVar(alias, seriesIdx), encode ? encodeHTML(val) : val);
       }
@@ -19260,7 +19282,7 @@
   // xj
   function formatDateByPattern(date, pattern) {
     var format = pattern.replace('%d', '');
-    if (format.chartAt(0) == '\'' && format.chartAt(format.length - 1) == '\'') {
+    if (format.charAt(0) == '\'' && format.charAt(format.length - 1) == '\'') {
       format = format.substring(1, format.length - 1);
     }
 
