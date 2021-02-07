@@ -10,7 +10,8 @@ public class SOChartState extends JavaScriptComponentState {
 	private static final long serialVersionUID = -8959191675958421669L;
 
 	public JsonObject properties;
-	public String options;
+	public String option;
+	public boolean notMerge = true;
 
 	public SOChartState() {
 		properties = new JreJsonObject(new JreJsonFactory());
