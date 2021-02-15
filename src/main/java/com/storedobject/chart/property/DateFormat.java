@@ -12,7 +12,7 @@ public class DateFormat extends Format {
 
 	@Override
 	protected String pattern() {
-		return "'" + pattern + "'";
+		return pattern;
 	}
 
 	@Override

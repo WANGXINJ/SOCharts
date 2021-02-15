@@ -18,8 +18,9 @@ sochartLib.SOChart = function(connector) {
     return rootElement.getElementsByClassName("sochart")[0];
   }
 
-  this.updateChart = function(state) {
-    var option = state.option
+  this.updateChart = function() {
+    var state = connector.getState();
+    var option = state.option;
     if (!option || option.length == 0)
       return;
 
@@ -33,10 +34,8 @@ sochartLib.SOChart = function(connector) {
       this.chart.on('click', params => {
         connector.onClick(toEventData(params));
       });
-      document.addEventListener('load', () => {
-        this.chart.resize();
-      }, true);
-      window.addEventListener('resize', () => {
+
+      connector.addResizeListener(rootElement, event => {
         this.chart.resize();
       });
     }

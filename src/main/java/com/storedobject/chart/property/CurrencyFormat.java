@@ -10,15 +10,12 @@ public class CurrencyFormat extends AbstractNumberFormat {
 		super("n", dataKey, fraction, kSeparate);
 
 		this.currency = currency;
+
+		setPrefix(currency.getSymbol());
 	}
 
 	@Override
 	public CurrencyFormat clone(String dataKey) {
 		return new CurrencyFormat(dataKey, getFraction(), isKSeparate(), currency);
-	}
-
-	@Override
-	public String toString() {
-		return currency.getSymbol() + super.toString();
 	}
 }

@@ -105,7 +105,7 @@ import java.util.function.Consumer;
  *
  * @author Syam
  */
-@JavaScript({ "vaadin://echarts-5.0.1/echarts.js", //
+@JavaScript({ "vaadin://echarts-5.0.2/echarts.js", //
 		"vaadin://sochart/sochart.js", //
 		"vaadin://sochart/sochart-connector.js" })
 public class SOChart extends AbstractJavaScriptComponent {

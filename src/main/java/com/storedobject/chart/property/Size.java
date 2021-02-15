@@ -93,6 +93,11 @@ public class Size {
 		return size;
 	}
 
+	@Override
+	public Size clone() {
+		return new Size(size);
+	}
+
 	public String encode() {
 		if (size == Integer.MIN_VALUE) {
 			return null;

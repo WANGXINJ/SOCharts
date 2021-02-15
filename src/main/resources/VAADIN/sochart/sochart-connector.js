@@ -4,6 +4,6 @@ window.com_storedobject_chart_SOChart = function() {
 
 	// Handle changes from the server-side
 	this.onStateChange = function() {
-		sochart.updateChart(this.getState());
+		sochart.updateChart();
 	};
 };

@@ -28,6 +28,6 @@ public interface HasFormatter<PROPERTY extends ComponentProperty> {
 	}
 
 	public default String toFormatter(String formatter, Format... formats) {
-		return String.format(formatter, toObjectArray(formats));
+		return formatter != null ? String.format(formatter, toObjectArray(formats)) : null;
 	}
 }

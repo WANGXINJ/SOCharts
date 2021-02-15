@@ -7,8 +7,9 @@ public abstract class Format {
 
 	private final static Currency DEFAULT_CURRENCY = Currency.getInstance(Locale.getDefault());
 
-	final private String key;
 	final private String dataKey;
+	final private String key;
+	private String hide = "", prefix = "", suffix = "";
 
 	protected Format(String key, String dataKey) {
 		this.key = key;
@@ -19,13 +20,41 @@ public abstract class Format {
 		return dataKey;
 	}
 
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public Format setPrefix(String prefix) {
+		this.prefix = prefix;
+		return this;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public Format setSuffix(String suffix) {
+		this.suffix = suffix;
+		return this;
+	}
+
+	public Format hide() {
+		this.hide = "?";
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		String pattern = "";
 		if (key != null) {
-			pattern = "%" + key + pattern();
+			pattern = "%" + hide + key + prefix + "<" + pattern() + ">" + suffix;
 		}
 		return "{" + dataKey + pattern + "}";
+	}
+
+	@Override
+	public Format clone() {
+		return clone(dataKey);
 	}
 
 	public abstract Format clone(String dataKey);

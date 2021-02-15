@@ -17,7 +17,7 @@
 package com.storedobject.chart.coordinate_system;
 
 import com.storedobject.chart.SOChart;
-import com.storedobject.chart.property.ComponentProperty;
+import com.storedobject.chart.property.PropertyComponentValue;
 import com.storedobject.chart.property.Size;
 
 /**
@@ -37,19 +37,31 @@ import com.storedobject.chart.property.Size;
  *
  * @author Syam
  */
-public class Position implements ComponentProperty {
+public class Position extends PropertyComponentValue {
 
-	private final Size left = new Size();
-	private final Size right = new Size();
-	private final Size top = new Size();
-	private final Size bottom = new Size();
-	private final Size width = new Size();
-	private final Size height = new Size();
+	private Size top;
+	private Size right;
+	private Size bottom;
+	private Size left;
+	private Size width;
+	private Size height;
 
 	/**
 	 * Constructor.
 	 */
 	public Position() {
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("top", top);
+		property("right", right);
+		property("bottom", bottom);
+		property("left", left);
+		property("width", width);
+		property("height", height);
 	}
 
 	/**
@@ -58,7 +70,7 @@ public class Position implements ComponentProperty {
 	 * @param size Size.
 	 */
 	public void setLeft(Size size) {
-		this.left.set(size);
+		left = size.clone();
 	}
 
 	/**
@@ -67,7 +79,7 @@ public class Position implements ComponentProperty {
 	 * @param size Size.
 	 */
 	public void setRight(Size size) {
-		this.right.set(size);
+		right = size.clone();
 	}
 
 	/**
@@ -76,7 +88,7 @@ public class Position implements ComponentProperty {
 	 * @param size Size.
 	 */
 	public void setTop(Size size) {
-		this.top.set(size);
+		top = size.clone();
 	}
 
 	/**
@@ -85,7 +97,7 @@ public class Position implements ComponentProperty {
 	 * @param size Size.
 	 */
 	public void setBottom(Size size) {
-		this.bottom.set(size);
+		bottom = size.clone();
 	}
 
 	/**
@@ -94,7 +106,7 @@ public class Position implements ComponentProperty {
 	 * @param size Size.
 	 */
 	public void setWidth(Size size) {
-		this.width.set(size);
+		width = size.clone();
 	}
 
 	/**
@@ -103,7 +115,7 @@ public class Position implements ComponentProperty {
 	 * @param size Size.
 	 */
 	public void setHeight(Size size) {
-		this.height.set(size);
+		height = size.clone();
 	}
 
 	/**
@@ -154,17 +166,6 @@ public class Position implements ComponentProperty {
 	public void center() {
 		alignCenter();
 		justifyCenter();
-	}
-
-	@Override
-	public void encodeJSON(StringBuilder sb) {
-		boolean comma;
-		comma = stuff(sb, "left", left, false);
-		comma = stuff(sb, "right", right, comma);
-		comma = stuff(sb, "width", width, comma);
-		comma = stuff(sb, "top", top, comma);
-		comma = stuff(sb, "bottom", bottom, comma);
-		stuff(sb, "height", height, comma);
 	}
 
 	private static boolean stuff(StringBuilder sb, String attribute, Size value, boolean comma) {
