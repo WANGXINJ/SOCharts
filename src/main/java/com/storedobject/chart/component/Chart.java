@@ -16,10 +16,13 @@
 
 package com.storedobject.chart.component;
 
+import static com.storedobject.chart.util.ComponentPropertyUtil.camelName;
+
 import java.util.*;
 
 import com.storedobject.chart.SOChart;
 import com.storedobject.chart.coordinate_system.Axis;
+import com.storedobject.chart.coordinate_system.Axis.AxisWrapper;
 import com.storedobject.chart.coordinate_system.CoordinateSystem;
 import com.storedobject.chart.coordinate_system.Position;
 import com.storedobject.chart.data.AbstractDataProvider;
@@ -112,60 +115,38 @@ public class Chart extends AbstractPart implements Component {
 	}
 
 	private String type() {
-		String t = type.toString();
-		return Character.toLowerCase(t.charAt(0)) + t.substring(1);
+		return camelName(type.toString());
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("color", colors);
+		property("type", type());
+
+		if (coordinateSystem != null && axes != null) {
+			List<Axis> coordinateAxes = coordinateSystem.getAxes();
+			if (coordinateAxes != axes) {
+				axes.stream().map(axis -> axis.wrap(coordinateSystem)).forEach(axisPart -> {
+					axisIndexProperty(axisPart);
+				});
+			} else {
+				coordinateAxes.stream().map(axis -> axis.getClass()).distinct()
+						.forEach(axisClass -> coordinateSystem.axes(axisClass).map(axis -> axis.wrap(coordinateSystem))
+								.min(Comparator.comparing(ComponentPart::getSerial)).ifPresent(axisPart -> {
+									axisIndexProperty(axisPart);
+								}));
+			}
+		}
+
+		property("coordinateSystem", coordinateSystem, CoordinateSystem::systemName);
+
 	}
 
 	@Override
 	public void encodeJSON(StringBuilder sb) {
 		super.encodeJSON(sb);
-
-		if (colors != null) {
-			sb.append("\"color\":[");
-			for (int i = 0; i < colors.length; i++) {
-				if (i > 0) {
-					sb.append(',');
-				}
-				sb.append(colors[i]);
-			}
-			sb.append("],");
-		}
-
-		ComponentPart.encode(sb, "type", type());
-
-		if (coordinateSystem != null) {
-			List<Axis> coordinateAxes = coordinateSystem.getAxes();
-			if (coordinateAxes != axes) {
-				ComponentPart axisPart;
-				if (axes != null && !axes.isEmpty()) {
-					for (Axis axis : axes) {
-						axisPart = axis.wrap(coordinateSystem);
-						if (axisPart.getSerial() > 0) {
-							sb.append(",\"").append(axis.axisName()).append("Index\":").append(axisPart.getSerial());
-						}
-					}
-				}
-			} else {
-				Set<Class<?>> axisClasses = new HashSet<>();
-				coordinateAxes.forEach(axis -> axisClasses.add(axis.getClass()));
-				axisClasses
-						.forEach(axisClass -> coordinateSystem.axes(axisClass).map(axis -> axis.wrap(coordinateSystem))
-								.min(Comparator.comparing(ComponentPart::getSerial)).ifPresent(part -> {
-									if (part.getSerial() > 0) {
-										sb.append(",\"").append(((Axis.AxisWrapper) part).getAxis().axisName())
-												.append("Index\":").append(part.getSerial());
-									}
-								}));
-			}
-		}
-
-		if (coordinateSystem != null) {
-			String name = coordinateSystem.systemName();
-			if (name != null) {
-				ComponentPart.addComma(sb);
-				ComponentPart.encode(sb, "coordinateSystem", name);
-			}
-		}
 
 		propertyMap.values().forEach(property -> {
 			ComponentPart.addComma(sb);
@@ -452,5 +433,12 @@ public class Chart extends AbstractPart implements Component {
 	 */
 	public void setTooltip(Tooltip tooltip) {
 		setProperty(tooltip);
+	}
+
+	private void axisIndexProperty(AxisWrapper axisPart) {
+		if (axisPart.getSerial() <= 0)
+			return;
+
+		property(axisPart.getAxis().axisName() + "Index", axisPart.getSerial());
 	}
 }

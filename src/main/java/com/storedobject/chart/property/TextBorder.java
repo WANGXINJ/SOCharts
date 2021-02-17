@@ -123,6 +123,6 @@ public class TextBorder extends PropertyComponentValue {
 	}
 
 	protected String p(String any) {
-		return camelName(true, false, prefix, any);
+		return camelName(prefix, any);
 	}
 }

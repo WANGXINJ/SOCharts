@@ -458,7 +458,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 
 		String options = customizeJSON(buildOption());
 		JsonObject jsonOption = buildOptionJson(options);
-		System.out.println(JsonUtil.stringify(jsonOption, 4));
+		System.out.println(getClass().getSimpleName() + "\n" + JsonUtil.stringify(jsonOption, 4));
 		getState().option = JsonUtil.stringify(jsonOption, 0);
 //		executeJS("updateChart", customizeJSON(sb.toString()));
 	}

@@ -16364,8 +16364,8 @@
         if (!pattern)
           continue;
   
-        if (pattern[2]) {
-          tpl = tpl.replace(pattern[0], pattern[3] ? '' : wrapVar(alias, 0));
+        if (pattern.key) {
+          tpl = tpl.replace(pattern.text, pattern.hide ? '' : wrapVar(alias, 0));
         } else {
           tpl = tpl.replace(wrapVar(alias), wrapVar(alias, 0));
         }
@@ -16407,10 +16407,10 @@
           }
   
           var pattern = aliasPatterns.get(alias);
-          if (!pattern || pattern[3])
+          if (!pattern || pattern.hide)
             continue;
             
-          if (pattern[2]) {
+          if (pattern.key) {
             if (isArray(val)) {
               val[valIndex] = formatValueByPattern(val[valIndex], pattern);
             } else {
@@ -16426,36 +16426,87 @@
     }
     
     // xj
-    var LABEL_REG = /\{(.+?)(%(\??)(.)(.*?)<(.*?)>(.*?))?\}/g;
+    var LABEL_REG = /\{(.+?)(?!\|)(%(\??)(.)(.*?)<(.*?)>(.*?))?\}/g;
   
     // xj
     function buildAliasPatterns(tpl) {
       var patterns = new Map();
       if (!tpl) {
-        return patterns;  
+        return patterns;
       } 
       
-      var pattern;
-      while ((pattern = LABEL_REG.exec(tpl)) !== null) {
-        var alias = pattern[1];
-        if (alias) {
-          patterns.set(alias, pattern);
+      var start = tpl.indexOf('{');
+      while (start >= 0) {
+        var end = start + 1;
+        var cur= start;
+        var len = tpl.length;
+
+        var pattern = {};
+        var  step = 1;
+        while  (end < len) {
+          var endChar = tpl.charAt(end);
+          if (step == 1 && endChar == '|') {
+            break;
+          }
+      
+          if (endChar == '}') {
+            pattern.text = tpl.substring(start, end + 1);
+            if (step == 1) {
+              pattern.alias = tpl.substring(start + 1, end);
+            }
+            else if (step == 4) {
+              pattern.suffix = tpl.substring(cur, end);
+            }
+            break
+          }
+      
+          if (step == 1 && endChar == '%') {
+            pattern.alias = tpl.substring(start + 1, end);
+            step = 2;
+            end++;
+            endChar = tpl.charAt(end);
+            if (endChar == '?') {
+              pattern.hide = true;
+              end++;
+              endChar = tpl.charAt(end);
+            }
+            pattern.key = endChar;
+            cur = end + 1;
+          }
+          else if (step == 2 && endChar == '<') {
+            step = 3;
+            pattern.prefix = tpl.substring(cur, end);
+            cur = end + 1;
+          }
+          else if (step == 3 && endChar == ">") {
+            step = 4;
+            pattern.format = tpl.substring(cur, end);
+            cur = end + 1;
+          }
+      
+          end++;
         }
+
+        if (pattern.alias) {
+          patterns.set(pattern.alias, pattern);
+        }
+      
+        start = tpl.indexOf('{', end + 1);
       }
-  
+      
       return patterns;
     }
     
     // xj
     function formatValueByPattern(val, pattern) {
-      if (!pattern || !pattern[2]) {
+      if (!pattern || !pattern.key) {
         return val;    
       }
       
-      var key = pattern[4];
-      var prefix = pattern[5];
-      var format = pattern[6];
-      var suffix = pattern[7];
+      var key = pattern.key;
+      var prefix = pattern.prefix;
+      var format = pattern.format;
+      var suffix = pattern.suffix;
       
       if (key == 'n') {
         val = formatNumberByPattern(val, format);
@@ -20387,7 +20438,7 @@
         }
         val = val != null ? val + '' : '';
         
-        str = str.replace(pattern[0], val);
+        str = str.replace(pattern.text, val);
       }
       
       return str;
@@ -35290,21 +35341,21 @@
           var valuePattern = buildAliasPatterns(tpl).get(alias);
           var opt;
           if (valuePattern) {
-            tpl = tpl.replace(valuePattern[0], value);
+            tpl = tpl.replace(valuePattern.text, value);
             
             opt = {};
-            var format = valuePattern[6];
+            var format = valuePattern.format;
             var precision = getPatternPrecision(format);
             if (precision) {
               opt['precision'] = precision;
             }
   
-            var prefix = valuePattern[5];
-            var suffix = valuePattern[7];
+            var prefix = valuePattern.prefix;
+            var suffix = valuePattern.suffix;
             opt['prefix'] = prefix;
             opt['suffix'] = suffix;
   
-            var key = valuePattern[4];
+            var key = valuePattern.key;
             if (key == 'p') {
               opt['times'] = 100;
               if (prefix.length == 0 && suffix.length == 0) {

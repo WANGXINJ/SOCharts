@@ -274,7 +274,7 @@ public abstract class Axis extends VisibleProperty {
 	 * @param min Minimum value. (For category axis, it could be just an ordinal
 	 *            number of the category).
 	 */
-	public void setMin(Number min) {
+	public void setMin(Object min) {
 		this.min = value(min);
 	}
 
@@ -292,7 +292,7 @@ public abstract class Axis extends VisibleProperty {
 	 * @param max Maximum value. (For category axis, it could be just an ordinal
 	 *            number of the category).
 	 */
-	public void setMax(Number max) {
+	public void setMax(Object max) {
 		this.max = value(max);
 	}
 
@@ -679,8 +679,9 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param rotation Rotation in degrees. (Must be between -90 and 90).
 		 */
-		public void setRotation(int rotation) {
+		public AxisLabel setRotation(int rotation) {
 			this.rotation = rotation;
+			return this;
 		}
 
 		/**
@@ -697,8 +698,9 @@ public abstract class Axis extends VisibleProperty {
 		 *
 		 * @param inside True if inside.
 		 */
-		public void setInside(Boolean inside) {
+		public AxisLabel setInside(Boolean inside) {
 			this.inside = inside;
+			return this;
 		}
 
 		/**
@@ -717,8 +719,9 @@ public abstract class Axis extends VisibleProperty {
 		 * @param showMaxLabel True or false. <code>Null</code> value means that it will
 		 *                     be determined automatically to eliminate labels-overlap.
 		 */
-		public void setShowMaxLabel(Boolean showMaxLabel) {
+		public AxisLabel setShowMaxLabel(Boolean showMaxLabel) {
 			this.showMaxLabel = showMaxLabel;
+			return this;
 		}
 
 		/**
@@ -737,8 +740,9 @@ public abstract class Axis extends VisibleProperty {
 		 * @param showMinLabel True or false. <code>Null</code> value means that it will
 		 *                     be determined automatically to eliminate labels-overlap.
 		 */
-		public void setShowMinLabel(Boolean showMinLabel) {
+		public AxisLabel setShowMinLabel(Boolean showMinLabel) {
 			this.showMinLabel = showMinLabel;
+			return this;
 		}
 
 		/**
@@ -758,8 +762,9 @@ public abstract class Axis extends VisibleProperty {
 		 *                 labelling will be determined automatically to eliminate
 		 *                 overlap.
 		 */
-		public void setInterval(Integer interval) {
+		public AxisLabel setInterval(Integer interval) {
 			this.interval = interval;
+			return this;
 		}
 	}
 
@@ -1395,7 +1400,7 @@ public abstract class Axis extends VisibleProperty {
 
 	}
 
-	public abstract ComponentPart wrap(CoordinateSystem coordinateSystem);
+	public abstract AxisWrapper wrap(CoordinateSystem coordinateSystem);
 
 	public static class AxisWrapper implements ComponentPart {
 

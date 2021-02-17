@@ -16,7 +16,6 @@
 
 package com.storedobject.chart.coordinate_system;
 
-import com.storedobject.chart.component.ComponentPart;
 import com.storedobject.chart.data.DataType;
 
 /**
@@ -36,7 +35,7 @@ public class YAxis extends XYAxis {
 	}
 
 	@Override
-	public ComponentPart wrap(CoordinateSystem coordinateSystem) {
+	public AxisWrapper wrap(CoordinateSystem coordinateSystem) {
 		AxisWrapper w = wrappers.get(coordinateSystem);
 		return w == null ? new YAxisWrapper(this, coordinateSystem) : w;
 	}

@@ -16,7 +16,6 @@
 
 package com.storedobject.chart.coordinate_system;
 
-import com.storedobject.chart.component.ComponentPart;
 import com.storedobject.chart.data.DataType;
 
 /**
@@ -53,7 +52,7 @@ public class AngleAxis extends Axis {
 	}
 
 	@Override
-	public ComponentPart wrap(CoordinateSystem coordinateSystem) {
+	public AxisWrapper wrap(CoordinateSystem coordinateSystem) {
 		AxisWrapper w = wrappers.get(coordinateSystem);
 		return w == null ? new AngleAxisWrapper(this, coordinateSystem) : w;
 	}

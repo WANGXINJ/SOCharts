@@ -200,6 +200,14 @@ public class ComponentPropertyUtil {
 		return '"' + string + '"';
 	}
 
+	public static String camelName(String name) {
+		return camelName(true, false, name);
+	}
+
+	public static String camelName(String... names) {
+		return camelName(true, false, names);
+	}
+
 	public static String camelName(boolean firstLower, boolean lowerCase, String... names) {
 		String camelName = null;
 		for (String name : names) {
@@ -208,8 +216,8 @@ public class ComponentPropertyUtil {
 				continue;
 
 			boolean first = camelName == null;
-			String capital = name.substring(0, 1);
-			capital = first && firstLower ? capital.toLowerCase() : capital.toUpperCase();
+			char capital = name.charAt(0);
+			capital = first && firstLower ? Character.toLowerCase(capital) : Character.toUpperCase(capital);
 			if (length > 1) {
 				String follow = name.substring(1);
 				if (lowerCase) {
@@ -217,7 +225,7 @@ public class ComponentPropertyUtil {
 				}
 				name = capital + follow;
 			} else {
-				name = capital;
+				name = String.valueOf(capital);
 			}
 
 			camelName = first ? name : camelName + name;

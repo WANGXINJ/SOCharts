@@ -89,7 +89,7 @@ public class LabelProperty extends TextStyle implements HasFormatter<LabelProper
 		}
 
 		public Position(String... strings) {
-			this(camelName(true, false, strings));
+			this(camelName(strings));
 		}
 
 		public Position(String str) {

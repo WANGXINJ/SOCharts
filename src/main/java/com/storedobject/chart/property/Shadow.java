@@ -154,6 +154,6 @@ public class Shadow extends PropertyComponentValue {
 	}
 
 	private String p(String any) {
-		return camelName(true, false, prefix, any);
+		return camelName(prefix, any);
 	}
 }
