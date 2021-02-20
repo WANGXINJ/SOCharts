@@ -19,6 +19,7 @@ package com.storedobject.chart.component;
 import com.storedobject.chart.coordinate_system.RectangularCoordinate;
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.data.DataProvider;
+import com.storedobject.chart.property.LabelProperty;
 
 /**
  * Basic XY-type chart (mostly plotted on {@link RectangularCoordinate} system.
@@ -27,7 +28,8 @@ import com.storedobject.chart.data.DataProvider;
  */
 public abstract class XYChart extends AbstractChart {
 
-	String stackName;
+	private String stackName;
+	private LabelProperty label;
 
 	/**
 	 * Constructor.
@@ -38,6 +40,14 @@ public abstract class XYChart extends AbstractChart {
 	 */
 	public XYChart(ChartType type, AbstractDataProvider<?> xData, DataProvider yData) {
 		super(type, xData, yData);
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("stack", stackName);
+		property("label", label);
 	}
 
 	/**
@@ -58,14 +68,6 @@ public abstract class XYChart extends AbstractChart {
 		setData(yData, 1);
 	}
 
-	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		if (stackName != null) {
-			ComponentPart.encode(sb, "stack", stackName, true);
-		}
-	}
-
 	/**
 	 * Certain charts (example: {@link LineChart}, {@link BarChart}) can stack
 	 * multiples of them when drawn on the same coordinate system with shared axis.
@@ -76,5 +78,16 @@ public abstract class XYChart extends AbstractChart {
 	 */
 	public void setStackName(String stackName) {
 		this.stackName = stackName;
+	}
+
+	public LabelProperty getLabel(boolean create) {
+		if (label == null && create) {
+			label = new LabelProperty();
+		}
+		return label;
+	}
+
+	public void setLabel(LabelProperty label) {
+		this.label = label;
 	}
 }

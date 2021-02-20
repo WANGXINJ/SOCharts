@@ -3,10 +3,11 @@ package com.storedobject.chart.property;
 import static com.storedobject.chart.component.ComponentPart.addComma;
 import static com.storedobject.chart.util.ComponentPropertyUtil.encodeStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class AbstractArrayProperty {
+public abstract class AbstractArrayProperty implements Iterable<PropertyValue> {
 
 	final String name;
 	final List<PropertyValue> valueList = new ArrayList<>();
@@ -40,13 +41,23 @@ public abstract class AbstractArrayProperty {
 	}
 
 	public AbstractArrayProperty addPropertyValue(PropertyValue propertyValue) {
-		valueList.add(propertyValue);
+		int index = valueList.indexOf(propertyValue);
+		if (index >= 0) {
+			valueList.set(index, propertyValue);
+		} else {
+			valueList.add(propertyValue);
+		}
 		return this;
 	}
 
 	public AbstractArrayProperty copyProperties(AbstractArrayProperty other) {
 		valueList.addAll(other.valueList);
 		return this;
+	}
+
+	@Override
+	public Iterator<PropertyValue> iterator() {
+		return valueList.iterator();
 	}
 
 	public Stream<PropertyValue> stream() {

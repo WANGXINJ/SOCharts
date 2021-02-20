@@ -67,4 +67,8 @@ public class FontWeight {
 		}
 		return "" + (weight * 100);
 	}
+
+	public static FontWeight of(int weight) {
+		return new FontWeight(weight);
+	}
 }

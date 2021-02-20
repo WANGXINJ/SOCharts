@@ -19,6 +19,16 @@ public class ItemStyle extends BaseComponentProperty {
 		super("itemStyle");
 	}
 
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property("color", color);
+		property("borderColor", borderColor);
+		property("borderWidth", borderWidth);
+		property("borderType", borderType);
+	}
+
 	public Color getColor() {
 		return color;
 	}
@@ -54,15 +64,5 @@ public class ItemStyle extends BaseComponentProperty {
 		this.borderType = borderType;
 
 		return this;
-	}
-
-	@Override
-	protected void buildProperties() {
-		super.buildProperties();
-
-		property("color", color);
-		property("borderColor", borderColor);
-		property("borderWidth", borderWidth);
-		property("borderType", borderType);
 	}
 }

@@ -34,7 +34,7 @@ public class LabelProperty extends TextStyle implements HasFormatter<LabelProper
 		property("formatter", formatter);
 	}
 
-	public LabelProperty setShow(Boolean show) {
+	public LabelProperty show(boolean show) {
 		this.show = show;
 		return this;
 	}
@@ -54,8 +54,8 @@ public class LabelProperty extends TextStyle implements HasFormatter<LabelProper
 	}
 
 	@Override
-	public LabelProperty setFormatter(String formatter, Format... formats) {
-		this.formatter = toFormatter(formatter, formats);
+	public LabelProperty setFormatter(Formatter formatter) {
+		this.formatter = formatter.toString();
 		return this;
 	}
 

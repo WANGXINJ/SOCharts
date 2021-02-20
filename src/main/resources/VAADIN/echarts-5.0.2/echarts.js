@@ -16335,6 +16335,8 @@
      * @param {Array.<Object>|Object} paramsList
      */
 
+    var ALIAS_VALUE = 'value';
+
     function formatTpl(tpl, paramsList, encode, aliasPatterns) {
       if (!isArray(paramsList)) {
         paramsList = [paramsList];
@@ -16355,8 +16357,7 @@
       for (var i = 0; i < $vars.length; i++) {
         aliases[i] = TPL_VAR_ALIAS[i];
       }
-      aliases[$vars.length] = 'x';
-      aliases[$vars.length + 1] = 'y';
+      aliases[$vars.length] = ALIAS_VALUE;
       
       for (var i = 0; i < aliases.length; i++) {
         var alias = aliases[i];
@@ -16371,39 +16372,27 @@
         }
       }
   
-      var x, y;
       for (var seriesIdx = 0; seriesIdx < seriesLen; seriesIdx++) {
         var params = paramsList[seriesIdx];
-        var yIndex = params.encode.x 
+        var value;
+        var valIndex = params.encode.x 
               ? Math.max(params.encode.x[0], params.encode.y[0])
               : params.encode.value[0];
-        var xIndex = params.encode.x
-              ? Math.min(params.encode.x[0], params.encode.y[0])
-              : yIndex - 1;
          
         for (var k = 0; k < $vars.length + 2; k++) {
           var alias = aliases[k];
           var val;
-          var valIndex;
           if (k < $vars.length) {
             val = params[$vars[k]];
-            if (alias == 'b') {
-              x = val;
-            } else if (alias == 'c') {
+            if (alias == 'c') {
               if (isArray(val)) {
-                x = val[xIndex];
-                y = val[yIndex];
+                value = val[valIndex];
               } else {
-                y = val;
+                value = val;
               }
-              valIndex = yIndex;
             }
           } else if (k == $vars.length) {
-            val = x;
-            valIndex = xIndex;
-          } else if (k == $vars.length + 1) {
-            val = y;
-            valIndex = yIndex;
+            val = value;
           }
   
           var pattern = aliasPatterns.get(alias);
@@ -16426,7 +16415,7 @@
     }
     
     // xj
-    var LABEL_REG = /\{(.+?)(?!\|)(%(\??)(.)(.*?)<(.*?)>(.*?))?\}/g;
+    var LABEL_REG = /\{(.+?)(%(\??)(.)(.*?)<(.*?)>(.*?))?\}/g;
   
     // xj
     function buildAliasPatterns(tpl) {
@@ -16522,7 +16511,7 @@
   
     // xj
     function formatNumberByPattern(num, format) {
-      var precision = getPatternPrecision(format);
+      var precision = getFormatPrecision(format);
       if (precision != null) {
         num = num.toFixed(precision);
       }
@@ -16541,7 +16530,11 @@
     }
     
     // xj
-    function getPatternPrecision(format) {
+    function getFormatPrecision(format) {
+      if (!format) {
+        return null;
+      }
+      
       var dotIndex = format.indexOf('.');
       if (dotIndex == -1) {
         return null;
@@ -22256,7 +22249,7 @@
       var labelModel, formatter;
       if ((labelModel = series.getModel('label')) && (formatter = labelModel.get('formatter'))) {
         var patterns = buildAliasPatterns(formatter);
-        var pattern = patterns.get('@'+dimInfo.name) || patterns.get('y');
+        var pattern = patterns.get('@'+dimInfo.name) || patterns.get(ALIAS_VALUE) || patterns.get('c') ;
         inlineValue = formatValueByPattern(inlineValue, pattern);
         if (isString(inlineValue)) {
           inlineValueType = 'string';
@@ -35340,12 +35333,12 @@
           var value = wrapVar(alias);
           var valuePattern = buildAliasPatterns(tpl).get(alias);
           var opt;
-          if (valuePattern) {
+          if (valuePattern && valuePattern.key) {
             tpl = tpl.replace(valuePattern.text, value);
             
             opt = {};
             var format = valuePattern.format;
-            var precision = getPatternPrecision(format);
+            var precision = getFormatPrecision(format);
             if (precision) {
               opt['precision'] = precision;
             }

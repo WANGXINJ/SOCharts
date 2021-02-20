@@ -17,7 +17,6 @@
 package com.storedobject.chart.component;
 
 import com.storedobject.chart.coordinate_system.Axis;
-import com.storedobject.chart.property.Format;
 import com.storedobject.chart.property.HasFormatter;
 
 /**
@@ -80,8 +79,8 @@ public class Tooltip extends VisiblePart implements Component, SinglePart, SkipP
 	}
 
 	@Override
-	public Tooltip setFormatter(String formatter, Format... formats) {
-		this.formatter = toFormatter(formatter, formats);
+	public Tooltip setFormatter(Formatter formatter) {
+		this.formatter = formatter.toString();
 		return this;
 	}
 

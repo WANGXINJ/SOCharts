@@ -22,7 +22,6 @@ import com.storedobject.chart.data.DataType;
 import com.storedobject.chart.encoder.ComponentEncoder;
 import com.storedobject.chart.property.Area;
 import com.storedobject.chart.property.Color;
-import com.storedobject.chart.property.Format;
 import com.storedobject.chart.property.HasFormatter;
 import com.storedobject.chart.property.LineStyle;
 import com.storedobject.chart.property.Location;
@@ -624,12 +623,8 @@ public abstract class Axis extends VisibleProperty {
 		}
 
 		@Override
-		public BaseAxisLabel setFormatter(String formatter, Format... formats) {
-			if (formats != null && formats.length > 0) {
-				formats = new Format[] { formats[formats.length - 1].clone("value") };
-			}
-
-			this.formatter = toFormatter(formatter, formats);
+		public BaseAxisLabel setFormatter(Formatter formatter) {
+			this.formatter = formatter.cloneFormatTo(formatter.formatSize() - 1, "value").toString();
 			return this;
 		}
 	}

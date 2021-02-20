@@ -19,6 +19,7 @@ package com.storedobject.chart.component;
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.property.HasItemStyle;
 import com.storedobject.chart.property.ItemStyle;
+import com.storedobject.chart.property.MarkPoint;
 import com.storedobject.chart.util.ChartException;
 
 /**
@@ -29,6 +30,7 @@ import com.storedobject.chart.util.ChartException;
 public abstract class AbstractChart extends Chart implements HasItemStyle {
 
 	private ItemStyle itemStyle;
+	private MarkPoint markPoint;
 
 	/**
 	 * Create a chart of a given type and data.
@@ -48,6 +50,25 @@ public abstract class AbstractChart extends Chart implements HasItemStyle {
 					break;
 				}
 				d[i] = data[i];
+			}
+		}
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property(itemStyle);
+		property(markPoint);
+	}
+
+	@Override
+	public void validate() throws ChartException {
+		super.validate();
+		AbstractDataProvider<?>[] d = getData();
+		for (int i = 0; i < d.length; i++) {
+			if (d[i] == null) {
+				throw new ChartException("Data for " + axisName(i) + " not set for " + className());
 			}
 		}
 	}
@@ -75,22 +96,15 @@ public abstract class AbstractChart extends Chart implements HasItemStyle {
 		this.itemStyle = itemStyle;
 	}
 
-	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-
-		ComponentPart.encodeProperty(sb, itemStyle);
+	public MarkPoint getMarkPoint(boolean create) {
+		if (markPoint == null && create) {
+			markPoint = new MarkPoint();
+		}
+		return markPoint;
 	}
 
-	@Override
-	public void validate() throws ChartException {
-		super.validate();
-		AbstractDataProvider<?>[] d = getData();
-		for (int i = 0; i < d.length; i++) {
-			if (d[i] == null) {
-				throw new ChartException("Data for " + axisName(i) + " not set for " + className());
-			}
-		}
+	public void setMarkPoint(MarkPoint markPoint) {
+		this.markPoint = markPoint;
 	}
 
 	/**
