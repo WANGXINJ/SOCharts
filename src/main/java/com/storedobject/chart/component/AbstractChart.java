@@ -19,6 +19,7 @@ package com.storedobject.chart.component;
 import com.storedobject.chart.data.AbstractDataProvider;
 import com.storedobject.chart.property.HasItemStyle;
 import com.storedobject.chart.property.ItemStyle;
+import com.storedobject.chart.property.MarkLine;
 import com.storedobject.chart.property.MarkPoint;
 import com.storedobject.chart.util.ChartException;
 
@@ -31,6 +32,7 @@ public abstract class AbstractChart extends Chart implements HasItemStyle {
 
 	private ItemStyle itemStyle;
 	private MarkPoint markPoint;
+	private MarkLine markLine;
 
 	/**
 	 * Create a chart of a given type and data.
@@ -60,6 +62,7 @@ public abstract class AbstractChart extends Chart implements HasItemStyle {
 
 		property(itemStyle);
 		property(markPoint);
+		property(markLine);
 	}
 
 	@Override
@@ -103,8 +106,21 @@ public abstract class AbstractChart extends Chart implements HasItemStyle {
 		return markPoint;
 	}
 
-	public void setMarkPoint(MarkPoint markPoint) {
+	public AbstractChart setMarkPoint(MarkPoint markPoint) {
 		this.markPoint = markPoint;
+		return this;
+	}
+
+	public MarkLine getMarkLine(boolean create) {
+		if (markLine == null && create) {
+			markLine = new MarkLine();
+		}
+		return markLine;
+	}
+
+	public AbstractChart setMarkLine(MarkLine markLine) {
+		this.markLine = markLine;
+		return this;
 	}
 
 	/**

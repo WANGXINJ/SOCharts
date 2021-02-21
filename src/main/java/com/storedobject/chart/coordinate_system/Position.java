@@ -64,13 +64,22 @@ public class Position extends PropertyComponentValue {
 		property("height", height);
 	}
 
+	public Size getLeft() {
+		return left;
+	}
+
 	/**
 	 * Set the "left" size.
 	 *
 	 * @param size Size.
 	 */
-	public void setLeft(Size size) {
+	public Position setLeft(Size size) {
 		left = size.clone();
+		return this;
+	}
+
+	public Size getRight() {
+		return right;
 	}
 
 	/**
@@ -78,8 +87,13 @@ public class Position extends PropertyComponentValue {
 	 *
 	 * @param size Size.
 	 */
-	public void setRight(Size size) {
+	public Position setRight(Size size) {
 		right = size.clone();
+		return this;
+	}
+
+	public Size getTop() {
+		return top;
 	}
 
 	/**
@@ -87,8 +101,13 @@ public class Position extends PropertyComponentValue {
 	 *
 	 * @param size Size.
 	 */
-	public void setTop(Size size) {
+	public Position setTop(Size size) {
 		top = size.clone();
+		return this;
+	}
+
+	public Size getBottom() {
+		return bottom;
 	}
 
 	/**
@@ -96,8 +115,13 @@ public class Position extends PropertyComponentValue {
 	 *
 	 * @param size Size.
 	 */
-	public void setBottom(Size size) {
+	public Position setBottom(Size size) {
 		bottom = size.clone();
+		return this;
+	}
+
+	public Size getWidth() {
+		return width;
 	}
 
 	/**
@@ -105,8 +129,13 @@ public class Position extends PropertyComponentValue {
 	 *
 	 * @param size Size.
 	 */
-	public void setWidth(Size size) {
+	public Position setWidth(Size size) {
 		width = size.clone();
+		return this;
+	}
+
+	public Size getHeight() {
+		return height;
 	}
 
 	/**
@@ -114,8 +143,9 @@ public class Position extends PropertyComponentValue {
 	 *
 	 * @param size Size.
 	 */
-	public void setHeight(Size size) {
+	public Position setHeight(Size size) {
 		height = size.clone();
+		return this;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 package com.storedobject.chart.property;
 
-public interface PropertyValue {
+public interface PropertyValue extends EscapeString {
 
 	public StringBuilder encodeValue(StringBuilder sb);
 

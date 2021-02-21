@@ -23,6 +23,9 @@ public class LabelProperty extends TextStyle implements HasFormatter<LabelProper
 
 	private Boolean show = true;
 	private Position position;
+	private Integer distance;
+	private Integer rotate;
+	private int[] offset;
 	private String formatter;
 
 	@Override
@@ -31,6 +34,7 @@ public class LabelProperty extends TextStyle implements HasFormatter<LabelProper
 
 		property("show", show);
 		property("position", position);
+		property("distance", distance);
 		property("formatter", formatter);
 	}
 
@@ -45,6 +49,47 @@ public class LabelProperty extends TextStyle implements HasFormatter<LabelProper
 
 	public LabelProperty setPosition(Position position) {
 		this.position = position;
+		return this;
+	}
+
+	public Integer getDistance() {
+		return distance;
+	}
+
+	public LabelProperty setDistance(Integer distance) {
+		this.distance = distance;
+		return this;
+	}
+
+	public Integer getRotate() {
+		return rotate;
+	}
+
+	public LabelProperty setRotate(Integer rotate) {
+		this.rotate = rotate;
+		return this;
+	}
+
+	public int[] getOffset() {
+		return offset;
+	}
+
+	public LabelProperty setOffset(Integer offset) {
+		if (offset == null) {
+			this.offset = null;
+			return this;
+		}
+
+		return setOffset(offset, offset);
+	}
+
+	public LabelProperty setOffset(int x, int y) {
+		if (offset == null) {
+			offset = new int[2];
+		}
+		offset[0] = x;
+		offset[1] = y;
+
 		return this;
 	}
 

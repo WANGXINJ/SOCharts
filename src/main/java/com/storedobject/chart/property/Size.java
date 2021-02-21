@@ -24,7 +24,7 @@ import java.util.Objects;
  *
  * @author Syam
  */
-public class Size {
+public class Size implements EscapeString {
 
 	private int size;
 

@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.storedobject.chart.property.ComponentProperty;
-import com.storedobject.chart.property.PropertyValue;
+import com.storedobject.chart.property.EscapeString;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 import elemental.json.impl.JsonUtil;
@@ -108,8 +108,8 @@ public class ComponentPropertyUtil {
 	 *                     appended.
 	 * @param <DATA>       Type of data value in the stream.
 	 */
-	public static <DATA> void encodeStream(StringBuilder sb, Stream<DATA> dataStream, String prefix, String suffix,
-			boolean appendAnyway, TriConsumer<StringBuilder, DATA, Integer> dataEncoder) {
+	public static <DATA> StringBuilder encodeStream(StringBuilder sb, Stream<DATA> dataStream, String prefix,
+			String suffix, boolean appendAnyway, TriConsumer<StringBuilder, DATA, Integer> dataEncoder) {
 		AtomicInteger index = new AtomicInteger(-1);
 		dataStream.forEach(data -> {
 			boolean first = index.incrementAndGet() == 0;
@@ -129,6 +129,8 @@ public class ComponentPropertyUtil {
 		} else {
 			sb.append(suffix);
 		}
+
+		return sb;
 	}
 
 	/**
@@ -175,7 +177,9 @@ public class ComponentPropertyUtil {
 			}
 		}
 
-		if (any instanceof Number || any instanceof Boolean || any instanceof PropertyValue) {
+		if (any instanceof Number || any instanceof Boolean //
+				|| any instanceof StringBuilder //
+				|| any instanceof EscapeString) {
 			return any.toString();
 		}
 

@@ -88,17 +88,21 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 		}
 	}
 
-	default void encodeData(StringBuilder sb) {
+	default StringBuilder encodeData(StringBuilder sb) {
 		sb.append(",\"data\":");
-		encodeDataContent(sb);
+		return encodeDataContent(sb);
 	}
 
-	default void encodeDataContent(StringBuilder sb) {
-		encodeStream(sb, stream(), "[", "]", true, getDataEncoder());
+	default StringBuilder encodeDataContent(StringBuilder sb) {
+		return encodeStream(sb, stream(), "[", "]", true, getDataEncoder());
 	}
 
 	public default boolean isDataSetEncoding() {
 		return getDataEncoder() == DEFAULT_DATA_ENCODER;
+	}
+
+	public default boolean nonDataSetEncoding() {
+		return !isDataSetEncoding();
 	}
 
 	public static TriConsumer<StringBuilder, Object, Integer> DEFAULT_DATA_ENCODER = (sb, data, index) -> sb

@@ -19,6 +19,7 @@ package com.storedobject.chart.component;
 import static com.storedobject.chart.util.ComponentPropertyUtil.camelName;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.storedobject.chart.SOChart;
 import com.storedobject.chart.coordinate_system.Axis;
@@ -26,6 +27,7 @@ import com.storedobject.chart.coordinate_system.Axis.AxisWrapper;
 import com.storedobject.chart.coordinate_system.CoordinateSystem;
 import com.storedobject.chart.coordinate_system.Position;
 import com.storedobject.chart.data.AbstractDataProvider;
+import com.storedobject.chart.data.DataProvider;
 import com.storedobject.chart.property.BaseComponentProperty;
 import com.storedobject.chart.property.Color;
 import com.storedobject.chart.property.ComponentProperty;
@@ -142,6 +144,34 @@ public class Chart extends AbstractPart implements Component {
 
 		property("coordinateSystem", coordinateSystem, CoordinateSystem::systemName);
 
+		if (!(this instanceof AbstractDataChart)) {
+			String[] axes = null;
+			if (coordinateSystem != null) {
+				axes = coordinateSystem.axesData();
+			}
+			if (axes == null) {
+				axes = type.getAxes();
+			}
+
+			ComponentParts dataParts = ComponentParts.of(data);
+			if (dataParts.isDataSetEncoding()) {
+				BaseComponentProperty encode = new BaseComponentProperty("encode");
+				for (int i = 0; i < axes.length; i++) {
+					if (data[i].isDataSetEncoding()) {
+						encode.setProperty(axes[i], data[i].datasetName());
+					}
+				}
+				property(encode);
+			} else {
+				List<DataProvider> valueDataList = dataParts.valueDataProviderStream()
+						.filter(DataProvider::nonDataSetEncoding).collect(Collectors.toList());
+				if (valueDataList.size() == 1) {
+					DataProvider valueData = valueDataList.get(0);
+					property("data", valueData.encodeDataContent(new StringBuilder()));
+				}
+			}
+		}
+
 	}
 
 	@Override
@@ -155,35 +185,6 @@ public class Chart extends AbstractPart implements Component {
 			sb.append("}");
 		});
 
-		if (!(this instanceof AbstractDataChart)) {
-			String[] axes = null;
-			if (coordinateSystem != null) {
-				axes = coordinateSystem.axesData();
-			}
-			if (axes == null) {
-				axes = type.getAxes();
-			}
-
-			if (ComponentParts.of(data).isDataSetEncoding()) {
-				sb.append(",\"encode\":{");
-				for (int i = 0; i < axes.length; i++) {
-					if (i > 0) {
-						sb.append(',');
-					}
-					if (data[i].isDataSetEncoding()) {
-						sb.append('"').append(axes[i]).append("\":\"").append(data[i].datasetName()).append("\"");
-					}
-				}
-				sb.append('}');
-
-			} else {
-				for (int i = 0; i < axes.length; i++) {
-					if (!data[i].isDataSetEncoding()) {
-						data[i].encodeData(sb);
-					}
-				}
-			}
-		}
 	}
 
 	@Override

@@ -44,10 +44,10 @@ public class Legend extends VisiblePart implements Component, HasPosition, HasPa
 	protected void buildProperties() {
 		super.buildProperties();
 
+		property(position);
+		property(padding);
 		property("textStyle", textStyle);
-		if (vertical) {
-			property("orient", "vertical");
-		}
+		property("orient", "vertical", vertical);
 		property(border);
 	}
 
