@@ -13,18 +13,18 @@ public class PropertyValueArray extends AbstractArrayProperty implements Propert
 	}
 
 	@Override
-	public BaseArrayProperty asProperty(String name) {
-		BaseArrayProperty componentProperty = new BaseArrayProperty(name);
-		componentProperty.copyProperties(this);
-		return componentProperty;
-	}
-
-	public static BaseArrayProperty toArrayProperty(String name, PropertyValueArray propertyValue) {
-		return name != null && propertyValue != null ? propertyValue.asProperty(name) : null;
+	public ValueArrayProperty asProperty(String name) {
+		ValueArrayProperty arrayProperty = new ValueArrayProperty(name);
+		arrayProperty.copyProperties(this);
+		return arrayProperty;
 	}
 
 	@Override
 	public String toString() {
 		return encodeValue(new StringBuilder()).toString();
+	}
+
+	public static ValueArrayProperty toValueArrayProperty(String name, PropertyValueArray propertyValue) {
+		return name != null && propertyValue != null ? propertyValue.asProperty(name) : null;
 	}
 }

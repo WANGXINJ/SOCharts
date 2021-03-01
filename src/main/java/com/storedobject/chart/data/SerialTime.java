@@ -32,6 +32,7 @@ public class SerialTime implements AbstractDataProvider<LocalDateTime> {
 	private final LocalDateTime start, end;
 	private final int step;
 	private final ChronoUnit stepUnit;
+	private int datasetIndex;
 
 	/**
 	 * Constructor.
@@ -72,6 +73,16 @@ public class SerialTime implements AbstractDataProvider<LocalDateTime> {
 			this.start = start.isAfter(end) ? start : end;
 			this.end = end.isBefore(start) ? end : start;
 		}
+	}
+
+	@Override
+	public int getDatasetIndex() {
+		return datasetIndex;
+	}
+
+	@Override
+	public void setDatasetIndex(int datasetIndex) {
+		this.datasetIndex = datasetIndex;
 	}
 
 	@Override

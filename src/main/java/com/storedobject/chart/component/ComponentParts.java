@@ -28,14 +28,24 @@ import com.vaadin.util.ReflectTools;
 public class ComponentParts implements Iterable<ComponentPart> {
 
 	final private List<ComponentPart> parts = new ArrayList<>();
-	private boolean skipping;
+	private boolean datasetByChart;
+	private boolean skippingData;
 
-	public boolean isSkippingData() {
-		return skipping;
+	public boolean isDatasetByChart() {
+		return datasetByChart;
 	}
 
-	public ComponentParts skippingData(boolean skipping) {
-		this.skipping = skipping;
+	public ComponentParts setDatasetByChart(boolean datasetByChart) {
+		this.datasetByChart = datasetByChart;
+		return this;
+	}
+
+	public boolean isSkippingData() {
+		return skippingData;
+	}
+
+	public ComponentParts setSkippingData(boolean skipping) {
+		this.skippingData = skipping;
 		return this;
 	}
 
@@ -64,7 +74,7 @@ public class ComponentParts implements Iterable<ComponentPart> {
 			return this;
 		}
 
-		if (skipping && part instanceof SkipPart) {
+		if (skippingData && part instanceof SkipPart) {
 			return this;
 		}
 
@@ -92,14 +102,14 @@ public class ComponentParts implements Iterable<ComponentPart> {
 	}
 
 	public ComponentParts init(List<Component> components, boolean skipData) throws ChartException {
-		clear().skippingData(skipData);
+		clear().setSkippingData(skipData);
 
 		for (Component component : components) {
 			component.addPartsInto(this);
 		}
 
 		for (ComponentPart part : parts) {
-			if (skipping) {
+			if (skippingData) {
 				if (part instanceof AbstractData) {
 					if (part.getSerial() < 0) {
 						throw new ChartException(SKIP_DATA + part.className());
@@ -116,7 +126,9 @@ public class ComponentParts implements Iterable<ComponentPart> {
 		return this;
 	}
 
-	public ComponentParts setupPartSerial() {
+	public void setupPartSerial() {
+		setupExactEqualParts();
+
 		for (ComponentEncoder encoder : SOChart.encoders) {
 			int serial = 0;
 			List<ComponentPart> encodePartList = parts.stream()
@@ -132,13 +144,11 @@ public class ComponentParts implements Iterable<ComponentPart> {
 		}
 
 		parts.sort(Comparator.comparing(ComponentPart::getSerial));
-
-		return this;
 	}
 
 	public ComponentParts clear() {
 		parts.clear();
-		skipping = false;
+		skippingData = false;
 
 		return this;
 	}
@@ -150,6 +160,10 @@ public class ComponentParts implements Iterable<ComponentPart> {
 
 	public Stream<? extends ComponentPart> stream() {
 		return parts.stream();
+	}
+
+	public int size() {
+		return parts.size();
 	}
 
 	public boolean isDataSetEncoding() {
@@ -169,6 +183,21 @@ public class ComponentParts implements Iterable<ComponentPart> {
 		return stream().filter(part -> part instanceof DataProvider).map(part -> (DataProvider) part);
 	}
 
+	public Stream<Chart> chartStream() {
+		return stream().filter(part -> part instanceof Chart).map(part -> (Chart) part);
+	}
+
+	public <PART extends ComponentPart> Stream<PART> partStream(Class<PART> partClass) {
+		@SuppressWarnings("unchecked")
+		Stream<PART> stream = (Stream<PART>) stream().filter(part -> partClass.isAssignableFrom(part.getClass()));
+		return stream;
+	}
+
+	private void setupExactEqualParts() {
+		partStream(ExactEqualPart.class).filter(part -> part instanceof AbstractDataProvider)
+				.forEach(part -> part.setExactEqual(isDatasetByChart()));
+	}
+
 	private Class<?> getClassWithInterface(Class<?> clazz, Class<?> interfaze) {
 		while (!Objects.equals(clazz, Object.class)) {
 			for (Class<?> clazzInterface : clazz.getInterfaces()) {
@@ -184,6 +213,10 @@ public class ComponentParts implements Iterable<ComponentPart> {
 	}
 
 	public static ComponentParts of(ComponentPart... parts) {
+		return new ComponentParts().addAll(parts);
+	}
+
+	public static ComponentParts of(Iterable<? extends ComponentPart> parts) {
 		return new ComponentParts().addAll(parts);
 	}
 

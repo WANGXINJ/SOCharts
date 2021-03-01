@@ -139,6 +139,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 	private Tooltip tooltip;
 	private Toolbox toolbox;
 	private List<VisualMap> visualMaps = new ArrayList<>();
+	private boolean datasetByChart;
 	private boolean neverUpdated = true;
 	private DefaultColors defaultColors;
 	private Color defaultBackground;
@@ -225,6 +226,14 @@ public class SOChart extends AbstractJavaScriptComponent {
 	public SOChart noVisualMap() {
 		visualMaps.clear();
 		return this;
+	}
+
+	public boolean isDatasetByChart() {
+		return datasetByChart;
+	}
+
+	public void setDatasetByChart(boolean datasetByChart) {
+		this.datasetByChart = datasetByChart;
 	}
 
 	/**
@@ -481,6 +490,7 @@ public class SOChart extends AbstractJavaScriptComponent {
 
 	protected void setupParts(boolean skipData) throws ChartException {
 		parts.init(components, skipData) //
+				.setDatasetByChart(isDatasetByChart()) //
 				.addAll(getRootParts()) //
 				.setupPartSerial();
 

@@ -54,31 +54,6 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 		this.axisIndicators = axisIndicators;
 	}
 
-	/**
-	 * Set axis indicators.
-	 *
-	 * @param axisIndicators Axis indicators to set.
-	 */
-	public void setAxisIndicators(CategoryDataProvider axisIndicators) {
-		this.axisIndicators = axisIndicators;
-	}
-
-	/**
-	 * Get the current axis indicators.
-	 *
-	 * @return Axis indicators.
-	 */
-	public CategoryDataProvider getAxisIndicators() {
-		return axisIndicators;
-	}
-
-	@Override
-	public void validate() throws ChartException {
-		if (axisIndicators == null || !axisIndicators.stream().findAny().isPresent()) {
-			throw new ChartException("No axis-indicators for " + className());
-		}
-	}
-
 	@Override
 	protected void buildProperties() {
 		super.buildProperties();
@@ -90,6 +65,32 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 		property("indicator", indicatorValue);
 		property("startAngle", startingAngle);
 		property(color);
+	}
+
+	@Override
+	public void validate() throws ChartException {
+		if (axisIndicators == null || !axisIndicators.stream().findAny().isPresent()) {
+			throw new ChartException("No axis-indicators for " + className());
+		}
+	}
+
+	/**
+	 * Set axis indicators.
+	 *
+	 * @param axisIndicators Axis indicators to set.
+	 */
+	public RadarCoordinate setAxisIndicators(CategoryDataProvider axisIndicators) {
+		this.axisIndicators = axisIndicators;
+		return this;
+	}
+
+	/**
+	 * Get the current axis indicators.
+	 *
+	 * @return Axis indicators.
+	 */
+	public CategoryDataProvider getAxisIndicators() {
+		return axisIndicators;
 	}
 
 	@Override
@@ -119,8 +120,9 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 	 *
 	 * @param startingAngle Angle in degrees.
 	 */
-	public void setStartingAngle(int startingAngle) {
+	public RadarCoordinate setStartingAngle(int startingAngle) {
 		this.startingAngle = startingAngle;
+		return this;
 	}
 
 	/**
@@ -137,7 +139,8 @@ public class RadarCoordinate extends CoordinateSystem implements HasPolarPropert
 	 *
 	 * @param color Color.
 	 */
-	public void setColor(Color color) {
+	public RadarCoordinate setColor(Color color) {
 		this.color = color;
+		return this;
 	}
 }

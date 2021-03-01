@@ -49,8 +49,8 @@ public abstract class AbstractPart extends AbstractComponentProperty implements 
 	protected void buildProperties() {
 		super.buildProperties();
 
-		property("name", getName());
 		property("id", id);
+		property("name", getName());
 		if (this instanceof HasPosition) {
 			property(((HasPosition) this).getPosition(false));
 		}

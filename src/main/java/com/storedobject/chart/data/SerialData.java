@@ -28,6 +28,7 @@ import com.storedobject.helper.StreamJava9;
 public class SerialData implements AbstractDataProvider<Integer> {
 
 	private final int start, end, step;
+	private int datasetIndex;
 
 	/**
 	 * Constructor.
@@ -55,6 +56,16 @@ public class SerialData implements AbstractDataProvider<Integer> {
 			this.start = Math.max(start, end);
 			this.end = Math.min(start, end);
 		}
+	}
+
+	@Override
+	public int getDatasetIndex() {
+		return datasetIndex;
+	}
+
+	@Override
+	public void setDatasetIndex(int datasetIndex) {
+		this.datasetIndex = datasetIndex;
 	}
 
 	@Override

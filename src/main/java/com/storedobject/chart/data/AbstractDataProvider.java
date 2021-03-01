@@ -16,6 +16,7 @@
 
 package com.storedobject.chart.data;
 
+import static com.storedobject.chart.component.ComponentPart.addComma;
 import static com.storedobject.chart.util.ComponentPropertyUtil.encodeStream;
 import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
 
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.storedobject.chart.component.ComponentPart;
+import com.storedobject.chart.property.ComponentProperty;
+import com.storedobject.chart.property.PropertyValue;
 import com.storedobject.chart.util.ChartException;
 import com.storedobject.chart.util.TriConsumer;
 
@@ -36,7 +39,7 @@ import com.storedobject.chart.util.TriConsumer;
  * @param <T> Data class type.
  * @author Syam
  */
-public interface AbstractDataProvider<T> extends ComponentPart {
+public interface AbstractDataProvider<T> extends ComponentPart, PropertyValue {
 
 	/**
 	 * Data provided by this provider as a stream.
@@ -71,8 +74,7 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 
 	@Override
 	default void encodeJSON(StringBuilder sb) {
-		sb.append("\"").append(datasetName()).append("\":");
-		encodeDataSet(sb);
+		encodeDataSet(datasetName(), sb);
 	}
 
 	/**
@@ -80,20 +82,18 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 	 *
 	 * @param sb Append the JSONified string to this.
 	 */
-	default void encodeDataSet(StringBuilder sb) {
+	default void encodeDataSet(String name, StringBuilder sb) {
 		if (isDataSetEncoding()) {
-			encodeDataContent(sb);
-		} else {
-			sb.append("[]");
+			asProperty(name).encodeJSON(sb);
 		}
 	}
 
-	default StringBuilder encodeData(StringBuilder sb) {
-		sb.append(",\"data\":");
-		return encodeDataContent(sb);
+	default void encodeData(StringBuilder sb) {
+		asProperty().encodeJSON(sb);
 	}
 
-	default StringBuilder encodeDataContent(StringBuilder sb) {
+	@Override
+	default StringBuilder encodeValue(StringBuilder sb) {
 		return encodeStream(sb, stream(), "[", "]", true, getDataEncoder());
 	}
 
@@ -123,7 +123,27 @@ public interface AbstractDataProvider<T> extends ComponentPart {
 		return "d" + getSerial();
 	}
 
+	int getDatasetIndex();
+
+	void setDatasetIndex(int datasetIndex);
+
 	@Override
 	default void validate() throws ChartException {
+	}
+
+	@Override
+	default ComponentProperty asProperty(String name) {
+		return new ComponentProperty() {
+			@Override
+			public void encodeJSON(StringBuilder sb) {
+				addComma(sb);
+				sb.append("\"" + name + "\":");
+				encodeValue(sb);
+			}
+		};
+	}
+
+	default ComponentProperty asProperty() {
+		return asProperty("data");
 	}
 }

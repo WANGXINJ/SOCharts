@@ -16,13 +16,13 @@
 
 package com.storedobject.chart.component;
 
-import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.storedobject.chart.coordinate_system.RadarCoordinate;
 import com.storedobject.chart.data.DataProvider;
+import com.storedobject.chart.property.PropertyComponentValue;
+import com.storedobject.chart.property.ValueArrayProperty;
 import com.storedobject.chart.util.ChartException;
 
 /**
@@ -43,6 +43,42 @@ public class RadarChart extends AbstractDataChart {
 	public RadarChart(DataProvider... data) {
 		super(ChartType.Radar);
 		addData(data);
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		if (skippingData)
+			return;
+
+		ValueArrayProperty dataArray = valueArrayProperty("data");
+		for (int i = 0; i < dataList.size(); i++) {
+			PropertyComponentValue dataValue = dataArray.newPropertyValue();
+
+			DataProvider data = dataList.get(i);
+			dataValue.setProperty(data.asProperty("value"));
+
+			String name = data.getName();
+			if (name == null) {
+				name = "Data " + i;
+			}
+			dataValue.setProperty("name", name);
+		}
+	}
+
+	@Override
+	public void validate() throws ChartException {
+		super.validate();
+		if (!(getCoordinateSystem() instanceof RadarCoordinate)) {
+			throw new ChartException("Radar chart can be plotted on a Radar Coordinate system only: " + className());
+		}
+		if (skippingData) {
+			return;
+		}
+		if (dataList.isEmpty()) {
+			throw new ChartException("No data set for " + className());
+		}
 	}
 
 	/**
@@ -73,44 +109,5 @@ public class RadarChart extends AbstractDataChart {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void validate() throws ChartException {
-		super.validate();
-		if (!(getCoordinateSystem() instanceof RadarCoordinate)) {
-			throw new ChartException("Radar chart can be plotted on a Radar Coordinate system only: " + className());
-		}
-		if (skippingData) {
-			return;
-		}
-		if (dataList.isEmpty()) {
-			throw new ChartException("No data set for " + className());
-		}
-	}
-
-	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		if (skippingData) {
-			return;
-		}
-		sb.append(",\"data\":[");
-		String name;
-		int i = 1;
-		for (DataProvider data : dataList) {
-			if (i > 1) {
-				sb.append(',');
-			}
-			sb.append("{\"value\":");
-			name = data.getName();
-			if (name == null) {
-				name = "Data " + i;
-			}
-			data.encodeDataSet(sb);
-			sb.append(",\"name\":").append(escape(name)).append('}');
-			++i;
-		}
-		sb.append(']');
 	}
 }

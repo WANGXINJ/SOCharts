@@ -351,6 +351,7 @@ public class DataMatrix {
 	private abstract static class BaseData {
 
 		private int serial = -1;
+		private int datasetIndex;
 
 		public long getId() {
 			return -1L;
@@ -362,6 +363,14 @@ public class DataMatrix {
 
 		public final void setSerial(int serial) {
 			this.serial = serial;
+		}
+
+		public int getDatasetIndex() {
+			return datasetIndex;
+		}
+
+		public void setDatasetIndex(int datasetIndex) {
+			this.datasetIndex = datasetIndex;
 		}
 	}
 

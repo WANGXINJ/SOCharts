@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.storedobject.chart.component.ComponentPart;
+import com.storedobject.chart.component.ExactEqualPart;
 
 /**
  * <p>
@@ -34,12 +35,14 @@ import com.storedobject.chart.component.ComponentPart;
  * @param <T> Data type.
  * @author Syam
  */
-public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvider<T>, ComponentPart {
+public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvider<T>, ComponentPart, ExactEqualPart {
 	private static final long serialVersionUID = -934219272310169187L;
 
 	private int serial = -1;
 	private final DataType dataType;
 	private String name;
+	private int datasetIndex;
+	private boolean exactEqual;
 
 	/**
 	 * Constructor.
@@ -112,6 +115,26 @@ public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvide
 	}
 
 	@Override
+	public int getDatasetIndex() {
+		return datasetIndex;
+	}
+
+	@Override
+	public void setDatasetIndex(int datasetIndex) {
+		this.datasetIndex = datasetIndex;
+	}
+
+	@Override
+	public boolean isExactEqual() {
+		return exactEqual;
+	}
+
+	@Override
+	public void setExactEqual(boolean exactEqual) {
+		this.exactEqual = exactEqual;
+	}
+
+	@Override
 	public List<T> asList() {
 		return this;
 	}
@@ -123,8 +146,8 @@ public class AbstractData<T> extends ArrayList<T> implements AbstractDataProvide
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == this) {
-			return true;
+		if (exactEqual || o == this) {
+			return o == this;
 		}
 
 		if (o != null && !Objects.equals(o.getClass(), getClass())) {

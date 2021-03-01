@@ -43,6 +43,13 @@ public abstract class CoordinateSystem extends VisiblePart implements Component,
 	private Position position;
 	private final List<Chart> charts = new ArrayList<>();
 
+	@Override
+	public void validate() throws ChartException {
+		for (Axis axis : axes) {
+			axis.validate();
+		}
+	}
+
 	/**
 	 * Add charts to plot on this coordinate system.
 	 *
@@ -117,13 +124,6 @@ public abstract class CoordinateSystem extends VisiblePart implements Component,
 
 	boolean noAxis(Class<?> axisClass) {
 		return !axes(axisClass).findAny().isPresent();
-	}
-
-	@Override
-	public void validate() throws ChartException {
-		for (Axis axis : axes) {
-			axis.validate();
-		}
 	}
 
 	@Override

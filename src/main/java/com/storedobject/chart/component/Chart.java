@@ -97,35 +97,12 @@ public class Chart extends AbstractPart implements Component {
 		this.data = data;
 	}
 
-	/**
-	 * Set data for the chart.
-	 *
-	 * @param data Data to be used (multiples of them for charts that use multi-axis
-	 *             coordinate systems).
-	 */
-	public void setData(AbstractDataProvider<?>... data) {
-		this.data = data;
-	}
-
-	/**
-	 * Get the current set of data.
-	 *
-	 * @return Data.
-	 */
-	public AbstractDataProvider<?>[] getData() {
-		return data;
-	}
-
-	private String type() {
-		return camelName(type.toString());
-	}
-
 	@Override
 	protected void buildProperties() {
 		super.buildProperties();
 
-		property("color", colors);
 		property("type", type());
+		property("color", colors);
 
 		if (coordinateSystem != null && axes != null) {
 			List<Axis> coordinateAxes = coordinateSystem.getAxes();
@@ -155,6 +132,9 @@ public class Chart extends AbstractPart implements Component {
 
 			ComponentParts dataParts = ComponentParts.of(data);
 			if (dataParts.isDataSetEncoding()) {
+				int datasetIndex = data[0].getDatasetIndex();
+				property("datasetIndex", datasetIndex, datasetIndex != 0);
+
 				BaseComponentProperty encode = new BaseComponentProperty("encode");
 				for (int i = 0; i < axes.length; i++) {
 					if (data[i].isDataSetEncoding()) {
@@ -167,11 +147,10 @@ public class Chart extends AbstractPart implements Component {
 						.filter(DataProvider::nonDataSetEncoding).collect(Collectors.toList());
 				if (valueDataList.size() == 1) {
 					DataProvider valueData = valueDataList.get(0);
-					property("data", valueData.encodeDataContent(new StringBuilder()));
+					property(valueData.asProperty());
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -228,6 +207,29 @@ public class Chart extends AbstractPart implements Component {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Set data for the chart.
+	 *
+	 * @param data Data to be used (multiples of them for charts that use multi-axis
+	 *             coordinate systems).
+	 */
+	public void setData(AbstractDataProvider<?>... data) {
+		this.data = data;
+	}
+
+	/**
+	 * Get the current set of data.
+	 *
+	 * @return Data.
+	 */
+	public AbstractDataProvider<?>[] getData() {
+		return data;
+	}
+
+	private String type() {
+		return camelName(type.toString());
 	}
 
 	private String getPropertyName(ComponentProperty property) {

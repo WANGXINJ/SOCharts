@@ -1,5 +1,4 @@
 package com.storedobject.chart.component;
 
-public interface SkipPart {
-
+public interface SkipPart extends ComponentPart {
 }

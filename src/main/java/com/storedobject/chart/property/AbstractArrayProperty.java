@@ -20,6 +20,10 @@ public abstract class AbstractArrayProperty implements Iterable<PropertyValue> {
 		}
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	protected void encodeArray(StringBuilder sb) {
 		if (isEmpty())
 			return;

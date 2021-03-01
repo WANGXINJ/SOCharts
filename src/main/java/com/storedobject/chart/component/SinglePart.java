@@ -1,5 +1,4 @@
 package com.storedobject.chart.component;
 
-public interface SinglePart {
-
+public interface SinglePart extends ComponentPart {
 }

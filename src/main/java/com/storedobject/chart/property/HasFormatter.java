@@ -3,6 +3,7 @@ package com.storedobject.chart.property;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public interface HasFormatter<PROPERTY extends ComponentProperty> {
 
@@ -23,7 +24,7 @@ public interface HasFormatter<PROPERTY extends ComponentProperty> {
 	}
 
 	public static class Formatter {
-		final private String pattern;
+		private String pattern;
 		final private List<Format> formatList;
 
 		public Formatter(Format... formats) {
@@ -53,11 +54,25 @@ public interface HasFormatter<PROPERTY extends ComponentProperty> {
 
 		public Formatter(String pattern, List<Format> formatList) {
 			this.pattern = pattern;
-			this.formatList = formatList;
+			this.formatList = new ArrayList<>(formatList);
 		}
 
-		public int formatSize() {
+		public Formatter appendFormat(Format format) {
+			pattern = pattern != null ? pattern + "%s" : "%s";
+			formatList.add(format);
+			return this;
+		}
+
+		public int countFormats() {
 			return formatList.size();
+		}
+
+		public boolean containsFormat(Format format) {
+			return containsFormat(format.getDatakey());
+		}
+
+		public boolean containsFormat(String dataKey) {
+			return formatList.stream().anyMatch(format -> Objects.equals(format.getDatakey(), dataKey));
 		}
 
 		public Formatter cloneFormatTo(int index, String dataKey) {

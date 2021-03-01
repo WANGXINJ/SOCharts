@@ -104,18 +104,24 @@ public abstract class AbstractComponentProperty implements ComponentProperty {
 		properties.setAll(otherProperties);
 	}
 
+	final protected ValueArrayProperty valueArrayProperty(String name) {
+		ValueArrayProperty value = new ValueArrayProperty(name);
+		property(value);
+		return value;
+	}
+
 	final protected void copyProperties(AbstractComponentProperty other) {
 		if (other == null)
 			return;
 
 		other.buildProperties();
-		customProperties.setAll(other.customProperties);
 		properties.setAll(other.properties);
+		customProperties.setAll(other.customProperties);
 	}
 
 	public void clear() {
-		customProperties.clear();
 		properties.clear();
+		customProperties.clear();
 	}
 
 	public boolean isEmpty() {

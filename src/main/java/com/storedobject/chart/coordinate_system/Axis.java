@@ -81,12 +81,10 @@ public abstract class Axis extends VisibleProperty {
 		super.buildProperties();
 
 		if (gridLines != null) {
-			Line splitLine = getSplitLine(true);
-			splitLine.setProperty(gridLines);
+			getSplitLine(true).setProperty(gridLines);
 		}
 		if (minorGridLines != null) {
-			Line minorSplitLine = getMinorSplitLine();
-			minorSplitLine.setProperty(minorGridLines);
+			getMinorSplitLine(true).setProperty(minorGridLines);
 		}
 
 		property("inverse", true, inverted);
@@ -118,19 +116,14 @@ public abstract class Axis extends VisibleProperty {
 		property("axisPointer", pointer);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Axis axis = (Axis) o;
-		return id == axis.id;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+	void validate() throws ChartException {
+		if (dataType == null) {
+			String name = getName();
+			if (name == null) {
+				name = ComponentPart.className(getClass());
+			}
+			throw new ChartException("Unable to determine the data type for this axis - " + name);
+		}
 	}
 
 	public DataType getDataType() {
@@ -149,20 +142,6 @@ public abstract class Axis extends VisibleProperty {
 		return axisName(getClass());
 	}
 
-	Object value(Object value) {
-		return DataType.mapValue(value, dataType, type -> dataType = type);
-	}
-
-	void validate() throws ChartException {
-		if (dataType == null) {
-			String name = getName();
-			if (name == null) {
-				name = ComponentPart.className(getClass());
-			}
-			throw new ChartException("Unable to determine the data type for this axis - " + name);
-		}
-	}
-
 	/**
 	 * Get name of the axis.
 	 *
@@ -177,16 +156,18 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param name Name to set.
 	 */
-	public void setName(String name) {
+	public Axis setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	/**
 	 * Invert the axis. If called, drawing of the axis will be inverted (drawn in
 	 * the opposite direction).
 	 */
-	public void invert() {
+	public Axis invert() {
 		inverted = true;
+		return this;
 	}
 
 	/**
@@ -205,8 +186,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param nameGap Gap in pixels.
 	 */
-	public void setNameGap(int nameGap) {
+	public Axis setNameGap(int nameGap) {
 		this.nameGap = nameGap;
+		return this;
 	}
 
 	/**
@@ -223,8 +205,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param nameRotation Rotation.
 	 */
-	public void setNameRotation(int nameRotation) {
+	public Axis setNameRotation(int nameRotation) {
 		this.nameRotation = nameRotation;
+		return this;
 	}
 
 	/**
@@ -241,8 +224,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param nameLocation Location to set.
 	 */
-	public void setNameLocation(Location nameLocation) {
+	public Axis setNameLocation(Location nameLocation) {
 		this.nameLocation = Location.h(nameLocation);
+		return this;
 	}
 
 	/**
@@ -263,8 +247,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param nameTextStyle Text style to set.
 	 */
-	public void setNameTextStyle(TextStyle nameTextStyle) {
+	public Axis setNameTextStyle(TextStyle nameTextStyle) {
 		this.nameTextStyle = nameTextStyle;
+		return this;
 	}
 
 	/**
@@ -273,16 +258,18 @@ public abstract class Axis extends VisibleProperty {
 	 * @param min Minimum value. (For category axis, it could be just an ordinal
 	 *            number of the category).
 	 */
-	public void setMin(Object min) {
+	public Axis setMin(Object min) {
 		this.min = value(min);
+		return this;
 	}
 
 	/**
 	 * By invoking this method, minimum of the axis will be set as minimum value of
 	 * the data.
 	 */
-	public void setMinAsMinData() {
+	public Axis setMinAsMinData() {
 		min = "dataMin";
+		return this;
 	}
 
 	/**
@@ -291,16 +278,18 @@ public abstract class Axis extends VisibleProperty {
 	 * @param max Maximum value. (For category axis, it could be just an ordinal
 	 *            number of the category).
 	 */
-	public void setMax(Object max) {
+	public Axis setMax(Object max) {
 		this.max = value(max);
+		return this;
 	}
 
 	/**
 	 * By invoking this method, maximum of the axis will be set as maximum value of
 	 * the data.
 	 */
-	public void setMaxAsMaxData() {
+	public Axis setMaxAsMaxData() {
 		max = "dataMax";
+		return this;
 	}
 
 	/**
@@ -310,8 +299,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param divisions Number of divisions.
 	 */
-	public void setDivisions(int divisions) {
+	public Axis setDivisions(int divisions) {
 		this.divisions = divisions;
+		return this;
 	}
 
 	/**
@@ -322,8 +312,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param show True or false.
 	 */
-	public void showZeroPosition(boolean show) {
+	public Axis showZeroPosition(boolean show) {
 		this.showZero = show;
+		return this;
 	}
 
 	/**
@@ -344,8 +335,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param line Line.
 	 */
-	public void setLine(Line line) {
+	public Axis setLine(Line line) {
 		this.line = line;
+		return this;
 	}
 
 	/**
@@ -366,8 +358,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param label Label.
 	 */
-	public void setLabel(AxisLabel label) {
+	public Axis setLabel(AxisLabel label) {
 		this.label = label;
+		return this;
 	}
 
 	/**
@@ -388,8 +381,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param ticks Ticks.
 	 */
-	public void setTicks(Ticks ticks) {
+	public Axis setTicks(Ticks ticks) {
 		this.ticks = ticks;
+		return this;
 	}
 
 	/**
@@ -410,8 +404,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param ticks Minor ticks.
 	 */
-	public void setMinorTicks(MinorTicks ticks) {
+	public Axis setMinorTicks(MinorTicks ticks) {
 		this.minorTicks = ticks;
+		return this;
 	}
 
 	/**
@@ -432,8 +427,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param gridLines Grid-lines to set.
 	 */
-	public void setGridLines(GridLines gridLines) {
+	public Axis setGridLines(GridLines gridLines) {
 		this.gridLines = gridLines;
+		return this;
 	}
 
 	/**
@@ -454,8 +450,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param gridLines Grid-lines to set.
 	 */
-	public void setMinorGridLines(MinorGridLines gridLines) {
+	public Axis setMinorGridLines(MinorGridLines gridLines) {
 		this.minorGridLines = gridLines;
+		return this;
 	}
 
 	/**
@@ -476,8 +473,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param gridAreas Grid-areas to set.
 	 */
-	public void setGridAreas(GridAreas gridAreas) {
+	public Axis setGridAreas(GridAreas gridAreas) {
 		this.gridAreas = gridAreas;
+		return this;
 	}
 
 	/**
@@ -501,8 +499,9 @@ public abstract class Axis extends VisibleProperty {
 	 *
 	 * @param pointer Axis-pointer.
 	 */
-	public void setPointer(Pointer pointer) {
+	public Axis setPointer(Pointer pointer) {
 		this.pointer = pointer;
+		return this;
 	}
 
 	public final Line getSplitLine(boolean create) {
@@ -512,19 +511,40 @@ public abstract class Axis extends VisibleProperty {
 		return splitLine;
 	}
 
-	public void setSplitLine(Line splitLine) {
+	public Axis setSplitLine(Line splitLine) {
 		this.splitLine = splitLine;
+		return this;
 	}
 
-	public final Line getMinorSplitLine() {
-		if (minorSplitLine == null) {
+	public final Line getMinorSplitLine(boolean create) {
+		if (minorSplitLine == null && create) {
 			minorSplitLine = new Line();
 		}
 		return minorSplitLine;
 	}
 
-	public void setMinorSplitLine(Line minorSplitLine) {
+	public Axis setMinorSplitLine(Line minorSplitLine) {
 		this.minorSplitLine = minorSplitLine;
+		return this;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Axis axis = (Axis) o;
+		return id == axis.id;
+	}
+
+	private Object value(Object value) {
+		return DataType.mapValue(value, dataType, type -> dataType = type);
 	}
 
 	/**
@@ -624,7 +644,7 @@ public abstract class Axis extends VisibleProperty {
 
 		@Override
 		public BaseAxisLabel setFormatter(Formatter formatter) {
-			this.formatter = formatter.cloneFormatTo(formatter.formatSize() - 1, "value").toString();
+			this.formatter = formatter.cloneFormatTo(formatter.countFormats() - 1, "value").toString();
 			return this;
 		}
 	}

@@ -16,11 +16,9 @@
 
 package com.storedobject.chart.component;
 
-import static com.storedobject.chart.util.ComponentPropertyUtil.escape;
-
-import com.storedobject.chart.property.ComponentProperty;
 import com.storedobject.chart.property.HasPolarProperty;
 import com.storedobject.chart.property.PolarProperty;
+import com.storedobject.chart.property.PropertyComponentValue;
 
 /**
  * Gauge chart.
@@ -30,8 +28,8 @@ import com.storedobject.chart.property.PolarProperty;
 public class GaugeChart extends AbstractDataChart implements HasPolarProperty {
 
 	private final Needle[] needles;
-	private int startAngle = Integer.MIN_VALUE, endAngle = Integer.MIN_VALUE, divisions = Integer.MIN_VALUE;
-	private Number min = Integer.MIN_VALUE, max = Integer.MIN_VALUE;
+	private Integer startAngle, endAngle, divisions;
+	private Number min, max;
 	private PolarProperty polarProperty;
 
 	/**
@@ -65,6 +63,23 @@ public class GaugeChart extends AbstractDataChart implements HasPolarProperty {
 		for (needles = 0; needles < this.needles.length; needles++) {
 			this.needles[needles] = new Needle();
 		}
+	}
+
+	@Override
+	protected void buildProperties() {
+		super.buildProperties();
+
+		property(polarProperty);
+		property("startAngle", startAngle);
+		property("endAngle", endAngle);
+		property("min", min);
+		property("max", max);
+		property("splitNumber", divisions);
+
+		if (skippingData)
+			return;
+
+		property("data", needles);
 	}
 
 	/**
@@ -116,33 +131,6 @@ public class GaugeChart extends AbstractDataChart implements HasPolarProperty {
 	 */
 	public int getNumberOfNeedles() {
 		return needles.length;
-	}
-
-	@Override
-	public void encodeJSON(StringBuilder sb) {
-		super.encodeJSON(sb);
-		ComponentPart.encodeProperty(sb, polarProperty);
-		encode(sb, "startAngle", startAngle);
-		encode(sb, "endAngle", endAngle);
-		encode(sb, "min", min);
-		encode(sb, "max", max);
-		encode(sb, "splitNumber", divisions);
-		if (skippingData) {
-			return;
-		}
-		sb.append(",\"data\":[");
-		for (Needle needle : needles) {
-			ComponentPart.encodeProperty(sb, needle);
-		}
-		sb.append(']');
-	}
-
-	private void encode(StringBuilder sb, String name, Number value) {
-		if (value.intValue() == Integer.MIN_VALUE) {
-			return;
-		}
-		ComponentPart.addComma(sb);
-		ComponentPart.encode(sb, name, value);
 	}
 
 	@Override
@@ -208,7 +196,7 @@ public class GaugeChart extends AbstractDataChart implements HasPolarProperty {
 	 *
 	 * @author Syam
 	 */
-	public static class Needle implements ComponentProperty {
+	public static class Needle extends PropertyComponentValue {
 
 		private Number value = 0;
 		private String name;
@@ -217,8 +205,11 @@ public class GaugeChart extends AbstractDataChart implements HasPolarProperty {
 		}
 
 		@Override
-		public void encodeJSON(StringBuilder sb) {
-			sb.append("{\"value\":").append(value).append(",\"name\":").append(escape(name)).append('}');
+		protected void buildProperties() {
+			super.buildProperties();
+
+			property("value", value);
+			property("name", name);
 		}
 
 		/**

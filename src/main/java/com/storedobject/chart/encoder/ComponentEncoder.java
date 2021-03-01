@@ -1,5 +1,8 @@
 package com.storedobject.chart.encoder;
 
+import static com.storedobject.chart.component.ComponentPart.addComma;
+import static com.storedobject.chart.util.ComponentPropertyUtil.camelName;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,9 +22,7 @@ public abstract class ComponentEncoder {
 	protected ComponentEncoder(String label, Class<? extends ComponentPart> partType) {
 		this.partType = partType;
 		if (label == null) {
-			label = partType.getName();
-			label = label.substring(label.lastIndexOf('.') + 1);
-			label = Character.toLowerCase(label.charAt(0)) + label.substring(1);
+			label = camelName(partType.getSimpleName());
 		}
 		this.label = label;
 	}
@@ -43,34 +44,29 @@ public abstract class ComponentEncoder {
 	}
 
 	public void encode(StringBuilder sb, ComponentParts parts) {
-		Set<Integer> serials = new HashSet<>();
-		List<ComponentPart> partList = parts.stream().filter(this::support).filter(part -> {
-			int serial = part.getSerial();
-			boolean first = !serials.contains(serial);
-			if (first) {
-				serials.add(serial);
-			}
-			return first;
-		}).collect(Collectors.toList());
+		parts = supportedParts(parts);
+		if (parts.size() < 1)
+			return;
 
+		encodeLabel(sb);
+		encodeParts(sb, parts);
+	}
+
+	protected void encodeParts(StringBuilder sb, ComponentParts parts) {
 		boolean first = true;
 		int serial = -2;
-		int partCount = partList.size();
-		for (ComponentPart part : partList) {
+		int partCount = parts.size();
+		for (ComponentPart part : parts) {
 			if (part.getSerial() < serial)
 				break;
 
 			serial = part.getSerial();
 			if (first) {
 				first = false;
-				if (sb.length() > 1) {
-					sb.append(',');
-				}
-				sb.append('"').append(label).append("\":");
 				begin(sb, partCount);
 
 			} else {
-				sb.append(',');
+				addComma(sb);
 			}
 
 			partBegin(sb);
@@ -85,6 +81,25 @@ public abstract class ComponentEncoder {
 		if (!first) {
 			end(sb, partCount);
 		}
+	}
+
+	protected ComponentParts supportedParts(ComponentParts parts) {
+		Set<Integer> serials = new HashSet<>();
+		List<ComponentPart> partList = parts.stream().filter(this::support).filter(part -> {
+			int serial = part.getSerial();
+			boolean first = !serials.contains(serial);
+			if (first) {
+				serials.add(serial);
+			}
+			return first;
+		}).collect(Collectors.toList());
+
+		return ComponentParts.of(partList);
+	}
+
+	protected void encodeLabel(StringBuilder sb) {
+		addComma(sb);
+		sb.append('"').append(label).append("\":");
 	}
 
 	protected void begin(StringBuilder sb, int partCount) {

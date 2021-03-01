@@ -15,8 +15,8 @@ import com.storedobject.helper.ID;
 
 public class ComponentProperties {
 
-	private static final String PREFIX_PROPERTY_JSON = "-json";
-	private static final String PREFIX_COMPONENT_PROPERTY = "+property";
+	private static final String PREFIX_JSON_PROPERTY = "-json";
+	private static final String PREFIX_COMPONENT_PROPERTY = "+prop_";
 
 	final Map<String, Object> properties = new LinkedHashMap<>();
 
@@ -29,7 +29,7 @@ public class ComponentProperties {
 			String key = entry.getKey();
 			if (key.startsWith(PREFIX_COMPONENT_PROPERTY)) {
 				encodeComponentProperty(((ComponentProperty) entry.getValue()), sb);
-			} else if (key.startsWith(PREFIX_PROPERTY_JSON)) {
+			} else if (key.startsWith(PREFIX_JSON_PROPERTY)) {
 				encodeJsonProperty(((String) entry.getValue()), sb);
 			} else {
 				encodeValueProperty(entry.getKey(), entry.getValue(), sb);
@@ -79,6 +79,7 @@ public class ComponentProperties {
 		if (name != null && value != null && condition) {
 			properties.put(name, value);
 		}
+
 		return this;
 	}
 
@@ -87,11 +88,20 @@ public class ComponentProperties {
 			return setAll(((PropertyComponentValue) componentProperty).buildAndGetProperties());
 		}
 
-		return set(PREFIX_COMPONENT_PROPERTY + ID.newID(), componentProperty);
+		String name = null;
+		if (componentProperty instanceof NamedProperty) {
+			name = ((NamedProperty) componentProperty).getName();
+		}
+		if (name == null) {
+			name = "@" + ID.newID();
+		}
+		name = PREFIX_COMPONENT_PROPERTY + name;
+
+		return set(name, componentProperty);
 	}
 
 	final public ComponentProperties set(String propertyJson) {
-		return set(PREFIX_PROPERTY_JSON + ID.newID(), propertyJson);
+		return set(PREFIX_JSON_PROPERTY + ID.newID(), propertyJson);
 	}
 
 	public ComponentProperties setAll(ComponentProperties props) {

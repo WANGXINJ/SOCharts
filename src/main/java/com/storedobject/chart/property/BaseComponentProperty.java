@@ -3,12 +3,17 @@ package com.storedobject.chart.property;
 import static com.storedobject.chart.util.ComponentPropertyUtil.beginNode;
 import static com.storedobject.chart.util.ComponentPropertyUtil.endNode;
 
-public class BaseComponentProperty extends AbstractComponentProperty {
+public class BaseComponentProperty extends AbstractComponentProperty implements NamedProperty {
 
 	final String name;
 
 	public BaseComponentProperty(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	@Override

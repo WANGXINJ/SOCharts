@@ -178,7 +178,6 @@ public class ComponentPropertyUtil {
 		}
 
 		if (any instanceof Number || any instanceof Boolean //
-				|| any instanceof StringBuilder //
 				|| any instanceof EscapeString) {
 			return any.toString();
 		}

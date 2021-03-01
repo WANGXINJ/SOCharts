@@ -61,8 +61,9 @@ public class AngleAxis extends Axis {
 	 * Calling this method causes the axis to be drawn in the anticlockwise
 	 * direction.
 	 */
-	public void anticlockwise() {
+	public AngleAxis anticlockwise() {
 		clockwise = false;
+		return this;
 	}
 
 	/**
@@ -79,8 +80,9 @@ public class AngleAxis extends Axis {
 	 *
 	 * @param startingAngle Angle in degrees.
 	 */
-	public void setStartingAngle(int startingAngle) {
+	public AngleAxis setStartingAngle(int startingAngle) {
 		this.startingAngle = startingAngle;
+		return this;
 	}
 
 	public static class AngleAxisWrapper extends AxisWrapper {
